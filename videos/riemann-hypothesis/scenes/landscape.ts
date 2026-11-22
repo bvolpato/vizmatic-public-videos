@@ -1,7 +1,7 @@
 import {
-    Node, circle, dynamic, group, line3d, linear, linearGradient, point3d, polyPath, radialGradient,
-    scene3d, surface, tex,
-    type SceneFunction, type Vec,
+    Node, circle, curve3d, dot, dynamic, group, line3d, linear, linearGradient, point3d, polyPath,
+    radialGradient, scene3d, surface, tex,
+    type SceneFunction, type Vec, type Vec3,
 } from 'vizmatic/stage'
 import { ZETA_ZEROS, zeta } from '../math'
 import { txt } from '../../../factory/style'
@@ -49,15 +49,43 @@ const CRIT_X = sigToX(0.5)
 const STRIP_0_X = sigToX(0)
 const STRIP_1_X = sigToX(1)
 
+// Harmonic bridge arcs connecting integer sum 1/n^s (left) to prime Euler factors 1/(1 - p^{-s}) (right)
+interface BridgeArc {
+    readonly pts: Vec[]
+    readonly color: string
+    readonly speed: number
+    readonly phase0: number
+}
+
+const BRIDGE_ARCS: readonly BridgeArc[] = [
+    { x0: -380, x1: 185, y0: 45, y1: 45, lift: -125, col: '#ffd166', speed: 0.34, phase0: 0.05 },
+    { x0: -320, x1: 270, y0: 45, y1: 45, lift: -158, col: '#5ce1e6', speed: 0.29, phase0: 0.28 },
+    { x0: -255, x1: 355, y0: 45, y1: 45, lift: 132, col: '#a78bfa', speed: 0.31, phase0: 0.52 },
+    { x0: -415, x1: 410, y0: 45, y1: 45, lift: 170, col: '#ff6b8b', speed: 0.26, phase0: 0.74 },
+    { x0: -195, x1: 230, y0: 45, y1: 45, lift: -92, col: '#6ee7b7', speed: 0.38, phase0: 0.4 },
+].map((spec) => {
+    const pts: Vec[] = []
+    const steps = 42
+    for (let i = 0; i <= steps; i++) {
+        const u = i / steps
+        const x = spec.x0 + (spec.x1 - spec.x0) * u
+        const y = spec.y0 + Math.sin(Math.PI * u) * spec.lift
+        pts.push([x, y])
+    }
+    return { pts, color: spec.col, speed: spec.speed, phase0: spec.phase0 }
+})
+
 export const landscape: SceneFunction = (s, c) => {
     const ribbonPhase = s.value(0)
     const showBridge = s.value(1)
+    const arcGlow = s.value(0)
     const ribbonGrad = linearGradient([-960, 0], [960, 0], ['#1d4ed8', '#5ce1e6', '#a78bfa', '#ffd166'])
 
     const silkBg = dynamic(() => {
         if (showBridge.value < 0.02) return []
         const a = showBridge.value
         const ph = ribbonPhase.value
+        const ag = arcGlow.value
         const nodes: Node[] = []
         for (let k = -4; k <= 4; k++) {
             const pts: Vec[] = []
@@ -67,7 +95,42 @@ export const landscape: SceneFunction = (s, c) => {
                 pts.push([x, y])
             }
             const w = 1 - Math.abs(k) / 5.5
-            nodes.push(new Node(polyPath(pts)).stroke(ribbonGrad, 1.8, 0.14 * w * a))
+            nodes.push(new Node(polyPath(pts)).stroke(ribbonGrad, 1.9, 0.16 * w * a).set('blend', 'screen'))
+        }
+        // Glowing prime-sieve harmonic arcs linking 1/n^s -> 1/(1 - p^{-s})
+        if (ag > 0.02) {
+            const aa = a * ag
+            for (const arc of BRIDGE_ARCS) {
+                nodes.push(
+                    new Node(polyPath(arc.pts))
+                        .stroke(arc.color, 2.4, 0.36 * aa)
+                        .glow(8, arc.color)
+                        .set('blend', 'screen'),
+                )
+                const u = (ph * arc.speed + arc.phase0) % 1
+                const idx = Math.min(arc.pts.length - 1, Math.floor(u * (arc.pts.length - 1)))
+                const bp = arc.pts[idx]!
+                nodes.push(
+                    dot(5.2, '#ffffff').at(bp[0], bp[1]).glow(12, arc.color).set('blend', 'screen').opacity(0.92 * aa),
+                )
+            }
+            // Subtle anchor halo around the two halves of Euler's product bridge
+            nodes.push(
+                circle(160, {
+                    fill: radialGradient([0, 0], 160, [
+                        [0, '#5ce1e626'],
+                        [1, '#07091000'],
+                    ]),
+                    stroke: null,
+                }).at(-290, 45).set('blend', 'screen').opacity(aa),
+                circle(180, {
+                    fill: radialGradient([0, 0], 180, [
+                        [0, '#ffd1662c'],
+                        [1, '#07091000'],
+                    ]),
+                    stroke: null,
+                }).at(285, 45).set('blend', 'screen').opacity(aa),
+            )
         }
         return group(...nodes)
     })
@@ -104,37 +167,49 @@ export const landscape: SceneFunction = (s, c) => {
     const terrain = surface((wx, wy) => zetaHeight(wx, wy), {
         x: [-WX_HALF, WX_HALF],
         y: [-WY_HALF, WY_HALF],
-        resolution: [48, 72],
+        resolution: [56, 84],
         colors: ['#060814', '#1b1d52', '#4c2f8a', '#2180c2', '#5ce1e6', '#ffd166'],
         mesh: '#7ce8ff',
-        meshOpacity: 0.25,
-        meshWidth: 0.75,
-        opacity: 0.84,
+        meshOpacity: 0.24,
+        meshWidth: 0.72,
+        opacity: 0.86,
     })
+
+    // Glowing curve3d tracing |zeta(1/2 + it)| right along the golden critical-line ridge!
+    const criticalRidge = curve3d(
+        (u): Vec3 => {
+            const wy = -WY_HALF + u * (2 * WY_HALF)
+            return [CRIT_X, wy, zetaHeight(CRIT_X, wy) + 0.05]
+        },
+        0,
+        1,
+        { color: '#ffd166', width: 4.5, glow: 12, blend: 'screen', samples: 120, opacity: 0.98 },
+    )
 
     view3d.add(
         terrain,
-        line3d([STRIP_0_X, -WY_HALF, 0.02], [STRIP_0_X, WY_HALF, 0.02], { color: '#6b7aa0', width: 1.6, opacity: 0.55 }),
-        line3d([STRIP_1_X, -WY_HALF, 0.02], [STRIP_1_X, WY_HALF, 0.02], { color: '#6b7aa0', width: 1.6, opacity: 0.55 }),
-        line3d([CRIT_X, -WY_HALF, 0.05], [CRIT_X, WY_HALF, 0.05], { color: '#ffd166', width: 5, glow: 10, opacity: 1 }),
+        criticalRidge,
+        line3d([STRIP_0_X, -WY_HALF, 0.02], [STRIP_0_X, WY_HALF, 0.02], { color: '#6b7aa0', width: 1.8, opacity: 0.6, glow: 4, blend: 'screen' }),
+        line3d([STRIP_1_X, -WY_HALF, 0.02], [STRIP_1_X, WY_HALF, 0.02], { color: '#6b7aa0', width: 1.8, opacity: 0.6, glow: 4, blend: 'screen' }),
+        line3d([CRIT_X, -WY_HALF, 0.05], [CRIT_X, WY_HALF, 0.05], { color: '#ffd166', width: 5.2, glow: 12, blend: 'screen', opacity: 1 }),
         ...ZETA_ZEROS.slice(0, 5).flatMap((g) => {
             const zy = imToY(g)
             return [
-                point3d([CRIT_X, zy, 0.08], { color: '#ffd166', radius: 6.5, halo: 0 }),
-                line3d([CRIT_X, zy, 0.08], [CRIT_X, zy, 2.05], { color: '#ffd166', width: 2.2, opacity: 0.8 }),
-                point3d([CRIT_X, zy, 2.08], { color: '#ffffff', radius: 5.5, halo: 0 }),
+                point3d([CRIT_X, zy, 0.08], { color: '#ffd166', radius: 7, glow: 12, blend: 'screen', halo: 0 }),
+                line3d([CRIT_X, zy, 0.08], [CRIT_X, zy, 2.15], { color: '#ffd166', width: 2.6, glow: 10, blend: 'screen', opacity: 0.92 }),
+                point3d([CRIT_X, zy, 2.18], { color: '#ffffff', radius: 6, glow: 14, blend: 'screen', halo: 0 }),
             ]
         }),
     )
 
     const landscapeAura = circle(600, {
         fill: radialGradient([0, 0], 600, [
-            [0, '#4c2f8a22'],
-            [0.6, '#2180c210'],
+            [0, '#4c2f8a28'],
+            [0.6, '#2180c214'],
             [1, '#07091000'],
         ]),
         stroke: null,
-    }).at(160, 40)
+    }).at(160, 40).set('blend', 'screen')
 
     const landscapeCopy = group(
         txt('The Complex', -840, -390, 62, '#f8f4ec', 'serif', 'left'),
@@ -147,6 +222,7 @@ export const landscape: SceneFunction = (s, c) => {
     s.add(silkBg, eulerTag, sumEq)
     c.at(0.1, () => s.play(ribbonPhase.to(4.2, { duration: 16, ease: linear })))
     c.show('infinite product over', prodEq)
+    c.on('infinite product over', () => s.play(arcGlow.to(1, { duration: 0.7 })))
     c.show('Plug in two', zetaTwo)
 
     c.on('lifted that sum', () => s.play(showBridge.to(0, { duration: 0.3 })))

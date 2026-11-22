@@ -138,10 +138,11 @@ export function density2D(x: number, y: number, t: number): number {
     return p
 }
 
-/** Visual 3D height mapping for p_t(x, y) so both the t=0 Gaussian dome and t=1 sharp peaks read dramatically. */
+/** Visual 3D height mapping for p_t(x, y) with smooth asymptotic saturation (zero flat-topped plateaus!). */
 export function manifoldHeight(x: number, y: number, t: number): number {
     const p = density2D(x, y, t)
-    return Math.min(2.6, Math.pow(p * 11.5, 0.72) * 1.18)
+    const raw = Math.pow(p * 11.5, 0.76) * 1.24
+    return 2.85 * Math.tanh(raw / 2.85)
 }
 
 /**

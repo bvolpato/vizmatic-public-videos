@@ -1,5 +1,5 @@
 import {
-    Node, arc, circle, dot, dynamic, group, line, linear, par, radialGradient,
+    Node, arc, circle, dot, dynamic, group, line, linear, par, radialGradient, tex,
     type SceneFunction,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -18,7 +18,10 @@ export const hook: SceneFunction = (s, c) => {
     const galaxyPos = s.value(12)
 
     const splitTitle = group(
-        txt('θᵢ = 10000^(-2i/d)', -845, -210, 30, COSMOS.gold, 'mono', 'left').glow(5, COSMOS.gold),
+        tex(String.raw`\theta_i = 10000^{-2i/d}`, {
+            size: 38,
+            color: COSMOS.gold,
+        }).at(-668, -210).glow(6, COSMOS.gold),
         txt('RoPE', -852, -74, 134, COSMOS.ink, 'serif', 'left').glow(6, '#90b4ff'),
         txt('Spinning Clocks', -852, 54, 96, COSMOS.cyan, 'serif', 'left').glow(8, '#38bdf8'),
         txt('Why LLMs turn token order into angle', -845, 174, 34, '#cbd5e8', 'sans', 'left'),
@@ -35,23 +38,27 @@ export const hook: SceneFunction = (s, c) => {
         const nodes: Node[] = [
             circle(480, {
                 fill: radialGradient([0, 0], 480, [
-                    [0, '#ffd16628'],
-                    [0.45, '#5ce1e616'],
+                    [0, '#ffd1662c'],
+                    [0.45, '#5ce1e61a'],
                     [1, '#07091000'],
                 ]),
                 stroke: null,
-            }).at(cx, cy).opacity(a),
-            circle(40 + pulse * 360, { fill: null, stroke: COSMOS.gold, width: 2 }).at(cx, cy).opacity((1 - pulse) * 0.45 * a),
+            }).at(cx, cy).opacity(a).set('blend', 'screen'),
+            circle(40 + pulse * 360, { fill: null, stroke: COSMOS.gold, width: 2.4 })
+                .at(cx, cy).opacity((1 - pulse) * 0.55 * a).set('blend', 'screen'),
         ]
 
-        // 12 subtle radial clock ticks
-        for (let t = 0; t < 12; t++) {
-            const ta = (t * Math.PI) / 6
-            const x1 = cx + Math.cos(ta) * 352
-            const y1 = cy + Math.sin(ta) * 352
-            const x2 = cx + Math.cos(ta) * 376
-            const y2 = cy + Math.sin(ta) * 376
-            nodes.push(line([x1, y1], [x2, y2], { stroke: '#4c5c84', width: 2 }).opacity(0.6 * a))
+        // 60 fine bezel ticks + 12 bright radial hour ticks
+        for (let t = 0; t < 60; t++) {
+            const ta = (t * Math.PI) / 30
+            const major = t % 5 === 0
+            const r0 = major ? 350 : 358
+            const r1 = major ? 380 : 374
+            nodes.push(line(
+                [cx + Math.cos(ta) * r0, cy + Math.sin(ta) * r0],
+                [cx + Math.cos(ta) * r1, cy + Math.sin(ta) * r1],
+                { stroke: major ? '#93c5fd' : '#526796', width: major ? 2.5 : 1.3 },
+            ).opacity((major ? 0.85 : 0.45) * a))
         }
 
         for (let i = 0; i < RING_RADII.length; i++) {
@@ -60,17 +67,18 @@ export const hook: SceneFunction = (s, c) => {
             const ang = -Math.PI / 2 + m * RING_FREQS[i]!
             const hx = cx + Math.cos(ang) * r
             const hy = cy + Math.sin(ang) * r
-            const trailLen = 0.55 + (RING_RADII.length - i) * 0.09
+            const trailLen = 0.62 + (RING_RADII.length - i) * 0.09
             nodes.push(
-                circle(r, { fill: null, stroke: col, width: 1.5 }).at(cx, cy).opacity(0.28 * a),
-                arc(r, ang - trailLen, ang, { fill: null, stroke: col, width: 3.8 }).at(cx, cy).opacity(0.92 * a).glow(7, col),
-                line([cx, cy], [hx, hy], { stroke: col, width: 2.0 }).opacity(0.5 * a),
-                dot(6.5, '#ffffff').at(hx, hy).glow(12, col).opacity(a),
+                circle(r, { fill: null, stroke: col, width: 1.9 }).at(cx, cy).opacity(0.45 * a),
+                arc(r, ang - trailLen, ang, { fill: null, stroke: col, width: 4.2 })
+                    .at(cx, cy).opacity(0.95 * a).glow(9, col).set('blend', 'screen'),
+                line([cx, cy], [hx, hy], { stroke: col, width: 2.3 }).opacity(0.68 * a).set('blend', 'screen'),
+                dot(7.2, '#ffffff').at(hx, hy).glow(14, col).opacity(a).set('blend', 'screen'),
             )
         }
 
         nodes.push(
-            dot(8, '#ffffff').at(cx, cy).glow(14, COSMOS.gold).opacity(a),
+            dot(9, '#ffffff').at(cx, cy).glow(16, COSMOS.gold).opacity(a).set('blend', 'screen'),
             txt(`m = ${Math.round(m).toString().padStart(2, '0')}`, cx, 425, 34, COSMOS.gold, 'mono').glow(5, COSMOS.gold).opacity(a),
         )
         return group(...nodes)
@@ -92,19 +100,28 @@ export const hook: SceneFunction = (s, c) => {
             circle(540, {
                 fill: radialGradient([0, 0], 540, [
                     [0, '#ffd1662c'],
-                    [0.45, '#a78bfa16'],
+                    [0.45, '#a78bfa18'],
                     [1, '#07091000'],
                 ]),
                 stroke: null,
-            }).at(cx, cy).opacity(a),
+            }).at(cx, cy).opacity(a).set('blend', 'screen'),
         ]
 
         const radii = [56, 98, 140, 182, 224, 266, 308, 350]
-        // Reference 12 o'clock golden alignment beam
         nodes.push(
-            line([cx, cy - 372], [cx, cy + 372], { stroke: '#2a3656', width: 1.4, dash: [6, 8] }).opacity(0.55 * a),
-            line([cx - 372, cy], [cx + 372, cy], { stroke: '#2a3656', width: 1.4, dash: [6, 8] }).opacity(0.55 * a),
+            line([cx, cy - 372], [cx, cy + 372], { stroke: '#3a4c78', width: 1.5, dash: [6, 8] }).opacity(0.65 * a),
+            line([cx - 372, cy], [cx + 372, cy], { stroke: '#3a4c78', width: 1.5, dash: [6, 8] }).opacity(0.65 * a),
         )
+
+        for (let t = 0; t < 24; t++) {
+            const ta = (t * Math.PI) / 12
+            const major = t % 2 === 0
+            nodes.push(line(
+                [cx + Math.cos(ta) * (major ? 340 : 346), cy + Math.sin(ta) * (major ? 340 : 346)],
+                [cx + Math.cos(ta) * 364, cy + Math.sin(ta) * 364],
+                { stroke: major ? '#93c5fd' : '#526796', width: major ? 2.4 : 1.4 },
+            ).opacity((major ? 0.8 : 0.45) * a))
+        }
 
         for (let i = 0; i < radii.length; i++) {
             const r = radii[i]!
@@ -113,15 +130,16 @@ export const hook: SceneFunction = (s, c) => {
             const hx = cx + Math.cos(ang) * r
             const hy = cy + Math.sin(ang) * r
             nodes.push(
-                circle(r, { fill: null, stroke: col, width: 1.8 }).at(cx, cy).opacity(0.32 * a),
-                arc(r, ang - 0.95, ang, { fill: null, stroke: col, width: 4.2 }).at(cx, cy).opacity(0.95 * a).glow(8, col),
-                line([cx, cy], [hx, hy], { stroke: col, width: 2.2 }).opacity(0.62 * a),
-                dot(7.5, '#ffffff').at(hx, hy).glow(14, col).opacity(a),
+                circle(r, { fill: null, stroke: col, width: 2.0 }).at(cx, cy).opacity(0.46 * a),
+                arc(r, ang - 0.95, ang, { fill: null, stroke: col, width: 4.4 })
+                    .at(cx, cy).opacity(0.96 * a).glow(10, col).set('blend', 'screen'),
+                line([cx, cy], [hx, hy], { stroke: col, width: 2.3 }).opacity(0.72 * a).set('blend', 'screen'),
+                dot(7.5, '#ffffff').at(hx, hy).glow(14, col).opacity(a).set('blend', 'screen'),
             )
         }
 
         nodes.push(
-            dot(9, '#ffffff').at(cx, cy).glow(16, COSMOS.gold).opacity(a),
+            dot(9.5, '#ffffff').at(cx, cy).glow(16, COSMOS.gold).opacity(a).set('blend', 'screen'),
             txt(`token m = ${Math.round(m)}`, -620, -10, 38, COSMOS.cyan, 'mono').glow(6, COSMOS.cyan).opacity(a),
             txt('0 → 64', -620, 44, 28, COSMOS.muted, 'mono').opacity(a),
             txt('8 frequency bands', 620, -18, 34, COSMOS.gold, 'sans').opacity(a),
