@@ -1,20 +1,48 @@
 # Vizmatic Public Videos
 
-Open-source, code-first cinematic explainer videos covering mathematics, Rust concurrency, Linux virtualization, `io_uring`, and formal verification — authored in TypeScript and rendered reproducibly with **[Vizmatic](https://bvolpato.github.io/vizmatic/)**.
+Open-source, code-first cinematic explainer videos covering AI internals, mathematics, quantum interference, cryptography, Rust concurrency, distributed consensus, Linux virtualization, and storage -- authored in TypeScript and rendered reproducibly with **[Vizmatic](https://bvolpato.github.io/vizmatic/)**.
 
 Every video in this repository is built as code: exact numerical math, live 3D surfaces, conformal grid warps, state-machine visualizations, synchronized word-level captions, subtle musical sound cues, and an automated GitHub Pages gallery.
 
-## Video Catalog
+## Video Catalog (18 Explainers)
 
-| Video | Category | What it teaches | Source |
-| --- | --- | --- | --- |
-| **The Riemann Hypothesis: Music of the Primes** | Mathematics | 15-second `$1,000,000` shockwave hook, 1,681-star Ulam prime galaxy, prime staircase vs Gauss curve, orbiting 3D $\|\zeta(s)\|$ landscape, conformal complex warp, critical-line spiral, and explicit-formula prime wave synthesis. | [videos/riemann-hypothesis](videos/riemann-hypothesis/) |
-| **Rust Concurrency: Ownership Across Time** | Systems | Data-race prevention at compile time, `Send`/`Sync` compiler gate (`E0277`), `Mutex<T>` owning its data, `std::thread::scope`, bounded channels, 48-byte `Future` state machines, Tokio work stealing, `JoinSet`/`Semaphore`, and zero-mutex actor pipelines. Includes a runnable Rust 2024 + Tokio Cargo lab. | [videos/rust-concurrency](videos/rust-concurrency/) |
-| **MicroVMs & KVM: From One CPU Instruction to Sub-Second Sandboxes** | Linux & Virtualization | Consolidates Linux KVM hardware virtualization (VMX non-root/root, VM exits, EPT) with AWS Firecracker's minimal Rust VMM, `seccomp`/jailer walls, and copy-on-write snapshot clones. | [videos/linux-microvms](videos/linux-microvms/) |
-| **io_uring: Inside Linux's Zero-Syscall I/O Engine** | Linux & Storage | Consolidates `io_uring`'s twin lock-free shared rings (`SQ`/`CQ`), batching and `SQPOLL` zero-syscall mode, below-the-rings page cache vs `O_DIRECT` + `blk-mq` to NVMe, and ring restriction policies. | [videos/io-uring](videos/io-uring/) |
-| **Proofs for Real Systems (1/3): Why Tests Miss the Bug** | Formal Verification Series | 32-bit binary search overflow geometry (`50%` of valid pairs fail), the verification spectrum (Tests -> Z3 SMT -> TLA+ -> Lean 4), and why proofs matter even more when AI writes code. | [videos/formal-verification/01-why-prove](videos/formal-verification/01-why-prove/) |
-| **Proofs for Real Systems (2/3): TLA+ & the Five-Step Bug** | Formal Verification Series | Distributed order-retry protocol, live TLC explicit-state BFS uncovering a 5-step duplicate-shipment counterexample, atomic receipt repair, and weak vs strong fairness. | [videos/formal-verification/02-tla-plus](videos/formal-verification/02-tla-plus/) |
-| **Proofs for Real Systems (3/3): Lean 4 & the Shape of a Proof** | Formal Verification Series | Tail-recursive list reversal tiles, why naive induction gets stuck on an empty accumulator, generalizing the hypothesis, and Lean 4's tiny trusted kernel. | [videos/formal-verification/03-lean4](videos/formal-verification/03-lean4/) |
+### AI & ML Internals
+
+| Video | What it teaches | Source |
+| --- | --- | --- |
+| **FlashAttention: Why GPUs Spend 90% of Their Time Waiting** | H100 memory wall (`989 TFLOP/s` vs `3.35 TB/s` HBM3), Roofline climb, orbiting 3D tiled `Q K^T` SRAM vault (`O(N^2)` to `O(N^2 d / M)`), and exact online softmax rescaling (`< 1e-12`). | [videos/flash-attention](videos/flash-attention/) |
+| **Diffusion & Flow Matching: How AI Sculpts Noise Into Reality** | 1,240-particle Gaussian transport, marginal velocity fields, 50-step curved Diffusion vs 4-step straight Rectified Flow ODE race, and live-morphing 3D probability density manifold `p_t(x)`. | [videos/flow-matching](videos/flow-matching/) |
+| **RoPE: Why LLMs Spin Clocks to Remember Long Context** | Concentric harmonic frequency clocks (`theta_i = 10000^(-2i/d)`), complex relative-angle dot product, 3D multi-frequency helix + attention-decay surface `K(Delta)`, and NTK/YaRN context scaling. | [videos/rope-long-context](videos/rope-long-context/) |
+| **KV Cache & Speculative Decoding: How LLMs Hit 1,000 Tokens/sec** | Autoregressive HBM bottleneck, orbiting 3D PagedAttention virtual-to-physical KV cubes (`< 4%` waste + shared prefixes), and exact lossless rejection sampling (`|P_spec(x) - p(x)| < 1e-12`). | [videos/speculative-decoding](videos/speculative-decoding/) |
+
+### Mathematics & Quantum Physics
+
+| Video | What it teaches | Source |
+| --- | --- | --- |
+| **The Riemann Hypothesis: Music of the Primes** | 15-second `$1,000,000` shockwave hook, 1,681-star Ulam prime galaxy, prime staircase vs Gauss curve, orbiting 3D `|zeta(s)|` landscape, conformal complex warp, critical-line spiral, and explicit-formula prime wave synthesis. | [videos/riemann-hypothesis](videos/riemann-hypothesis/) |
+| **The Navier-Stokes $1,000,000 Problem: Why Turbulence Breaks Math** *(Millennium Prize #2)* | Kelvin-Helmholtz vortex shear, divergence-free Lamb-Oseen vortex advection, 3D vortex stretching, orbiting 3D enstrophy blow-up spire, and Kolmogorov `k^(-5/3)` energy cascade. | [videos/navier-stokes](videos/navier-stokes/) |
+| **The Fourier Transform: Turning Chaos Into Epicycles & Music** | Spinning golden DFT epicycles, complex winding machine (`2, 5, 8 Hz` peaks), exact Parseval energy conservation, and orbiting 3D STFT spectrogram sparse-ridge compression (`MP3`, `JPEG`, `Wi-Fi`). | [videos/fourier-transform](videos/fourier-transform/) |
+| **Gödel & the Halting Problem: Why No AI Can Prove Every Truth** | Prime-power Gödel numbering, self-reference mirror, Turing's `8x8` diagonal Halting paradox, and an orbiting 3D archipelago of formal proof showing why truth always outgrows axioms. | [videos/godel-halting](videos/godel-halting/) |
+| **Quantum Computing Without the Hype: Shor's Algorithm & Interference** | Translucent orbiting 3D Bloch sphere (`H` and `Rz` phase gates), modular period finding (`7^x mod 15`, `r = 4`), and exact `M = 32` QFT phasor cancellation spiking only at the secret period. | [videos/shors-algorithm](videos/shors-algorithm/) |
+
+### Cryptography, Distributed Systems & Linux
+
+| Video | What it teaches | Source |
+| --- | --- | --- |
+| **Zero-Knowledge Proofs: Proving a Secret Without Showing a Bit** | 192-byte proof vault, R1CS arithmetization (`x^3 + x + 5 = 35`), orbiting 3D Schwartz-Zippel honest vs forged polynomial surfaces, and homomorphic elliptic-curve hiding. | [videos/zk-snarks](videos/zk-snarks/) |
+| **Raft Consensus & Split-Brain: Why Distributed Systems Survive Partitions** | 5-node network partition, randomized election timers, minority `2/5` ghost entry vs majority `3/5` commit + term fencing, and orbiting 3D quorum-intersection planes (`2q - N >= 1`). | [videos/raft-consensus](videos/raft-consensus/) |
+| **Inside an SSD: B-Trees vs LSM-Trees and the Write-Amplification Wall** | 4 KB writes vs 4 MB flash erase blocks (`10x-30x` write amp), B-Tree random leaf mutations, orbiting 3D leveled LSM pyramid (`L0 -> L3`), and `0.82%` FPR Bloom filter laser gates. | [videos/lsm-vs-btree](videos/lsm-vs-btree/) |
+| **Rust Concurrency: Ownership Across Time** | Data-race prevention at compile time, `Send`/`Sync` compiler gate (`E0277`), `Mutex<T>` owning its data, `std::thread::scope`, bounded channels, 48-byte `Future` state machines, Tokio work stealing, and zero-mutex actors. Includes a runnable Rust 2024 + Tokio Cargo lab. | [videos/rust-concurrency](videos/rust-concurrency/) |
+| **MicroVMs & KVM: From One CPU Instruction to Sub-Second Sandboxes** | Linux KVM hardware virtualization (VMX non-root/root, VM exits, EPT), Firecracker's minimal Rust VMM, `seccomp`/jailer walls, and copy-on-write snapshot clones. | [videos/linux-microvms](videos/linux-microvms/) |
+| **io_uring: Inside Linux's Zero-Syscall I/O Engine** | Twin lock-free shared rings (`SQ`/`CQ`), batching and `SQPOLL` zero-syscall mode, page cache vs `O_DIRECT` + `blk-mq` to NVMe, and ring restriction policies. | [videos/io-uring](videos/io-uring/) |
+
+### Formal Verification Series
+
+| Video | What it teaches | Source |
+| --- | --- | --- |
+| **Proofs for Real Systems (1/3): Why Tests Miss the Bug** | 32-bit binary search overflow geometry (`50%` of valid pairs fail), the verification spectrum (Tests -> Z3 SMT -> TLA+ -> Lean 4), and why proofs matter even more when AI writes code. | [videos/formal-verification/01-why-prove](videos/formal-verification/01-why-prove/) |
+| **Proofs for Real Systems (2/3): TLA+ & the Five-Step Bug** | Distributed order-retry protocol, live TLC explicit-state BFS uncovering a 5-step duplicate-shipment counterexample, atomic receipt repair, and weak vs strong fairness. | [videos/formal-verification/02-tla-plus](videos/formal-verification/02-tla-plus/) |
+| **Proofs for Real Systems (3/3): Lean 4 & the Shape of a Proof** | Tail-recursive list reversal tiles, why naive induction gets stuck on an empty accumulator, generalizing the hypothesis, and Lean 4's tiny trusted kernel. | [videos/formal-verification/03-lean4](videos/formal-verification/03-lean4/) |
 
 ## Quickstart
 

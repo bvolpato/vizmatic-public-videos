@@ -1,0 +1,58 @@
+{
+  "entry": "film.ts",
+  "output": "KV-Cache-and-Speculative-Decoding",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 2023,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "flash",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "kvcache",
+        "beat": 1,
+        "word": "memory",
+        "sound": "latch",
+        "gain": 0.045
+      },
+      {
+        "scene": "paged",
+        "beat": 1,
+        "word": "zero",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "speculative",
+        "beat": 1,
+        "word": "identical",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "exact",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "The-Fourier-Transform-Epicycles-and-Music",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 1822,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "spinning",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "winding",
+        "beat": 1,
+        "word": "boom",
+        "sound": "bell",
+        "gain": 0.05
+      },
+      {
+        "scene": "epicycles",
+        "beat": 1,
+        "word": "nineteen",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "choir",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

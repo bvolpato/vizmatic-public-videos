@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Inside-an-SSD-BTree-vs-LSMTree",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 20263,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "gold",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "flashphysics",
+        "beat": 1,
+        "word": "storms",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "lsm3d",
+        "beat": 1,
+        "word": "ninety-nine",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "streams",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

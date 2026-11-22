@@ -1,0 +1,9 @@
+{
+  "title": "Raft Consensus & Split-Brain: Why Distributed Systems Survive Partitions",
+  "description": "A cinematic visual breakdown of Raft consensus: leader heartbeats sliced by a network partition, randomized election timers, split-brain rollback, and 3D quorum intersection geometry.",
+  "category": "Distributed Systems",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 14.5
+}

@@ -1,0 +1,83 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "AI": "A I",
+    "GPU": "G P U",
+    "GPUs": "G P Us",
+    "NVIDIA": "En vidia",
+    "H100": "H one hundred",
+    "HBM": "H B M",
+    "SRAM": "S ram",
+    "FlashAttention": "Flash Attention",
+    "softmax": "soft max"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Why GPUs spend 90% of their time waiting",
+      "beats": [
+        {
+          "say": "A modern AI GPU can crunch nearly a quadrillion operations per second — yet during standard attention, its cores spend ninety percent of their time starving for data. FlashAttention shatters that memory wall without changing a single decimal place of the math.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "memorywall",
+      "title": "The GPU memory hierarchy and Roofline wall",
+      "beats": [
+        {
+          "say": "Inside an NVIDIA H100, compute and memory live in different universes. Tensor cores roar at nine hundred eighty-nine teraflops, while off-chip HBM feeds them at just three point three five terabytes per second. Right beside the cores sits tiny on-chip SRAM — six times faster, at nineteen terabytes per second, yet only fifty megabytes large.",
+          "hold": 0.35
+        },
+        {
+          "say": "Plot that gap on a Roofline chart. To saturate the chip, every byte loaded from HBM needs nearly three hundred math operations. Standard attention writes and reloads the entire N by N score matrix across HBM at every step — pinning your GPU deep inside the memory-bound valley.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "tiling",
+      "title": "Tiling the attention landscape inside SRAM",
+      "beats": [
+        {
+          "say": "FlashAttention asks one ruthless question: why ever materialize the N by N attention matrix in HBM at all? Instead, it slices Queries, Keys, and Values into compact blocks that fit completely inside blazing on-chip SRAM.",
+          "hold": 0.35
+        },
+        {
+          "say": "One block of queries stays pinned in SRAM while blocks of keys and values stream past. Each tile computes local scores, folds them into the running output on-chip, and discards the intermediate block immediately. Total HBM traffic plunges by an order of magnitude — from N squared down to N squared d over M.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "onlinesoftmax",
+      "title": "Exact online softmax without seeing the full row",
+      "beats": [
+        {
+          "say": "There is one subtle catch: softmax normally needs the maximum and total sum across an entire row before normalizing a single weight. How can you compute exact softmax when you only see one tiny tile at a time?",
+          "hold": 0.35
+        },
+        {
+          "say": "The secret is online softmax. As each tile arrives, track the running maximum and running denominator. Whenever a larger score appears, multiply the old sum and output by an exact exponential correction factor. By the final tile, the tiled result matches full softmax to machine precision — with zero approximation.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Don't write what you can fuse",
+      "beats": [
+        {
+          "say": "By fusing matrix multiply, softmax, and dropout into one SRAM kernel, FlashAttention runs two to four times faster and unlocks million-token context windows with exact math. When compute outruns memory, the golden rule of GPU engineering is simple: don't write what you can fuse.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

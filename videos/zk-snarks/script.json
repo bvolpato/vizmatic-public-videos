@@ -1,0 +1,79 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "zk-SNARKs": "Z K snarks",
+    "R1CS": "R one C S",
+    "QAP": "Q A P",
+    "Schwartz-Zippel": "Shwarts Zipple",
+    "BN254": "B N two fifty four"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "A 192-byte gem of certainty",
+      "beats": [
+        {
+          "say": "Can you prove you solved a million-step secret without revealing a single bit? Zero-knowledge proofs compress an entire locked vault of computation into one tiny one-hundred-ninety-two-byte golden gem. Fire one random laser check, and you get ninety-nine point nine-nine-nine-nine-nine-nine-nine-nine-nine percent certainty — seeing nothing inside.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "circuit",
+      "title": "Arithmetization into polynomials",
+      "beats": [
+        {
+          "say": "First, we turn a secret into pure algebra. Take a classic puzzle: x cubed plus x plus five equals thirty-five. Only the prover knows x equals three. We flatten that check into R1CS arithmetic gates: square x, multiply by x again, add x, add five.",
+          "hold": 0.4
+        },
+        {
+          "say": "Now thread a single smooth polynomial straight through every gate's wire values. When every gate holds, the constraint polynomial hits zero at every gate root — meaning it divides cleanly by a target vanishing polynomial.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "poly3d",
+      "title": "The Schwartz-Zippel Lemma in 3D",
+      "beats": [
+        {
+          "say": "Here is where the magic strikes. Imagine the honest polynomial as a glowing cyan surface, and a cheater's forged polynomial — hiding just a one-bit lie — as a rose surface.",
+          "hold": 0.35
+        },
+        {
+          "say": "By the Schwartz-Zippel Lemma, two distinct high-degree polynomials can cross only along razor-thin curves. Almost everywhere else, they split wide apart. So the verifier fires one random golden challenge beam — striking open space and instantly exposing the gap.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "commitment",
+      "title": "Homomorphic elliptic-curve blinding",
+      "beats": [
+        {
+          "say": "One catch: if the prover knows the random point ahead of time, they could fake a curve that matches right at that spot. And if they hand over the full polynomial, they leak the secret.",
+          "hold": 0.35
+        },
+        {
+          "say": "Elliptic-curve blinding solves both at once. We lock the secret point inside an encrypted shield using homomorphic exponentiation. The prover evaluates the polynomial blind, never seeing the hidden point, while the verifier checks the pairing without ever seeing x.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "One unforgeable point",
+      "beats": [
+        {
+          "say": "Millions of hidden gates collapse into one constant-size golden proof — verified in milliseconds on any phone. From private payments to verifiable compute, the secret stays sealed forever. Algebra turns a million hidden steps into one unforgeable point.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

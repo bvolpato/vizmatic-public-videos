@@ -1,0 +1,79 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "RoPE": "rope",
+    "AI": "A I",
+    "NTK": "N T K",
+    "YaRN": "yarn",
+    "theta": "thay tah"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "A galaxy of clocks inside every token",
+      "beats": [
+        {
+          "say": "How does an AI read an entire novel and still know which word came before which? Standard transformers have zero sense of order. Modern language models solve this with Rotary Positional Embeddings, spinning a galaxy of hidden clocks inside every token.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "clocks",
+      "title": "Exact 2D complex rotation geometry",
+      "beats": [
+        {
+          "say": "Early models simply added a position vector to every word, muddying meaning and distance together. RoPE does something far cleaner. It pairs up every two dimensions into a tiny two-dimensional compass needle, and rotates that needle by an angle proportional to token position m.",
+          "hold": 0.35
+        },
+        {
+          "say": "Now watch the geometric magic when a query at position m attends to a key at position n. Because rotation preserves lengths and angles, their dot product depends solely on the angle difference between them: m minus n times theta. Absolute positions vanish, leaving pure relative distance.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "helix3d",
+      "title": "3D helical ribbons and attention decay",
+      "beats": [
+        {
+          "say": "One single clock wraps around too fast to tell position ten from position five hundred. So RoPE runs dozens of clocks at once across the embedding dimensions, with frequencies spaced geometrically from rapid local ticks down to glacially slow sweeps.",
+          "hold": 0.35
+        },
+        {
+          "say": "Lift those spinning needles along token position m, and they weave a glowing family of three-dimensional helices. Sum their cosines across all frequencies, and a luminous attention kernel rises: sharp constructive peaks for nearby words, melting smoothly away as distance grows.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "longcontext",
+      "title": "Phase collisions and NTK / YaRN scaling",
+      "beats": [
+        {
+          "say": "Here is why language models suddenly lose coherence past their training context length. Push a four-thousand-token model out to thirty-two thousand, and its slowest clocks rotate into phase angles the network has never seen before, triggering chaotic attention collisions.",
+          "hold": 0.35
+        },
+        {
+          "say": "Linear interpolation squishes every clock together and blurs nearby grammar. Instead, NTK and YaRN scaling gently stretch the base frequency of the slow, long-range clocks while leaving the fast local clocks completely crisp, unlocking massive context windows with almost no retraining.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Position is an angle you spin",
+      "beats": [
+        {
+          "say": "From four thousand tokens to over a million, the same elegant clockwork keeps every word anchored in space. By turning sequence order into harmonic rotation, transformers gain effortless geometric intuition. Position is not a number you add. It is an angle you spin.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

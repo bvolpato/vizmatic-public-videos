@@ -1,0 +1,79 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "Navier-Stokes": "Nah vee ay Stokes",
+    "Kolmogorov's": "Kol moh gor ovs",
+    "Reynolds": "Ren olds",
+    "vorticity": "vor tis ih tee",
+    "advection": "ad vek shun"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "The million-dollar turbulence mystery",
+      "beats": [
+        {
+          "say": "Pour cold cream into hot coffee, and smooth silk erupts into wild swirling chaos. There is a one-million-dollar prize waiting for anyone who can prove whether the Navier-Stokes equations governing every ocean, jet stream, and hurricane stay smooth forever — or explode to infinite speed in finite time.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "equation",
+      "title": "Newton's law for fluids",
+      "beats": [
+        {
+          "say": "At its heart, the Navier-Stokes equation is simply Newton's F equals m a written for a moving fluid. On the left sit inertia and nonlinear advection — the violent feedback term where fast fluid crashes into slow fluid and folds streamlines right over themselves.",
+          "hold": 0.35
+        },
+        {
+          "say": "On the right, pressure pushes outward from high to low while viscosity acts like thick honey, damping sharp ripples smooth. Their tug-of-war is captured by the Reynolds number. At fifty, flow glides like glass. Push it past five thousand, and smooth layers shatter into chaos.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "vortices",
+      "title": "2D spirals versus 3D vortex stretching",
+      "beats": [
+        {
+          "say": "In two dimensions, mathematicians proved decades ago that smooth fluid equations never break. Watch two real incompressible vortices orbit and wrap glowing tracer ribbons into mesmerizing spirals. In flat space, fluid can twist and fold endlessly, yet vorticity stays safely bounded forever.",
+          "hold": 0.35
+        },
+        {
+          "say": "Step into three dimensions, and a dangerous new mechanism wakes up: vortex stretching. Pull a spinning vortex tube thinner along its axis, and like an ice skater pulling in her arms, conservation of angular momentum whips its spin rate faster and faster.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "cascade3d",
+      "title": "Kolmogorov's cascade and finite-time blow-up",
+      "beats": [
+        {
+          "say": "Big swirling eddies tear apart into smaller eddies, and smaller ones still, pouring kinetic energy down Kolmogorov's famous minus-five-thirds power law. Lift that vorticity into three dimensions, and jagged glowing towers surge out of the turbulent sea.",
+          "hold": 0.35
+        },
+        {
+          "say": "Here is the million-dollar question: does viscosity always win the race and smooth out the tiniest whirls, or can a three-dimensional vortex pinch so sharp that velocity shoots to infinity in finite time — breaking our equations of reality?",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Smooth forever or infinite velocity",
+      "beats": [
+        {
+          "say": "We rely on Navier-Stokes to design aircraft wings, model arteries, and forecast hurricanes every single day — yet mathematics still cannot guarantee its solutions never blow up. Smooth forever, or infinite velocity in finite time? Prove either answer, and a million-dollar Clay Millennium Prize is yours.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "NVMe": "N V M E",
+    "SSD": "S S D",
+    "LSM-tree": "L S M tree",
+    "LSM-trees": "L S M trees",
+    "B-Tree": "B tree",
+    "B-Trees": "B trees",
+    "IOPS": "eye ops",
+    "FTL": "F T L",
+    "MemTable": "mem table",
+    "SSTables": "S S tables",
+    "RUM": "R U M"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "The write-amplification wall",
+      "beats": [
+        {
+          "say": "Inside every modern NVMe SSD hides a brutal physical trap. Update one tiny record in place, and random four-kilobyte writes smash into massive four-megabyte flash erase blocks — multiplying disk wear ten to thirty times. Watch how LSM-trees turn that random chaos into pure sequential gold.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "flashphysics",
+      "title": "Pages, erase blocks, and FTL storms",
+      "beats": [
+        {
+          "say": "Flash silicon obeys an asymmetric law. You can read or write a four-kilobyte page in microseconds, but you can never overwrite a single byte in place. To reclaim space, the SSD must wipe an entire four-megabyte erase block at once.",
+          "hold": 0.4
+        },
+        {
+          "say": "So the Flash Translation Layer remaps every update to a fresh page and marks the old one stale. Under random updates, dead tombstones scatter everywhere — triggering garbage collection storms that copy live data over and over.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "btreewall",
+      "title": "B-Tree in-place leaf mutations",
+      "beats": [
+        {
+          "say": "Classic B-Trees were built for spinning disks, updating keys in place. Every write walks down the tree to a scattered sixteen-kilobyte leaf page, mutates a hundred bytes, and marks the whole page dirty.",
+          "hold": 0.4
+        },
+        {
+          "say": "When millions of random keys churn across the drive, the B-Tree sprays tiny dirty pages across every erase block — hitting the write-amplification wall and choking random IOPS.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "lsm3d",
+      "title": "The 3D leveled LSM-tree pyramid",
+      "beats": [
+        {
+          "say": "An LSM-tree flips the entire game. Incoming writes land straight into a blazing in-memory MemTable, then flush sequentially into immutable sorted tables stacked in a three-dimensional pyramid from Level zero down to Level three.",
+          "hold": 0.4
+        },
+        {
+          "say": "Background leveled compaction sweeps sorted runs cleanly downward, eliminating random flash fragmentation. And what about reads? Ten-bit Bloom filters guard every table like laser gates — short-circuiting ninety-nine percent of miss lookups before they ever touch disk.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "The RUM tradeoff in balance",
+      "beats": [
+        {
+          "say": "No storage engine escapes the RUM tradeoff: reads, updates, and memory always pull against each other. B-Trees win on predictable point reads; LSM-trees crush write-heavy streams on flash. Know the silicon underneath, and turn random writes into sequential streams.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

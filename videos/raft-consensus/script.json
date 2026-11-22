@@ -1,0 +1,77 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "RequestVote": "request vote",
+    "AppendEntries": "append entries",
+    "quorum": "kwor um"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Split-brain extinguished mid-flight",
+      "beats": [
+        {
+          "say": "What happens when a network cable snaps right through the middle of a five-node database? Two servers suddenly claim to be the leader at the exact same time. Without strict math, split-brain corrupts your data forever. Watch how Raft extinguishes the stale leader mid-flight.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "election",
+      "title": "Randomized timers and strict majorities",
+      "beats": [
+        {
+          "say": "Raft divides time into numbered terms. Every node runs a randomized election timer — an orbital countdown ticking down. If the leader goes silent, one node times out first, steps up to candidate, and bumps its clock to term two.",
+          "hold": 0.4
+        },
+        {
+          "say": "It broadcasts RequestVote pulses across the cluster. Each node grants only one vote per term. The moment our candidate collects three of five votes — a strict majority — it ascends to leader and locks the cluster with steady heartbeats.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "partition",
+      "title": "Surviving a split-brain partition",
+      "beats": [
+        {
+          "say": "Now slice the cluster clean in two. The old term-one leader is trapped on the left with just one follower. A client writes x equals nine, but two nodes can never form a majority — so that entry stays uncommitted, hanging as a ghost.",
+          "hold": 0.4
+        },
+        {
+          "say": "Meanwhile, the three-node majority on the right elects a fresh term-two leader and commits x equals forty-two across three replicas. The instant the wall heals, term two outranks term one: the stale leader steps down and rolls back its ghost write.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "quorum3d",
+      "title": "Quorum intersection in 3D space",
+      "beats": [
+        {
+          "say": "Why can two leaders never commit conflicting histories? Picture all five servers suspended in three-dimensional quorum space. Every majority forms a glowing plane covering at least three nodes.",
+          "hold": 0.35
+        },
+        {
+          "say": "By the pigeonhole principle, any two subsets of size three out of five must intersect in at least one witness node. That shared witness carries the highest committed term forward, making it mathematically impossible for a stale node to win the next election.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Two majorities always share a witness",
+      "beats": [
+        {
+          "say": "Now all five logs pulse in perfect lockstep — identical terms, identical entries, zero lost writes. Partitions will always break networks, and servers will always crash. Consensus survives because of one unbreakable rule: two majorities always share a witness.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

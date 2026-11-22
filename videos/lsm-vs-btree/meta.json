@@ -1,0 +1,9 @@
+{
+  "title": "Inside an SSD: B-Trees vs LSM-Trees and the Write-Amplification Wall",
+  "description": "A cinematic dive into NVMe flash silicon: 4 KB pages inside 4 MB erase blocks, B-Tree random write amplification, an orbiting 3D leveled LSM-tree pyramid with Bloom filter laser gates, and the RUM tradeoff.",
+  "category": "Linux & Storage",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 8.5
+}
