@@ -1,0 +1,10 @@
+{
+  "title": "Why Tests Miss the Bug",
+  "description": "Episode 1 of Proofs for Real Systems: why unit tests sample corners of an exponential input space, how SMT solvers, TLA+, and Lean 4 cover what tests miss, and why proofs matter even more for AI-written code.",
+  "category": "Formal Verification",
+  "series": "Proofs for Real Systems (1/3)",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.0
+}

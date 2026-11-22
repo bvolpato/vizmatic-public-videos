@@ -1,0 +1,81 @@
+name: Render & Deploy Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      rebuild_all:
+        description: "Force rebuild of every video"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install FFmpeg
+        run: sudo apt-get update -y && sudo apt-get install -y ffmpeg
+
+      - name: Build and link pinned Vizmatic
+        run: ./factory/setup-vizmatic.sh
+
+      - name: Determine changed videos
+        id: plan
+        run: |
+          if [[ "${{ inputs.rebuild_all }}" == "true" || "${{ github.event.before }}" == "0000000000000000000000000000000000000000" || -z "${{ github.event.before }}" ]]; then
+            echo "mode=all" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=changed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Render videos with Kokoro (default local voice)
+        env:
+          VIZMATIC_VOICE_PROVIDER: kokoro
+          VIZMATIC_BACKEND: cpu
+        run: |
+          if [[ "${{ steps.plan.outputs.mode }}" == "all" ]]; then
+            uv run factory/build.py --all
+          else
+            uv run factory/build.py --changed "${{ github.event.before }}"
+          fi
+
+      - name: Build static watch gallery
+        run: node factory/build-site.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

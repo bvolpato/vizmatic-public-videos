@@ -1,0 +1,37 @@
+{
+  "entry": "film.ts",
+  "output": "Formal-03-Lean4-Shape-of-a-Proof",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 703,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "induction",
+        "beat": 0,
+        "word": "snaps",
+        "sound": "resolve",
+        "gain": 0.05
+      },
+      {
+        "scene": "kernel",
+        "beat": 0,
+        "word": "certainty",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

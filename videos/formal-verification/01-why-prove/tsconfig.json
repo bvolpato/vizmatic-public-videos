@@ -1,0 +1,8 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "vizmatic/stage": ["../../../node_modules/vizmatic/dist/stage"]
+    }
+  }
+}

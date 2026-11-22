@@ -1,0 +1,44 @@
+{
+  "entry": "film.ts",
+  "output": "io-uring-Zero-Syscall-IO-Engine",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 501,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "zero",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "batching",
+        "beat": 0,
+        "word": "zero",
+        "sound": "resolve",
+        "gain": 0.05
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "pointers",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Lean 4: Inside a Machine-Checked Proof",
+  "description": "Episode 3 of Proofs for Real Systems: follow tail-recursive list reversal from a failed induction to a generalized accumulator proof, and see how Lean 4's tiny trusted kernel checks every proof term.",
+  "category": "Formal Verification",
+  "series": "Proofs for Real Systems (3/3)",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.0
+}

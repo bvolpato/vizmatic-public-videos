@@ -1,0 +1,10 @@
+{
+  "title": "TLA+ & the Five-Step Bug",
+  "description": "Episode 2 of Proofs for Real Systems: model an order retry protocol in TLA+, watch TLC uncover a 5-step duplicate-shipment counterexample, repair it with an atomic receipt, and compare weak vs strong fairness.",
+  "category": "Formal Verification",
+  "series": "Proofs for Real Systems (2/3)",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.0
+}

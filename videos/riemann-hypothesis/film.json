@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "The-Riemann-Hypothesis-Music-of-the-Primes",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 1859,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "breaking",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "spiral",
+        "beat": 1,
+        "word": "bullseye",
+        "sound": "bell",
+        "gain": 0.05
+      },
+      {
+        "scene": "music",
+        "beat": 0,
+        "word": "thirty",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "stakes",
+        "beat": 0,
+        "word": "harmony",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+.env
+.env.local
+.cache/
+node_modules/
+site/
+**/dist/
+**/stills/
+**/audio/
+**/narration.wav
+**/lab/target/
+__pycache__/
+.DS_Store

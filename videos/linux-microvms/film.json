@@ -1,0 +1,44 @@
+{
+  "entry": "film.ts",
+  "output": "MicroVMs-and-KVM-Sub-Second-Sandboxes",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 2018,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "milliseconds",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "kvm",
+        "beat": 1,
+        "word": "exit",
+        "sound": "latch",
+        "gain": 0.045
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "speed",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

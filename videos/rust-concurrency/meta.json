@@ -1,0 +1,9 @@
+{
+  "title": "Rust Concurrency: Ownership Across Time",
+  "description": "How Rust eliminates data races at compile time, and how Send, Sync, thread::scope, bounded channels, 48-byte Futures, Tokio work stealing, and drop cancellation fit together. Includes a runnable Rust 2024 + Tokio Cargo lab.",
+  "category": "Systems",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.2
+}

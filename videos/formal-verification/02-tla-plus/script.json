@@ -1,0 +1,48 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "TLA+": "T L A plus",
+    "TLC": "T L C"
+  },
+  "scenes": [
+    {
+      "id": "protocol",
+      "title": "Where did the reply go?",
+      "beats": [
+        {
+          "say": "A customer clicks order once. The warehouse ships the parcel and sends back a teal acknowledgment — which vanishes in the network. Seeing no reply, the sender retries, and the warehouse ships a second box.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "graph",
+      "title": "TLC explores every reachable state",
+      "beats": [
+        {
+          "say": "Write this protocol as a TLA+ specification with primed next-state variables and one safety invariant: dispatches must stay at most one. Run the TLC model checker, and it explores every interleaving automatically — returning a five-step counterexample where dispatches hits two.",
+          "hold": 0.35
+        },
+        {
+          "say": "Repair the design by recording an atomic receipt on the first dispatch. Now TLC generates six distinct states, checks every edge, and proves that no retry sequence can ever ship a second parcel.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "fairness",
+      "title": "Safety vs liveness and fairness",
+      "beats": [
+        {
+          "say": "Safety guarantees nothing bad happens — yet can the sender still retry forever? Under weak fairness, losing every reply disables delivery between attempts, permitting an endless loop. Adding strong fairness for delivery proves eventual completion. Next in Episode 3: inside a machine-checked Lean 4 proof.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}
