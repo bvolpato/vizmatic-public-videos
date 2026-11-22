@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       rebuild_all:
-        description: "Force rebuild of every video"
+        description: "Force rebuild of every video (ignore render caches)"
         type: boolean
         default: false
 
@@ -20,12 +20,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.discover.outputs.slugs }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
         with:
@@ -37,31 +37,135 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
-      - name: Install FFmpeg
-        run: sudo apt-get update -y && sudo apt-get install -y ffmpeg
+      - name: Warm built Vizmatic engine cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: vizmatic-${{ runner.os }}-${{ hashFiles('package.json') }}
 
       - name: Build and link pinned Vizmatic
         run: ./factory/setup-vizmatic.sh
 
-      - name: Determine changed videos
-        id: plan
-        run: |
-          if [[ "${{ inputs.rebuild_all }}" == "true" || "${{ github.event.before }}" == "0000000000000000000000000000000000000000" || -z "${{ github.event.before }}" ]]; then
-            echo "mode=all" >> "$GITHUB_OUTPUT"
-          else
-            echo "mode=changed" >> "$GITHUB_OUTPUT"
-          fi
+      - id: discover
+        run: echo "slugs=$(uv run factory/build.py --list-json)" >> "$GITHUB_OUTPUT"
 
-      - name: Render videos with Kokoro (default local voice)
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slug: ${{ fromJson(needs.plan.outputs.slugs) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Restore built Vizmatic engine
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: vizmatic-${{ runner.os }}-${{ hashFiles('package.json') }}
+
+      - name: Cache uv Python packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Cache HuggingFace Kokoro model weights
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-kokoro-${{ runner.os }}-v1
+
+      - name: Cache per-video rendered MP4 and poster
+        uses: actions/cache@v4
+        with:
+          path: |
+            videos/${{ matrix.slug }}/dist
+            videos/${{ matrix.slug }}/poster.png
+          key: render-v1-${{ matrix.slug }}-${{ hashFiles(format('videos/{0}/*.ts', matrix.slug), format('videos/{0}/scenes/**', matrix.slug), format('videos/{0}/film.json', matrix.slug), format('videos/{0}/meta.json', matrix.slug), format('videos/{0}/script.json', matrix.slug), format('videos/{0}/tsconfig.json', matrix.slug), 'factory/**', 'package.json', 'tsconfig.base.json') }}
+          restore-keys: |
+            render-v1-${{ matrix.slug }}-
+
+      - name: Cache per-video voice takes, timing, and mixed audio
+        uses: actions/cache@v4
+        with:
+          path: |
+            videos/${{ matrix.slug }}/audio
+            videos/${{ matrix.slug }}/narration.wav
+            videos/${{ matrix.slug }}/timing.json
+          key: audio-v1-${{ matrix.slug }}-${{ hashFiles(format('videos/{0}/script.json', matrix.slug), format('videos/{0}/film.json', matrix.slug)) }}
+          restore-keys: |
+            audio-v1-${{ matrix.slug }}-
+
+      - name: Install FFmpeg
+        run: sudo apt-get update -y && sudo apt-get install -y ffmpeg
+
+      - name: Link cached Vizmatic
+        run: ./factory/setup-vizmatic.sh
+
+      - name: Render video if changed (Kokoro default, skips cached voice/mix/render)
         env:
           VIZMATIC_VOICE_PROVIDER: kokoro
           VIZMATIC_BACKEND: cpu
         run: |
-          if [[ "${{ steps.plan.outputs.mode }}" == "all" ]]; then
-            uv run factory/build.py --all
+          if [[ "${{ inputs.rebuild_all }}" == "true" ]]; then
+            uv run factory/build.py "${{ matrix.slug }}" --force
           else
-            uv run factory/build.py --changed "${{ github.event.before }}"
+            uv run factory/build.py "${{ matrix.slug }}"
           fi
+
+      - name: Package rendered video outputs
+        run: |
+          mkdir -p _pkg
+          tar -cf "_pkg/video-${{ strategy.job-index }}.tar" \
+            "videos/${{ matrix.slug }}/dist"/*.mp4 \
+            "videos/${{ matrix.slug }}/poster.png"
+
+      - name: Upload rendered video artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ strategy.job-index }}
+          path: _pkg/video-${{ strategy.job-index }}.tar
+          retention-days: 1
+
+  site:
+    needs: render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install FFmpeg
+        run: sudo apt-get update -y && sudo apt-get install -y ffmpeg
+
+      - name: Download all rendered video artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: video-*
+          path: _pkg
+          merge-multiple: true
+
+      - name: Extract rendered video artifacts
+        run: |
+          for f in _pkg/*.tar; do
+            tar -xf "$f"
+          done
 
       - name: Build static watch gallery
         run: node factory/build-site.mjs
@@ -71,7 +175,7 @@ jobs:
           path: site
 
   deploy:
-    needs: build
+    needs: site
     runs-on: ubuntu-latest
     environment:
       name: github-pages
