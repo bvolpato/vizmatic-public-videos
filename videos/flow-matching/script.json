@@ -1,0 +1,79 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "AI": "A I",
+    "ODE": "O D E",
+    "SDE": "S D E",
+    "Gaussian": "Gow see an",
+    "Euler": "Oiler"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Sculpting noise into reality",
+      "beats": [
+        {
+          "say": "Every time an AI generates a photorealistic image or video, it starts with pure random static. How does a neural network sculpt featureless Gaussian noise into coherent reality? The answer evolved from winding diffusion walks to laser-straight flow matching.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "noisefield",
+      "title": "Learning the velocity vector field",
+      "beats": [
+        {
+          "say": "Training begins by imagining time running backward. Take clean data and slowly dissolve it into Gaussian noise until no structure remains. Then ask a neural network to learn the velocity vector field that pushes any noisy point smoothly back toward the data.",
+          "hold": 0.35
+        },
+        {
+          "say": "Flow matching makes that target astonishingly simple. Pair one random noise point x naught with one real data point x one, and draw the straight bridge between them: x t equals one minus t times x naught, plus t times x one. The target velocity is simply the constant vector x one minus x naught.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "curvedvsstraight",
+      "title": "Curved diffusion versus straight flow matching",
+      "beats": [
+        {
+          "say": "Classic diffusion models follow curved stochastic differential equations. Because every path bends sharply as noise fades, an ODE solver must take fifty or even a thousand tiny jittery steps just to stay on course.",
+          "hold": 0.35
+        },
+        {
+          "say": "Rectified flow matching straightens those trajectories out. When the learned velocity field points directly from noise to data, Euler integration barely curves at all. Watch the race: while classic diffusion crawls through fifty zig-zag steps, flow matching crosses the exact same space in just four crisp leaps.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "density3d",
+      "title": "The evolving 3D probability density manifold",
+      "beats": [
+        {
+          "say": "Zoom out from single particles to the entire probability landscape. At time zero, every sample lives inside one smooth Gaussian bell — a single glowing dome of pure uncertainty.",
+          "hold": 0.35
+        },
+        {
+          "say": "As the continuity equation transports probability mass along the velocity field, that single hill splits, sharpens, and rises into tall multi-modal peaks — each peak a coherent image, voice, or video. Watch individual particle trajectories glide smoothly across the morphing manifold straight to the summits.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Straight paths turn a thousand steps into a blink",
+      "beats": [
+        {
+          "say": "From modern image generators to real-time video models, flow matching powers today's fastest generative AI. Instead of fighting curved randomness step by painful step, it builds a direct optimal-transport highway from chaos to structure. Straight paths turn a thousand steps into a blink.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

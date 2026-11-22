@@ -1,0 +1,9 @@
+{
+  "title": "KV Cache & Speculative Decoding: How LLMs Hit 1,000 Tokens/sec",
+  "description": "A cinematic visual breakdown of modern LLM inference: why decoding hits the GPU HBM bandwidth wall, orbiting 3D PagedAttention virtual-to-physical memory blocks, and exact mathematical rejection sampling in speculative decoding.",
+  "category": "AI & ML",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 0.55
+}

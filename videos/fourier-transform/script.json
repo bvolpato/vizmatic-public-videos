@@ -1,0 +1,81 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "Fourier": "For ee ay",
+    "Fourier's": "For ee ayz",
+    "Parseval's": "Par sah vahls",
+    "epicycles": "ep ih sy kulls",
+    "MP3": "M P three",
+    "JPEG": "J peg",
+    "Wi-Fi": "Why Fye"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Splitting chaos into spinning circles",
+      "beats": [
+        {
+          "say": "Every sound wave, every photograph, and every wireless signal looks like pure chaos — until you split it into spinning circles. In just over two minutes, you will watch Joseph Fourier's transform unwind any chaotic wave into hidden frequencies, glowing epicycles, and the secret behind digital music and compression.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "winding",
+      "title": "The complex winding machine",
+      "beats": [
+        {
+          "say": "Suppose you record a tangled wave and want to discover which pure musical notes are hiding inside. Fourier's trick is almost magical: wrap that signal around the origin on the complex plane at a winding frequency f, spinning steadily faster as time flows.",
+          "hold": 0.35
+        },
+        {
+          "say": "Keep your eyes on the glowing gold center of mass. At almost every winding frequency, the looping petals cancel out near zero. Then hit two hertz — boom, it shoots dramatically outward. Five hertz — a second peak ignites. Eight hertz — a third resonance locks in. You just built the Fourier Transform.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "epicycles",
+      "title": "Exact DFT epicycles",
+      "beats": [
+        {
+          "say": "Now run the exact same transform in reverse, and those frequencies come alive as nested spinning circles — called epicycles. Each circle is a complex rotating arrow whose exact radius, speed, and starting phase come straight from the Discrete Fourier Transform.",
+          "hold": 0.35
+        },
+        {
+          "say": "Start with one circle — just a smooth orbit. Add three, and the silhouette begins to bend. Seven circles carve out the bold sweeping curves. By nineteen circles, the glowing tip locks onto the entire target contour — while Parseval's theorem proves that total energy stays perfectly conserved.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "spectrum3d",
+      "title": "The 3D time-frequency landscape",
+      "beats": [
+        {
+          "say": "Now bring time back into the picture, and lift the spectrum into three dimensions. Watch a glowing musical triad chord and a rising frequency chirp carve luminous golden mountain ridges across a sweeping time-frequency landscape.",
+          "hold": 0.35
+        },
+        {
+          "say": "Look closely at the secret that powers modern media: nearly the entire surface is flat dark noise. Keep just the tallest golden ridges, throw away ninety percent of the quiet floor, and MP3 music, JPEG photos, and Wi-Fi streams stay astonishingly sharp.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "A choir of spinning circles",
+      "beats": [
+        {
+          "say": "One single integral connects time and frequency across acoustics, optics, medical imaging, and quantum physics. Behind every complex vibration lies pure geometry waiting to be heard. Look closely at any chaotic wave, and you will see the truth: every signal in the universe is a choir of spinning circles.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "Gödel": "Ger dull",
+    "Gödel's": "Ger dulls",
+    "Turing": "Toor ing",
+    "Turing's": "Toor ings",
+    "AI": "A I",
+    "Hilbert": "Hill bert"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "A blind spot baked into logic",
+      "beats": [
+        {
+          "say": "Imagine an artificial intelligence with infinite compute. Could it prove every true statement and verify every piece of code? In the nineteen thirties, two young mathematicians proved the answer is no. A razor-sharp diagonal paradox slices through logic itself and turns every formal system inward.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "godelnumber",
+      "title": "Gödel's prime-power mirror",
+      "beats": [
+        {
+          "say": "In nineteen thirty-one, Kurt Gödel discovered a shockingly clean trick. Give every math symbol a code number, then raise consecutive primes to those powers and multiply them together. Because every integer factors into primes in only one way, any formula or entire proof collapses into one unique skyscraper number.",
+          "hold": 0.35
+        },
+        {
+          "say": "That single encoding lets arithmetic talk about its own proofs. Gödel constructed one quiet sentence G that translates to: I am not provable in this system. If G were false, the system would prove a lie. So G must be true, and forever out of reach.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "diagonal",
+      "title": "Turing's 1936 halting contradiction",
+      "beats": [
+        {
+          "say": "Five years later, Alan Turing brought the same trap to computers. Suppose an oracle program could inspect any code and predict whether it halts or loops forever. Line up every possible program down the rows, run each one on every input across the columns, and trace straight down the glowing diagonal.",
+          "hold": 0.35
+        },
+        {
+          "say": "Now build one rebel machine D that reads the diagonal and flips every answer. If P halts on itself, D loops; if P loops, D halts. Now feed D its own source code. If D halts, it must loop; if it loops, it must halt. One self-referential input shatters the table, proving no halting oracle can exist.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "horizon3d",
+      "title": "The expanding horizon of truth",
+      "beats": [
+        {
+          "say": "Picture all mathematical truths as a vast dark ocean. Your formal system carves out one illuminated island of provable theorems, radiating from its axioms. Right beyond the shoreline floats G, undeniably true yet unreachable by any finite proof.",
+          "hold": 0.35
+        },
+        {
+          "say": "What if you patch the gap and add G as a brand-new axiom? The island expands to swallow G, only to conjure a fresh unprovable sentence G prime just past the new shore. The horizon retreats forever.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Truth is always larger than proof",
+      "beats": [
+        {
+          "say": "This is not a hardware limit or a training bottleneck. Any consistent algorithm, theorem prover, or future AI model that speaks rich arithmetic inherits the same blind spot. You can widen the island, but you can never drain the sea. Truth is always larger than proof.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

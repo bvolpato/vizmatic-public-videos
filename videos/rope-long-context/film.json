@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "RoPE-Rotary-Positional-Embeddings",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 2021,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "galaxy",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "clocks",
+        "beat": 1,
+        "word": "pure",
+        "sound": "latch",
+        "gain": 0.048
+      },
+      {
+        "scene": "helix3d",
+        "beat": 1,
+        "word": "peaks",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "spin",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

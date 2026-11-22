@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Raft-Consensus-and-Split-Brain",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 20262,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "extinguishes",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "election",
+        "beat": 1,
+        "word": "majority",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "partition",
+        "beat": 1,
+        "word": "heals",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "witness",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

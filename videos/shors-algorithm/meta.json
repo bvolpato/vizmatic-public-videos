@@ -1,0 +1,9 @@
+{
+  "title": "Quantum Computing Without the Hype: Shor's Algorithm & Interference",
+  "description": "A 2:20 visual demystification of quantum computing: complex phase cancellation, an orbiting 3D Bloch sphere, modular period finding for N = 15, and exact Quantum Fourier Transform interference.",
+  "category": "Physics & Quantum",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 0.32
+}

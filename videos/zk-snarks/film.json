@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Zero-Knowledge-Proofs-zkSNARKs",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 20261,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "gem",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "circuit",
+        "beat": 1,
+        "word": "cleanly",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "poly3d",
+        "beat": 1,
+        "word": "exposing",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "point",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

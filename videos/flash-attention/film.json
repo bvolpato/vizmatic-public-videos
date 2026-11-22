@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "FlashAttention-GPU-Memory-Wall",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 2022,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "shatters",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "tiling",
+        "beat": 1,
+        "word": "magnitude",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "onlinesoftmax",
+        "beat": 1,
+        "word": "zero",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "fuse",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

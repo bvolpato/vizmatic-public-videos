@@ -1,0 +1,9 @@
+{
+  "title": "FlashAttention: Why GPUs Spend 90% of Their Time Waiting",
+  "description": "Inside the GPU memory wall: H100 roofline arithmetic intensity, 3D SRAM attention tiling, and exact online softmax rescaling that cuts HBM traffic by an order of magnitude.",
+  "category": "AI & ML",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 0.55
+}

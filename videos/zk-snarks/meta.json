@@ -1,0 +1,9 @@
+{
+  "title": "Zero-Knowledge Proofs: Proving a Secret Without Showing a Bit",
+  "description": "A cinematic visual journey inside zk-SNARKs: sealed vaults compressed to 192-byte golden proofs, R1CS arithmetization, orbiting 3D Schwartz-Zippel polynomial surfaces, and homomorphic elliptic-curve blinding.",
+  "category": "Cryptography",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.4
+}

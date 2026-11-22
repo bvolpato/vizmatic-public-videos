@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Navier-Stokes-Million-Dollar-Turbulence",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 1845,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "chaos",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "equation",
+        "beat": 1,
+        "word": "shatter",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "cascade3d",
+        "beat": 0,
+        "word": "towers",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "yours",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

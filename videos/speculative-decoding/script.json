@@ -1,0 +1,81 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "KV": "K V",
+    "GPU": "G P U",
+    "HBM": "H B M",
+    "VRAM": "V ram",
+    "PagedAttention": "paged attention",
+    "LLMs": "L L Ms",
+    "FLOPs": "flops"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Draft cheap, verify in one parallel flash",
+      "beats": [
+        {
+          "say": "Why do giant language models crawl one word at a time, yet suddenly blast past a thousand tokens per second? Smart KV caching and speculative decoding changed everything, predicting five tokens in a single flash.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "kvcache",
+      "title": "The KV cache and the HBM memory wall",
+      "beats": [
+        {
+          "say": "Without caching, every new token forces the model to recompute attention keys and values for the entire prompt again. A KV cache saves past key and value vectors in GPU memory, slashing compute from quadratic to linear.",
+          "hold": 0.35
+        },
+        {
+          "say": "Yet a hidden wall hits immediately. To emit one token, the GPU must stream hundreds of gigabytes of weights and cached history over HBM bandwidth. With arithmetic intensity stuck near one, giant chips sit ninety-nine percent idle waiting on memory.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "paged",
+      "title": "PagedAttention 3D virtual-to-physical memory blocks",
+      "beats": [
+        {
+          "say": "As users pile in, reserving one huge contiguous slab of memory per request wastes over sixty percent of precious VRAM in dark, empty slots.",
+          "hold": 0.35
+        },
+        {
+          "say": "PagedAttention borrows virtual memory from operating systems. It slices every KV cache into fixed-size physical blocks scattered across GPU memory, linked by a page table. Fragmentation collapses to near zero, and shared system prompts reuse the exact same physical blocks.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "speculative",
+      "title": "Exact mathematical rejection sampling",
+      "beats": [
+        {
+          "say": "Memory bandwidth is already paid whether the giant model checks one token or five at once. Speculative decoding uses a nimble draft model to guess a burst of candidates, while the target model verifies all five in one parallel pass.",
+          "hold": 0.35
+        },
+        {
+          "say": "Here is the mathematical proof. Each candidate passes with probability minimum of one and p over q. On the first rejection, we sample one bonus token from the normalized residual p minus q. The output distribution is not an approximation. It is mathematically identical to the giant model.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Four-times throughput, zero quality loss",
+      "beats": [
+        {
+          "say": "Combine paged KV memory with speculative verification, and idle GPU bandwidth turns into four-times faster generation with zero quality loss. Every token still obeys the giant model's true distribution. Draft cheap. Verify in parallel. Prove exact.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}

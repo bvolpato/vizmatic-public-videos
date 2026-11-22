@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Diffusion-and-Flow-Matching",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 2024,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "matching",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "curvedvsstraight",
+        "beat": 1,
+        "word": "four",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "density3d",
+        "beat": 1,
+        "word": "summits",
+        "sound": "resolve",
+        "gain": 0.055
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "blink",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

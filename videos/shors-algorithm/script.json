@@ -1,0 +1,84 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.35,
+    "gap": 0.55,
+    "tail": 1.4
+  },
+  "pronounce": {
+    "Shor": "Shore",
+    "Shor's": "Shores",
+    "Bloch": "Block",
+    "Hadamard": "Hah dah mard",
+    "QFT": "Q F T",
+    "RSA": "R S A",
+    "gcd": "G C D",
+    "mod": "mod",
+    "qubit": "cue bit",
+    "qubits": "cue bits"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Wave interference, not parallel guessing",
+      "beats": [
+        {
+          "say": "Forget the hype that quantum computers simply try every answer in parallel. If you measure a flat superposition, you just pull out random noise. The real trick is complex wave interference. Wrong answers rotate out of phase and cancel to black, while the hidden answer aligns into a blazing peak.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "bloch3d",
+      "title": "Amplitudes and phase on the Bloch sphere",
+      "beats": [
+        {
+          "say": "A classical bit sits at zero or one. A qubit lives anywhere on the Bloch sphere, described by complex amplitudes whose squared lengths give measurement probabilities. Apply a Hadamard gate, and the state swings onto the equator in an equal superposition of zero and one.",
+          "hold": 0.35
+        },
+        {
+          "say": "Now rotate it around the equator with a phase gate. Your odds of measuring zero or one never budge from fifty-fifty, yet the quantum state is changing dramatically. That hidden angle, complex phase, is the fuel that makes waves reinforce or cancel.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "period",
+      "title": "Factoring fifteen through hidden period",
+      "beats": [
+        {
+          "say": "In nineteen ninety-four, Peter Shor showed how interference cracks factoring. Take fifteen and pick seven. Compute powers of seven modulo fifteen: one, seven, four, thirteen, then one, seven, four, thirteen again. It repeats with period four.",
+          "hold": 0.35
+        },
+        {
+          "say": "Once you know the period r equals four, ordinary arithmetic finishes the job. Take seven to the half-period, forty-nine, step down one to forty-eight and up one to fifty, then compute greatest common divisors with fifteen. Out pop three and five. Factoring collapses into finding a hidden period.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "qft",
+      "title": "The Quantum Fourier Transform interference comb",
+      "beats": [
+        {
+          "say": "To expose that hidden period across a giant register, Shor applies the Quantum Fourier Transform. Every frequency spins a ring of complex phasor arrows. For off-beat frequencies, the arrows curl into a closed polygon and cancel straight back to zero.",
+          "hold": 0.35
+        },
+        {
+          "say": "Only at exact multiples of the register size divided by the period do every single arrow snap head-to-tail. Constructive interference shoots up four towering golden probability needles, handing you the period on a single measurement.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Cancel the wrong answers",
+      "beats": [
+        {
+          "say": "Modern RSA encryption hides behind prime numbers hundreds of digits long, where classical trial division takes longer than the age of the universe. A fault-tolerant quantum computer needs only the rhythm hidden in those remainders. Quantum computers do not try everything faster. They cancel the wrong answers.",
+          "hold": 1.4
+        }
+      ]
+    }
+  ]
+}
