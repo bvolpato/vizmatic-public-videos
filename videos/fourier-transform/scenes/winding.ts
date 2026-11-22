@@ -160,8 +160,9 @@ export const winding: SceneFunction = (s, c) => {
     })
 
     s.add(staticCopy, liveWinding)
+    const preTwoDur = Math.max(4.5, c.cue('two hertz').start - c.start - 0.35)
     c.at(0.1, () => s.play(cursorT.to(4.0, { duration: Math.max(6, sceneLen - 0.4), ease: linear })))
-    c.at(0.1, () => s.play(freqVal.to(1.45, { duration: 4.5 })))
+    c.at(0.1, () => s.play(freqVal.to(1.62, { duration: preTwoDur, ease: linear })))
     c.on('two hertz', () => s.play(freqVal.to(2.0, { duration: 1.1 })))
     c.on('Five hertz', () => s.play(freqVal.to(5.0, { duration: 1.9 })))
     c.on('Eight hertz', () => s.play(freqVal.to(8.0, { duration: 1.9 })))

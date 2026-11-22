@@ -186,10 +186,10 @@ export const paged: SceneFunction = (s, c) => {
     for (const seq of vSeqs) {
         for (let i = 0; i < seq.targets.length; i++) {
             const vx = -2.5 + i * 1.42
-            const isPrefix = i === 0
+            const [tr, tc] = seq.targets[i]!
+            const isPrefix = poolColors[tr]![tc] === COSMOS.gold
             const boxCol = isPrefix ? COSMOS.gold : seq.col
             addBox3D(pagedView, vx, seq.y, 2.55, 0.88, 0.62, 0.34, boxCol, boxCol, 0.84, 2.0, 6)
-            const [tr, tc] = seq.targets[i]!
             const dst = cubeCenters[tr]![tc]!
             addPointerArc(pagedView, [vx + 0.44, seq.y + 0.31, 2.54], dst, boxCol, 0.45)
         }

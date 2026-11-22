@@ -148,7 +148,8 @@ export const vortices: SceneFunction = (s, c) => {
             )
         }
 
-        const spinMult = (1 + 5.8 * st * st).toFixed(1)
+        const radFrac = 1 - 0.65 * st
+        const spinMult = (1 / (radFrac * radFrac)).toFixed(1)
         const aura = circle(440, {
             fill: radialGradient([0, 0], 440, [
                 [0, st > 0.5 ? '#ffd16628' : '#5ce1e61e'],
@@ -164,7 +165,7 @@ export const vortices: SceneFunction = (s, c) => {
             txt(`Spin rate: ${spinMult}×`, -840, -145, 52, st > 0.55 ? '#ffd166' : '#5ce1e6', 'mono', 'left')
                 .glow(8, st > 0.55 ? '#ffd166' : '#38bdf8')
                 .opacity(a),
-            txt(`Tube radius: ${(1 - 0.65 * st).toFixed(2)} r₀`, -840, -68, 30, '#cbd5e8', 'mono', 'left').opacity(a),
+            txt(`Tube radius: ${radFrac.toFixed(2)} r₀`, -840, -68, 30, '#cbd5e8', 'mono', 'left').opacity(a),
         )
     })
 

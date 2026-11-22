@@ -129,14 +129,14 @@ export const clocks: SceneFunction = (s, c) => {
                     'left',
                 ).glow(7, COSMOS.gold).opacity(pairA),
                 txt(
-                    `qₘ (m=${Math.round(m)})   kₙ (n=${Math.round(n)})   Δθ = 6θ`,
+                    `qₘ (m=${Math.round(m)})   kₙ (n=${Math.round(n)})   Δ = m − n = 6`,
                     CX,
                     CY + RADIUS + 82,
                     28,
                     COSMOS.ink,
                     'mono',
                 ).opacity(pairA),
-                txt('● Cyan = qₘ   ● Gold = kₙ   ● Green = (m−n)θ', -850, 345, 26, COSMOS.muted, 'mono', 'left').opacity(pairA),
+                txt('● Cyan = qₘ   ● Gold = kₙ   ● Green = φ₀ + (m−n)θ', -850, 345, 26, COSMOS.muted, 'mono', 'left').opacity(pairA),
             )
         }
 

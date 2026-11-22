@@ -41,6 +41,7 @@ export const curvedvsstraight: SceneFunction = (s, c) => {
     // Shared race clock in "step units" (0 -> 50): Flow Matching finishes at step 4!
     const raceStep = s.value(0)
     const showRight = s.value(0.25)
+    const racing = s.value(0)
 
     const staticChrome = group(
         // Subtle luminous vertical meridian dividing the two races (zero boxes!)
@@ -62,8 +63,9 @@ export const curvedvsstraight: SceneFunction = (s, c) => {
     const liveRace = dynamic(() => {
         const step = raceStep.value
         const ra = showRight.value
+        const isRacing = racing.value > 0.5
         const dStep = Math.min(DIFF_STEPS, step)
-        const fStep = Math.min(FLOW_STEPS, step)
+        const fStep = isRacing ? Math.min(FLOW_STEPS, step) : 0
 
         const nodes: Node[] = [
             // Soft radial auras behind target clusters
@@ -159,7 +161,7 @@ export const curvedvsstraight: SceneFunction = (s, c) => {
             }
 
             // Arrival shockwave ring right after Flow Matching hits step 4!
-            if (step > 4 && step < 16) {
+            if (isRacing && step > 4 && step < 16) {
                 const sp = (step - 4) / 12
                 nodes.push(
                     circle(40 + sp * 220, { fill: null, stroke: COSMOS.emerald, width: 3.5 })
@@ -175,13 +177,15 @@ export const curvedvsstraight: SceneFunction = (s, c) => {
 
     s.add(staticChrome, liveRace)
     // Preview curved diffusion slowly during beat 0
-    c.at(0.15, () => s.play(raceStep.to(16, { duration: 12.0, ease: linear })))
+    const previewDur = Math.max(8.0, c.cue('Rectified flow matching').start - c.start - 0.3)
+    c.at(0.15, () => s.play(raceStep.to(16, { duration: previewDur, ease: linear })))
     // Reveal Flow Matching & reset for the live race
     c.on('Rectified flow matching', () => {
         s.play(showRight.to(1, { duration: 0.45 }))
         s.play(raceStep.to(0, { duration: 0.35 }))
     })
     c.on('Watch the race', () => {
+        s.play(racing.to(1, { duration: 0.05 }))
         s.play(raceStep.to(50, { duration: 6.2, ease: linear }))
     })
 }

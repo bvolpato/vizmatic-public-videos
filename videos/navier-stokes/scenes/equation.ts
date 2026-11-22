@@ -42,7 +42,7 @@ export const equation: SceneFunction = (s, c) => {
 
     const topEquation = group(
         txt("NEWTON'S  F = ma  FOR FLUIDS", 0, -420, 26, '#ffd166', 'mono'),
-        tex(String.raw`\rho\!\left(\partial_t \mathbf{u} + (\mathbf{u}\cdot\nabla)\mathbf{u}\right) \;=\; -\nabla p \;+\; \nu\,\Delta \mathbf{u}`, {
+        tex(String.raw`\partial_t \mathbf{u} + (\mathbf{u}\cdot\nabla)\mathbf{u} \;=\; -\frac{1}{\rho}\nabla p \;+\; \nu\,\Delta \mathbf{u}`, {
             size: 62,
             color: '#f8f4ec',
         }).at(0, -315).glow(7, '#7c8cff'),
@@ -61,7 +61,7 @@ export const equation: SceneFunction = (s, c) => {
             txt('(u·∇)u  Advection', -560, -185, 30, '#ffd166', 'mono').opacity(0.38 + 0.62 * adv).glow(adv > 0.6 ? 9 : 0, '#ffd166'),
             txt('folds fast fluid over slow', -560, -142, 26, '#cbd5e8', 'sans').opacity(0.32 + 0.68 * adv),
 
-            txt('-∇p  Pressure', 0, -185, 30, '#5ce1e6', 'mono').opacity(0.38 + 0.62 * pres).glow(pres > 0.6 ? 9 : 0, '#38bdf8'),
+            txt('-(1/ρ)∇p  Pressure', 0, -185, 30, '#5ce1e6', 'mono').opacity(0.38 + 0.62 * pres).glow(pres > 0.6 ? 9 : 0, '#38bdf8'),
             txt('pushes high to low', 0, -142, 26, '#cbd5e8', 'sans').opacity(0.32 + 0.68 * pres),
 
             txt('νΔu  Viscosity', 560, -185, 30, '#a78bfa', 'mono').opacity(0.38 + 0.62 * visc).glow(visc > 0.6 ? 9 : 0, '#a78bfa'),

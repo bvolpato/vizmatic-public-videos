@@ -167,7 +167,8 @@ export const election: SceneFunction = (s, c) => {
     })
 
     s.add(liveElection)
-    c.at(0.1, () => s.play(timerProg.to(1.0, { duration: 7.5, ease: linear })))
+    const raceDur = Math.max(4.0, c.cue('times out first').start - c.start - 0.15)
+    c.at(0.1, () => s.play(timerProg.to(1.0, { duration: raceDur, ease: linear })))
     c.on('times out first', () => s.play(candidateLit.to(1, { duration: 0.45 })))
     c.on('pulses across', () => s.play(voteWave.to(1, { duration: 2.2, ease: linear })))
     c.on('one vote per term', () => s.play(voteReturn.to(1, { duration: 2.4, ease: linear })))

@@ -111,7 +111,7 @@ export const btreewall: SceneFunction = (s, c) => {
         for (let i = 0; i < LEAF_POS.length; i++) {
             const p = LEAF_POS[i]!
             const isHeroDirty = i === 3 && dl > 0.1
-            const churnDirty = cp > 0.05 && (i <= activeChurnStep || CHURN_ORDER.slice(0, activeChurnStep + 1).includes(i as (typeof CHURN_ORDER)[number]))
+            const churnDirty = cp > 0.05 && CHURN_ORDER.slice(0, activeChurnStep + 1).includes(i as (typeof CHURN_ORDER)[number])
             const dirty = isHeroDirty || churnDirty
             const col = dirty ? '#ff6b8b' : '#5ce1e6'
             nodes.push(
@@ -133,7 +133,7 @@ export const btreewall: SceneFunction = (s, c) => {
         nodes.push(
             line([-780, 255], [780, 255], { stroke: '#2c3a5e', width: 2.2 }),
             txt('100 B record update  →  16,384 B leaf rewrite  →  scattered 4 MB erase blocks', 0, 308, 28, '#cbd5e8', 'sans'),
-            txt(`Effective SSD Write Amplification:  ${waVal}×`, 0, 368, 34, cp > 0.1 || dl > 0.2 ? '#ff6b8b' : '#5ce1e6', 'mono').glow(8, '#ff6b8b'),
+            txt(`Effective SSD Write Amplification:  ${waVal}×`, 0, 368, 34, cp > 0.1 || dl > 0.2 ? '#ff6b8b' : '#5ce1e6', 'mono').glow(8, cp > 0.1 || dl > 0.2 ? '#ff6b8b' : '#5ce1e6'),
         )
         return group(...nodes)
     })

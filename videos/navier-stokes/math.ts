@@ -166,10 +166,10 @@ export const SHEAR_VORTICES: readonly Vortex[] = [
     { x: 1.75, y: 0.42, gamma: -3.6, core: 0.56 },
 ]
 
-/** Exact co-rotating equal Lamb-Oseen vortex pair orbiting at angular velocity Omega = Gamma / (2 pi d^2). */
+/** Exact co-rotating equal Lamb-Oseen vortex pair orbiting at angular velocity Omega = Gamma / (pi d^2) * (1 - exp(-d^2 / a^2)). */
 export function coRotatingPair(t: number, separation = 1.5, gamma = 5.2, core = 0.56): readonly Vortex[] {
     const r = separation * 0.5
-    const omega = (gamma / (2 * Math.PI * separation * separation)) * (1 - Math.exp(-(separation * separation) / (core * core)))
+    const omega = (gamma / (Math.PI * separation * separation)) * (1 - Math.exp(-(separation * separation) / (core * core)))
     const angle = omega * t
     const cx = r * Math.cos(angle)
     const cy = r * Math.sin(angle)

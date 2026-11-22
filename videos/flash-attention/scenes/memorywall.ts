@@ -216,7 +216,8 @@ export const memorywall: SceneFunction = (s, c) => {
     })
 
     s.add(liveHierarchy, hierTitle, liveRoof)
-    c.at(0.1, () => s.play(flowPhase.to(14, { duration: 30, ease: linear })))
+    const flowDur = Math.max(30, c.end - c.start - 0.5)
+    c.at(0.1, () => s.play(flowPhase.to(18, { duration: flowDur, ease: linear })))
 
     c.on('Plot that gap', () => {
         s.play(showHier.to(0, { duration: 0.3 }))
@@ -224,7 +225,7 @@ export const memorywall: SceneFunction = (s, c) => {
         s.play(roofProg.to(1, { duration: 2.2 }))
     })
     c.swap('Plot that gap', hierTitle, roofStatic)
-    c.on('writes and reloads', () => {
-        s.play(climbProg.to(1, { duration: 2.4 }))
+    c.on('memory-bound valley', () => {
+        s.play(climbProg.to(1, { duration: 1.5 }))
     })
 }

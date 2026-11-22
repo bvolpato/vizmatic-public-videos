@@ -1,6 +1,6 @@
 import {
-    circle, curve3d, dynamic, group, line3d, linear, point3d, radialGradient, scene3d, surface,
-    type SceneFunction, type Vec3,
+    Node, circle, curve3d, dot, dynamic, group, line, line3d, linear, point3d, polyPath, radialGradient, scene3d, surface,
+    type SceneFunction, type Vec, type Vec3,
 } from 'vizmatic/stage'
 import { txt } from '../../../factory/style'
 
@@ -75,18 +75,6 @@ export const horizon3d: SceneFunction = (s, c) => {
         { samples: 96, color: '#5ce1e6', width: 4, glow: 8, opacity: 0.95 },
     )
 
-    const shore2 = curve3d(
-        (u) => {
-            const r = ISLAND_R1 + (ISLAND_R2 - ISLAND_R1) * Math.max(0.01, expandProg.value)
-            const x = r * Math.cos(u)
-            const y = r * Math.sin(u)
-            return [x, y, archipelagoHeight(x, y) + 0.1]
-        },
-        0,
-        Math.PI * 2,
-        { samples: 96, color: '#ffd166', width: 4.4, glow: 10, opacity: 0.95 },
-    )
-
     view3d.add(
         terrain,
         shore1,
@@ -102,19 +90,34 @@ export const horizon3d: SceneFunction = (s, c) => {
 
     const liveExpanded = dynamic(() => {
         if (expandProg.value < 0.03) return []
-        const a = Math.min(1, expandProg.value * 1.4)
-        const gPrimeVis = Math.max(0, Math.min(1, (expandProg.value - 0.45) * 2.1))
+        const ep = expandProg.value
+        const a = Math.min(1, ep * 1.4)
+        const gPrimeVis = Math.max(0, Math.min(1, (ep - 0.45) * 2.1))
+        const r = ISLAND_R1 + (ISLAND_R2 - ISLAND_R1) * ep
+        const shorePts: Vec[] = []
+        const samples = 96
+        for (let i = 0; i <= samples; i++) {
+            const u = (2 * Math.PI * i) / samples
+            const wx = r * Math.cos(u)
+            const wy = r * Math.sin(u)
+            const [sx, sy] = view3d.stagePoint([wx, wy, archipelagoHeight(wx, wy) + 0.1])
+            shorePts.push([sx, sy])
+        }
         const [gx, gy] = view3d.stagePoint(G_POS)
+        const [pbx, pby] = view3d.stagePoint([G_PRIME_POS[0], G_PRIME_POS[1], 0.16])
         const [px, py] = view3d.stagePoint(G_PRIME_POS)
         const [ptx, pty] = view3d.stagePoint([G_PRIME_POS[0], G_PRIME_POS[1], G_PRIME_POS[2] + 0.55])
-        const nodes = [
-            circle(22 + expandProg.value * 16, { fill: null, stroke: '#5ce1e6', width: 2.4 })
+        const nodes: Node[] = [
+            new Node(polyPath(shorePts)).stroke('#ffd166', 4.4, 0.95 * a).glow(10, '#ffd166'),
+            circle(22 + ep * 16, { fill: null, stroke: '#5ce1e6', width: 2.4 })
                 .at(gx, gy)
                 .opacity(0.8 * a)
                 .glow(6, '#5ce1e6'),
         ]
         if (gPrimeVis > 0.05) {
             nodes.push(
+                line([pbx, pby], [px, py], { stroke: '#ff6b8b', width: 2.8 }).opacity(0.95 * gPrimeVis).glow(8, '#ff6b8b'),
+                dot(8.5, '#ff6b8b').at(px, py).opacity(gPrimeVis).glow(10, '#ff6b8b'),
                 circle(18 + (1 - gPrimeVis) * 26, { fill: null, stroke: '#ff6b8b', width: 3 })
                     .at(px, py)
                     .opacity(0.95 * gPrimeVis)
@@ -151,10 +154,7 @@ export const horizon3d: SceneFunction = (s, c) => {
     c.at(0.1, () => s.play(view3d.orbit({ theta: 0.42, phi: 0.92 }), { duration: 24.0 }))
     c.on('add G as a brand-new axiom', () => {
         view3d.add(
-            shore2,
             line3d([0, 0, 1.98], G_POS, { color: '#ffd166', width: 2.2, opacity: 0.7 }),
-            line3d([G_PRIME_POS[0], G_PRIME_POS[1], 0.16], G_PRIME_POS, { color: '#ff6b8b', width: 2.8, glow: 8, opacity: 0.95 }),
-            point3d(G_PRIME_POS, { color: '#ff6b8b', radius: 8.5, halo: 0 }),
         )
         s.play(expandProg.to(1, { duration: 4.2, ease: linear }))
     })

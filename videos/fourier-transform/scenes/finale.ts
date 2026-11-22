@@ -83,7 +83,7 @@ export const finale: SceneFunction = (s, c) => {
             new Node(polyPath(pts)).stroke(finaleGrad, 4.4, 0.92 * a).glow(9, '#a78bfa'),
             new Node(polyPath(pts)).stroke('#ffffff', 1.2, 0.36 * a),
         ]
-        for (let k = 0; k < 4; k++) {
+        for (let k = 0; k < 5; k++) {
             const c0 = centers[k]!
             const c1 = centers[k + 1]!
             const r = HOOK_EPICYCLES[k]!.amp * FINALE_SCALE

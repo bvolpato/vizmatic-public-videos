@@ -143,8 +143,9 @@ export const poly3d: SceneFunction = (s, c) => {
     })
 
     s.add(aura, view3d, leftCopy, gapBadge)
+    const orbitDur = Math.max(15.5, c.end - c.start - 0.5)
     c.at(0.1, () => {
-        s.play(view3d.orbit({ theta: 0.45, phi: 0.92 }), { duration: 15.5 })
+        s.play(view3d.orbit({ theta: 0.45, phi: 0.92 }), { duration: orbitDur })
     })
     c.show('razor-thin curves', boundEq)
     c.on('random golden challenge', () => {

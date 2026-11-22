@@ -20,7 +20,7 @@ export const flashphysics: SceneFunction = (s, c) => {
         const ftl = ftlRemap.value
         const gc = gcStorm.value
 
-        const blockAX = ftl > 0.05 ? -365 : 0
+        const blockAX = -365 * ftl
         const blockBX = 385
         const blockY = 20
 

@@ -80,7 +80,7 @@ export const kvcache: SceneFunction = (s, c) => {
 
         nodes.push(
             txt('WITH KV CACHE  ·  O(N) append 1 new slice per token', TOK_X0 - 40, kY - 82, 28, COSMOS.cyan, 'mono', 'left').opacity(a),
-            txt(`${count} slices  ·  +${(count * 0.32).toFixed(2)} MB (70B)`, 820, kY - 82, 28, COSMOS.emerald, 'mono', 'right').opacity(a),
+            txt(`${count} slices  ·  +${(count * 320).toLocaleString('en-US')} KiB (70B)`, 820, kY - 82, 28, COSMOS.emerald, 'mono', 'right').opacity(a),
             line([TOK_X0 - 58, kY], [ribbonEnd, kY], { stroke: kGrad, width: 42 }).opacity(0.16 * a).glow(10, COSMOS.cyan),
             line([TOK_X0 - 58, vY], [ribbonEnd, vY], { stroke: vGrad, width: 42 }).opacity(0.16 * a).glow(10, COSMOS.violet),
         )

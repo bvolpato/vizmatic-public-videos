@@ -23,6 +23,7 @@ function barX(index: number): number {
 const STEP0 = Array.from({ length: 12 }, (_, i) => (i < 4 ? DEMO_ONLINE.steps[0]!.runningProbs[i]! : 0))
 const STEP1 = Array.from({ length: 12 }, (_, i) => (i < 8 ? DEMO_ONLINE.steps[1]!.runningProbs[i]! : 0))
 const STEP2 = Array.from({ length: 12 }, (_, i) => DEMO_ONLINE.steps[2]!.runningProbs[i]!)
+const MAX_DIFF = Math.max(...DEMO_ONLINE.probs.map((p, i) => Math.abs(p - DEMO_EXACT[i]!)))
 
 export const onlinesoftmax: SceneFunction = (s, c) => {
     const stepProg = s.value(0.25)
@@ -132,7 +133,7 @@ export const onlinesoftmax: SceneFunction = (s, c) => {
                 )
             }
             nodes.push(
-                txt('max |online - exact| = 0.00e+00   (< 1e-12  ·  zero approximation)', 0, 422, 30, COSMOS.emerald, 'mono')
+                txt(`max |online - exact| = ${MAX_DIFF.toExponential(1)}   (< 1e-12  ·  zero approximation)`, 0, 422, 30, COSMOS.emerald, 'mono')
                     .glow(8, COSMOS.emerald)
                     .opacity(ea),
             )
