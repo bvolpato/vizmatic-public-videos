@@ -1,49 +1,329 @@
-import { Node, dot, dynamic, group, line, polygon, type SceneFunction, type Vec } from 'vizmatic/stage'
+import {
+    Node, circle, curve3d, dot, dynamic, fadeIn, gridPlane3d, group, line, line3d,
+    parametricSurface, point3d, points3d, rect, scene3d, tex,
+    type SceneFunction, type Vec3,
+} from 'vizmatic/stage'
 import { COSMOS, nebula, txt } from '../../../../factory/style'
 
-// Exact geometric plane of valid 32-bit pairs 0 <= low <= high < 2^31.
-// Safe triangle: low + high < 2^31 (half of valid area!). Overflow triangle: low + high >= 2^31 (the other half!).
-const OX = 80
-const OY = 270
-const S = 540
-const SAFE_POLY: Vec[] = [[OX, OY], [OX + S / 2, OY - S / 2], [OX, OY - S]]
-const OVERFLOW_POLY: Vec[] = [[OX, OY - S], [OX + S / 2, OY - S / 2], [OX + S, OY - S]]
+// Exact 32-bit signed binary-search domain: 0 <= low <= high < 2^31.
+// Normalized l = low / 2^31, h = high / 2^31 in [0, 1].
+// Safe triangle S: l + h < 1 (50% of valid domain) -> mid = (l + h) / 2 > 0.
+// Overflow triangle O: l + h >= 1 (50% of valid domain) -> signed 32-bit wrap to negative!
+const SPAN = 4.5
+const toXY = (l: number, h: number): [number, number] => [(l - 0.5) * SPAN, (h - 0.5) * SPAN]
+
+const safeHeight = (l: number, h: number) => 1.38 * (l + h)
+const overflowHeight = (l: number, h: number) => -1.35 + 0.88 * (l + h - 1)
+
+// Exact Z3 counterexample: low = high = 1.5e9 -> low + high = 3.0e9 -> wraps to -1,294,967,296!
+const CE_L = 1_500_000_000 / 2_147_483_648 // ~0.6985
+const CE_H = CE_L
+const [CE_X, CE_Y] = toXY(CE_L, CE_H)
+const CE_Z = overflowHeight(CE_L, CE_H)
+
+// 150 deterministic emerald unit-test samples clustered near the safe origin corner (low, high << 2^31)
+const UNIT_TEST_DOTS: Vec3[] = Array.from({ length: 150 }, (_, i) => {
+    const r1 = Math.sin(i * 127.1 + 3.1) * 43758.5453
+    const r2 = Math.sin(i * 269.5 + 7.7) * 19642.349
+    const u = r1 - Math.floor(r1)
+    const v = r2 - Math.floor(r2)
+    // Concentrate heavily near the bottom-left corner (typical array sizes: 0..10^7 vs 2^31)
+    const rad = Math.pow(u, 1.8) * 0.22
+    const l = rad * v * 0.92
+    const h = Math.min(0.24, l + rad * (1 - v * 0.85) + 0.008)
+    const [wx, wy] = toXY(l, h)
+    return [wx, wy, safeHeight(l, h) + 0.045] as Vec3
+})
 
 export const hook: SceneFunction = (s, c) => {
     const revealBug = s.value(0)
+    const pulsePhase = s.value(0)
 
+    // ── Left hero title & 32-bit sign-bit flip readout ───────────────────────
     const leftCopy = group(
-        txt('PROOFS FOR REAL SYSTEMS  ·  EP 1 / 3', -840, -250, 26, COSMOS.violet, 'mono', 'left'),
-        txt('Why Tests', -848, -125, 108, COSMOS.ink, 'serif', 'left').glow(6, COSMOS.violet),
-        txt('Miss the Bug', -848, -8, 108, COSMOS.rose, 'serif', 'left').glow(8, COSMOS.rose),
-        txt('mid = (low + high) / 2', -840, 118, 34, COSMOS.gold, 'mono', 'left'),
-        txt('50% of valid 32-bit pairs overflow', -840, 186, 30, COSMOS.muted, 'sans', 'left'),
+        txt('PROOFS FOR REAL SYSTEMS  ·  EP 1 / 3', -852, -395, 26, COSMOS.violet, 'mono', 'left'),
+        txt('Why Tests', -858, -295, 96, COSMOS.ink, 'serif', 'left').glow(6, COSMOS.violet),
+        txt('Miss the Bug', -858, -190, 96, COSMOS.rose, 'serif', 'left').glow(9, COSMOS.rose),
+        txt('mid = (low + high) / 2', -852, -88, 32, COSMOS.gold, 'mono', 'left').glow(4, COSMOS.gold),
     )
 
-    const livePlane = dynamic(() => {
+    const mathCallout = group(
+        rect(592, 78, { fill: '#140c1c', stroke: COSMOS.rose, width: 2.2, radius: 14 }).at(-556, 8).opacity(0.94).glow(8, COSMOS.rose),
+        tex(String.raw`\text{overflow} \iff \text{low} + \text{high} \ge 2^{31}`, { size: 32, color: COSMOS.rose }).at(-556, 8),
+    )
+
+    const signBitCard = dynamic(() => {
+        const b = revealBug.value
+        const p = pulsePhase.value
+        const op = 0.32 + 0.68 * b
+        const nodes: Node[] = [
+            rect(592, 242, { fill: '#0d1222', stroke: b > 0.4 ? COSMOS.gold : COSMOS.rule, width: 2.2, radius: 16 })
+                .at(-556, 212)
+                .opacity(0.94 * op)
+                .glow(b > 0.4 ? 8 : 0, COSMOS.gold),
+            txt('Z3 COUNTEREXAMPLE · INT32 OVERFLOW', -826, 128, 26, COSMOS.gold, 'mono', 'left').opacity(op),
+            txt('(1.5e9, 1.5e9) -> -1,294,967,296', -826, 174, 26, b > 0.4 ? COSMOS.rose : COSMOS.muted, 'mono', 'left')
+                .glow(b > 0.4 ? 6 : 0, COSMOS.rose)
+                .opacity(op),
+        ]
+
+        // Crisp 32-bit sign-bit flip visual strip
+        const bitY = 236
+        const signCol = b > 0.4 ? COSMOS.rose : COSMOS.emerald
+        nodes.push(
+            rect(52, 46, { fill: b > 0.4 ? '#3a0d1c' : '#0f2d28', stroke: signCol, width: 3, radius: 8 })
+                .at(-800, bitY)
+                .glow(b > 0.4 ? 10 + Math.sin(p * 4) * 3 : 4, signCol)
+                .opacity(op),
+            txt(b > 0.4 ? '1' : '0', -800, bitY, 30, signCol, 'mono').opacity(op),
+            rect(470, 46, { fill: '#11182c', stroke: COSMOS.rule, width: 1.8, radius: 8 }).at(-522, bitY).opacity(op),
+            txt(b > 0.4 ? '011 0010 1101 0000 0101 ...' : '010 1100 1011 0100 0001 ...', -522, bitY, 26, COSMOS.muted, 'mono').opacity(op),
+            txt(
+                b > 0.4 ? 'Bit 31 flips 0 -> 1  (negative index!)' : 'Bit 31 = 0  (positive safe corner)',
+                -826,
+                296,
+                26,
+                b > 0.4 ? COSMOS.rose : COSMOS.emerald,
+                'sans',
+                'left',
+            ).opacity(op),
+        )
+        return group(...nodes)
+    })
+
+    // ── Hero orbiting 3D heightfield (scene3d) ───────────────────────────────
+    const view = scene3d({
+        theta: -0.78,
+        phi: 1.02,
+        distance: 14.2,
+        unit: 136,
+        perspective: true,
+        ambient: 0.42,
+        shine: 0.34,
+        brightness: 1.1,
+        fog: 0.08,
+        focus: [0, 0.05, 0.05],
+    }).at(285, 18)
+
+    const floorGrid = gridPlane3d({
+        x: [-2.5, 2.5],
+        y: [-2.5, 2.5],
+        z: -1.45,
+        step: 0.5,
+        color: '#263556',
+        width: 1.1,
+        opacity: 0.42,
+    })
+
+    // Safe ramp surface: 0 <= l <= h, l + h <= 1
+    const safeRamp = parametricSurface(
+        (u, v): Vec3 => {
+            const l = 0.5 * u * v
+            const h = u - l
+            const [wx, wy] = toXY(l, h)
+            return [wx, wy, safeHeight(l, h)]
+        },
+        [0, 1],
+        [0, 1],
+        {
+            resolution: [32, 32],
+            colors: ['#0a2524', '#0e5b53', '#1ca88f', '#5ce1e6', '#6ee7b7'],
+            mesh: '#6ee7b7',
+            meshOpacity: 0.24,
+            meshWidth: 0.75,
+            opacity: 0.92,
+        },
+    )
+
+    // Crimson overflow abyss surface: 0 <= l <= h <= 1, l + h >= 1
+    const overflowAbyss = parametricSurface(
+        (u, v): Vec3 => {
+            const l = u + v * 0.5 * (1 - u)
+            const h = 1 + u - l
+            const [wx, wy] = toXY(l, h)
+            return [wx, wy, overflowHeight(l, h)]
+        },
+        [0, 1],
+        [0, 1],
+        {
+            resolution: [32, 32],
+            colors: ['#7a0e2c', '#c81748', '#ff3b6b', '#ff7aa2'],
+            mesh: '#ff9cb5',
+            meshOpacity: 0.32,
+            meshWidth: 0.85,
+            opacity: 0.94,
+        },
+    )
+
+    // Translucent cliff wall dropping along the fault line l + h = 1
+    const cliffWall = parametricSurface(
+        (u, v): Vec3 => {
+            const l = 0.5 * u
+            const h = 1 - l
+            const [wx, wy] = toXY(l, h)
+            const z = -1.35 + v * (1.38 - -1.35)
+            return [wx, wy, z]
+        },
+        [0, 1],
+        [0, 1],
+        {
+            resolution: [20, 8],
+            colors: ['#ff2e63', '#ff6b8b', '#ffd166'],
+            mesh: '#ff6b8b',
+            meshOpacity: 0.3,
+            meshWidth: 0.75,
+            opacity: 0.42,
+            shaded: false,
+        },
+    )
+
+    // Blazing fault-line ridge (low + high = 2^31) with real glow + screen blend
+    const [F0X, F0Y] = toXY(0, 1)
+    const [F1X, F1Y] = toXY(0.5, 0.5)
+    const faultTop = line3d([F0X, F0Y, 1.4], [F1X, F1Y, 1.4], {
+        color: COSMOS.rose,
+        width: 5.8,
+        glow: 14,
+        blend: 'screen',
+        bias: 0.08,
+        opacity: 0.98,
+    })
+
+    const faultBottom = line3d([F0X, F0Y, -1.33], [F1X, F1Y, -1.33], {
+        color: '#ff2e63',
+        width: 4.2,
+        glow: 11,
+        blend: 'screen',
+        bias: 0.06,
+        opacity: 0.92,
+    })
+
+    // Boundary edges of valid domain 0 <= low <= high < 2^31
+    const [O0X, O0Y] = toXY(0, 0)
+    const [O1X, O1Y] = toXY(1, 1)
+    const domainEdges = [
+        line3d([O0X, O0Y, 0.02], [F0X, F0Y, 1.38], { color: COSMOS.emerald, width: 2.6, glow: 6, blend: 'screen', opacity: 0.85 }),
+        line3d([O0X, O0Y, 0.02], [F1X, F1Y, 1.38], { color: COSMOS.cyan, width: 2.6, glow: 6, blend: 'screen', opacity: 0.85 }),
+        line3d([F0X, F0Y, -1.35], [O1X, O1Y, -0.47], { color: COSMOS.rose, width: 2.8, glow: 8, blend: 'screen', opacity: 0.88 }),
+        line3d([F1X, F1Y, -1.35], [O1X, O1Y, -0.47], { color: COSMOS.rose, width: 2.8, glow: 8, blend: 'screen', opacity: 0.88 }),
+    ]
+
+    // 150 glowing emerald unit-test dots clustered near the origin!
+    const testCloud = points3d(UNIT_TEST_DOTS, {
+        color: COSMOS.emerald,
+        radius: 3.4,
+        glow: 7,
+        blend: 'screen',
+        bias: 0.08,
+        opacity: 0.95,
+    })
+
+    view.add(
+        floorGrid,
+        safeRamp,
+        overflowAbyss,
+        cliffWall,
+        ...domainEdges,
+        faultBottom,
+        faultTop,
+        testCloud,
+    )
+
+    // Dynamic Golden Z3 Counterexample Beacon locked 1:1 to view's orbiting camera!
+    const liveBeacon = dynamic(() => {
+        const b = revealBug.value
+        if (b < 0.02) return []
+        const p = pulsePhase.value
+        const bv = scene3d({
+            theta: view.theta.value,
+            phi: view.phi.value,
+            distance: 14.2,
+            unit: 136,
+            perspective: true,
+            fog: 0.04,
+            focus: [0, 0.05, 0.05],
+        })
+            .at(285, 18)
+            .opacity(b)
+
+        const r1 = 0.28 + 0.1 * Math.sin(p * 3.5)
+        const r2 = 0.52 + 0.12 * Math.cos(p * 2.8)
+        bv.add(
+            curve3d(
+                (u): Vec3 => [CE_X + r2 * Math.cos(u * Math.PI * 2), CE_Y + r2 * Math.sin(u * Math.PI * 2), CE_Z + 0.05],
+                0,
+                1,
+                { color: COSMOS.rose, width: 3.0, glow: 10, blend: 'screen', samples: 36, opacity: 0.9 },
+            ),
+            curve3d(
+                (u): Vec3 => [CE_X + r1 * Math.cos(u * Math.PI * 2), CE_Y + r1 * Math.sin(u * Math.PI * 2), CE_Z + 0.07],
+                0,
+                1,
+                { color: COSMOS.gold, width: 4.2, glow: 14, blend: 'screen', samples: 36, onTop: true },
+            ),
+            line3d([CE_X, CE_Y, CE_Z], [CE_X, CE_Y, 2.05], {
+                color: COSMOS.gold,
+                width: 5.5,
+                glow: 16,
+                blend: 'screen',
+                onTop: true,
+            }),
+            line3d([CE_X, CE_Y, CE_Z], [CE_X, CE_Y, 2.05], {
+                color: '#ffffff',
+                width: 1.8,
+                onTop: true,
+                opacity: 0.9,
+            }),
+            point3d([CE_X, CE_Y, CE_Z + 0.05], {
+                color: '#ffffff',
+                radius: 9.5,
+                glow: 18,
+                blend: 'screen',
+                onTop: true,
+            }),
+            point3d([CE_X, CE_Y, 2.05], {
+                color: COSMOS.gold,
+                radius: 8.0,
+                glow: 16,
+                blend: 'screen',
+                onTop: true,
+            }),
+        )
+        return bv
+    })
+
+    // Clean perimeter annotations around the 3D heightfield (zero overlap with left copy or 3D core)
+    const rightLabels = dynamic(() => {
         const b = revealBug.value
         const nodes: Node[] = [
-            nebula(OX + S * 0.5, OY - S * 0.5, 420, b > 0.3 ? '#ff6b8b24' : '#6ee7b71a'),
-            polygon(SAFE_POLY, { fill: '#122826', stroke: COSMOS.emerald, width: 2 }).opacity(0.85),
-            line([OX, OY], [OX + S + 30, OY], { stroke: COSMOS.rule, width: 2 }),
-            line([OX, OY], [OX, OY - S - 30], { stroke: COSMOS.rule, width: 2 }),
-            txt('low', OX + S + 45, OY, 26, COSMOS.muted, 'mono', 'left'),
-            txt('high', OX, OY - S - 52, 26, COSMOS.muted, 'mono'),
-            // Tiny green unit-test dots clustered in the bottom-left corner
-            ...[0.02, 0.04, 0.07, 0.03, 0.09, 0.05].map((u, i) =>
-                dot(5.5, COSMOS.emerald).at(OX + u * S * 0.7, OY - (u + 0.03 + i * 0.015) * S).glow(8, COSMOS.emerald),
-            ),
-            txt('unit tests', OX + 95, OY - 26, 26, COSMOS.emerald, 'mono', 'left'),
+            nebula(290, 20, 500, b > 0.35 ? '#ff6b8b26' : '#5ce1e61a', '#22184014'),
+            txt('SAFE RAMP  (50%)', -135, -395, 26, COSMOS.emerald, 'mono', 'left').glow(6, COSMOS.emerald),
+            txt('150 unit tests near (0, 0)', -155, 368, 26, COSMOS.emerald, 'mono', 'left'),
+            txt('low + high = 2³¹ cliff', 855, 368, 26, COSMOS.rose, 'mono', 'right').opacity(0.45 + 0.55 * b),
         ]
-        if (b > 0.02) {
+        if (b > 0.05) {
             nodes.push(
-                polygon(OVERFLOW_POLY, { fill: '#ff6b8b', stroke: COSMOS.rose, width: 3 }).opacity(0.32 * b).glow(10, COSMOS.rose),
-                txt('OVERFLOW (50%)', OX + S * 0.55, OY - S * 0.82, 30, COSMOS.rose, 'mono').opacity(b),
+                txt('OVERFLOW ABYSS  (50%)', 855, -408, 26, COSMOS.rose, 'mono', 'right').glow(8, COSMOS.rose).opacity(b),
+                txt('Z3 BEACON · (1.5e9, 1.5e9)', 855, -364, 26, COSMOS.gold, 'mono', 'right').glow(8, COSMOS.gold).opacity(b),
             )
         }
         return group(...nodes)
     })
 
-    s.add(leftCopy, livePlane)
-    c.on('half of all valid', () => s.play(revealBug.to(1, { duration: 1.4 })))
+    s.add(rightLabels, view, liveBeacon, leftCopy, signBitCard)
+
+    // Smooth continuous orbit & pulse across the whole scene
+    c.at(0.05, () => {
+        s.play(view.orbit({ theta: -0.44, phi: 0.94 }, { duration: 11.0 }))
+    })
+    c.at(0.05, () => {
+        s.play(pulsePhase.to(12.0, { duration: 17.0 }))
+    })
+    c.show('thirty-two-bit pair', mathCallout)
+    c.on('half of all valid', () => {
+        s.play(
+            revealBug.to(1, { duration: 1.1 }),
+            view.orbit({ theta: -0.22, phi: 0.9 }, { duration: 2.2 }),
+        )
+    })
 }

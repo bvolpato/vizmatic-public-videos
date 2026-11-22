@@ -1,16 +1,16 @@
 import {
-    Node, circle, dot, dynamic, group, line, linear, linearGradient, radialGradient, rect, tex,
-    type SceneFunction,
+    Node, circle, dot, dynamic, group, line, linear, linearGradient, polyPath, radialGradient, rect, tex,
+    type SceneFunction, type Vec,
 } from 'vizmatic/stage'
 import { HALT_MATRIX, REBEL_ROW } from '../math'
 import { txt } from '../../../factory/style'
 
 const N = 8
 const PITCH = 72
-const MX = -340
+const MX = -345
 const MY = 32
 const HALF = ((N - 1) * PITCH) / 2
-const REBEL_X = 76
+const REBEL_X = 78
 
 export const diagonal: SceneFunction = (s, c) => {
     const diagProg = s.value(0)
@@ -20,12 +20,12 @@ export const diagonal: SceneFunction = (s, c) => {
     const diagGrad = linearGradient([MX - HALF, MY - HALF], [MX + HALF, MY + HALF], ['#ffd166', '#ff6b8b'])
 
     const matrixHeaders = group(
-        txt('Inputs j', MX, MY - HALF - 86, 26, '#9aa8c4', 'mono'),
+        txt('Inputs j', MX, MY - HALF - 86, 26, '#a9bad8', 'mono'),
         ...Array.from({ length: N }, (_, j) =>
-            txt(`${j + 1}`, MX - HALF + j * PITCH, MY - HALF - 48, 26, '#cbd5e8', 'mono'),
+            txt(`${j + 1}`, MX - HALF + j * PITCH, MY - HALF - 48, 26, '#d6e1f5', 'mono'),
         ),
         ...Array.from({ length: N }, (_, i) =>
-            txt(`P${i + 1}`, MX - HALF - 58, MY - HALF + i * PITCH, 26, '#cbd5e8', 'mono'),
+            txt(`P${i + 1}`, MX - HALF - 58, MY - HALF + i * PITCH, 26, '#d6e1f5', 'mono'),
         ),
     )
 
@@ -42,17 +42,18 @@ export const diagonal: SceneFunction = (s, c) => {
                 const halts = HALT_MATRIX[r]![col]!
                 const isDiag = r === col
                 const litDiag = isDiag && dp > r / N + 0.01
-                const stroke = litDiag ? '#ffd166' : halts ? '#38bdf866' : '#313d63'
-                const fill = litDiag ? '#ffd16626' : halts ? '#5ce1e614' : '#0f162999'
+                const stroke = litDiag ? '#ffd166' : halts ? '#4ad4ee88' : '#4a5c94'
+                const fill = litDiag ? '#ffd1662c' : halts ? '#5ce1e61a' : '#141e38bb'
+                const glyphColor = litDiag ? '#ffd166' : halts ? '#6ef0f5' : '#c4b5fd'
                 nodes.push(
-                    rect(58, 58, { fill, stroke, width: litDiag ? 2.6 : 1.2, radius: 9 }).at(x, y),
-                    txt(halts ? 'H' : '∞', x, y + 2, 28, litDiag ? '#ffd166' : halts ? '#5ce1e6' : '#818cf8', 'mono'),
+                    rect(58, 58, { fill, stroke, width: litDiag ? 2.8 : 1.4, radius: 9 }).at(x, y),
+                    txt(halts ? 'H' : '∞', x, y + 2, 28, glyphColor, 'mono').glow(litDiag ? 6 : halts ? 2 : 3, glyphColor),
                 )
             }
         }
 
         if (dp > 0.01) {
-            // Connect diagonal cell corners without ever crossing the centered glyphs
+            // Connect diagonal cell corners without crossing centered glyphs
             const litCount = Math.min(N, Math.floor(dp * N + 0.35))
             for (let k = 0; k < litCount - 1; k++) {
                 const xA = MX - HALF + k * PITCH + 29
@@ -60,30 +61,44 @@ export const diagonal: SceneFunction = (s, c) => {
                 const xB = MX - HALF + (k + 1) * PITCH - 29
                 const yB = MY - HALF + (k + 1) * PITCH - 29
                 nodes.push(
-                    line([xA, yA], [xB, yB], { stroke: diagGrad, width: 4.5, opacity: 0.95 }).glow(10, '#ffd166'),
+                    line([xA, yA], [xB, yB], { stroke: diagGrad, width: 5, opacity: 0.96 })
+                        .glow(10, '#ffd166')
+                        .set('blend', 'screen'),
                 )
             }
             const headIdx = Math.max(0, Math.min(N - 1, Math.floor(dp * (N - 1))))
             const hx = MX - HALF + headIdx * PITCH + 30
             const hy = MY - HALF + headIdx * PITCH + 30
-            nodes.push(dot(7, '#ffffff').at(hx, hy).glow(14, '#ffd166'))
+            nodes.push(dot(7.5, '#ffffff').at(hx, hy).glow(16, '#ffd166').set('blend', 'screen'))
         }
 
         if (rp > 0.02) {
-            nodes.push(txt('D', REBEL_X, MY - HALF - 48, 30, '#ff6b8b', 'mono').glow(6, '#ff6b8b').opacity(rp))
+            nodes.push(txt('D', REBEL_X, MY - HALF - 48, 32, '#ff8fab', 'mono').glow(8, '#ff6b8b').opacity(rp))
             for (let i = 0; i < N; i++) {
                 const y = MY - HALF + i * PITCH
                 const local = Math.max(0, Math.min(1, rp * 1.4 - i * 0.07))
                 if (local < 0.05) continue
                 const dHalts = REBEL_ROW[i]!
-                const edgeX = MX + HALF + 36
+                const xStart = MX + HALF + 32
+                const xEnd = REBEL_X - 33
+                const archLift = -14 - (i % 2) * 4
+                const arcPts: Vec[] = Array.from({ length: 18 }, (_, j) => {
+                    const u = j / 17
+                    const ax = xStart + (xEnd - xStart) * u
+                    const ay = y + Math.sin(u * Math.PI) * archLift
+                    return [ax, ay] as Vec
+                })
                 nodes.push(
-                    line([edgeX, y], [REBEL_X - 34, y], { stroke: '#ff6b8b', width: 2.2 })
-                        .opacity(0.62 * local),
-                    rect(58, 58, { fill: '#ff6b8b2c', stroke: '#ff6b8b', width: 2.2, radius: 9 })
+                    new Node(polyPath(arcPts))
+                        .stroke('#ff6b8b', 3.4, 0.88 * local)
+                        .glow(8, '#ff6b8b')
+                        .set('blend', 'screen'),
+                    dot(3.8, '#ffd166').at(xEnd - 2, y - 1).glow(8, '#ff6b8b').opacity(0.9 * local).set('blend', 'screen'),
+                    rect(58, 58, { fill: '#ff6b8b34', stroke: '#ff8fab', width: 2.5, radius: 9 })
                         .at(REBEL_X, y)
                         .opacity(local),
-                    txt(dHalts ? 'H' : '∞', REBEL_X, y + 2, 28, dHalts ? '#ffd166' : '#ff6b8b', 'mono')
+                    txt(dHalts ? 'H' : '∞', REBEL_X, y + 2, 28, dHalts ? '#ffd166' : '#ff99b8', 'mono')
+                        .glow(5, dHalts ? '#ffd166' : '#ff6b8b')
                         .opacity(local),
                 )
             }
@@ -92,28 +107,40 @@ export const diagonal: SceneFunction = (s, c) => {
         if (sp > 0.02) {
             const cx = REBEL_X
             const cy = MY + HALF + 78
+            const pillVis = Math.min(1, sp * 2.2)
             for (let k = 0; k < 3; k++) {
                 const phase = (sp * 1.6 + k * 0.33) % 1
-                const rad = 14 + phase * 34
-                const op = (1 - phase) * 0.85
+                const rad = 14 + phase * 38
+                const op = (1 - phase) * 0.9
                 nodes.push(
-                    circle(rad, { fill: null, stroke: k % 2 === 0 ? '#ff6b8b' : '#ffd166', width: 3 })
+                    circle(rad, { fill: null, stroke: k % 2 === 0 ? '#ff6b8b' : '#ffd166', width: 3.2 })
                         .at(cx, cy)
                         .opacity(op)
-                        .glow(10, '#ff6b8b'),
+                        .glow(12, '#ff6b8b')
+                        .set('blend', 'screen'),
                 )
             }
             nodes.push(
-                circle(54, {
-                    fill: radialGradient([0, 0], 54, [
-                        [0, '#ff6b8b60'],
-                        [0.5, '#ffd16626'],
+                circle(60, {
+                    fill: radialGradient([0, 0], 60, [
+                        [0, '#ff6b8b70'],
+                        [0.5, '#ffd16632'],
                         [1, '#07091000'],
                     ]),
                     stroke: null,
-                }).at(cx, cy),
-                dot(9.5, '#ffffff').at(cx, cy).glow(18, '#ff6b8b'),
-                txt('D(D) ?', cx - 102, cy + 4, 28, '#ffd166', 'mono').glow(6, '#ff6b8b'),
+                })
+                    .at(cx, cy)
+                    .set('blend', 'screen'),
+                dot(9.5, '#ffffff').at(cx, cy).glow(18, '#ff6b8b').set('blend', 'screen'),
+                txt('D(D) ?', cx - 106, cy + 4, 28, '#ffd166', 'mono').glow(6, '#ff6b8b'),
+                // Crisp glowing contradiction pill badge filling bottom-right when D(D) fires!
+                rect(468, 66, { fill: '#ff6b8b28', stroke: '#ff8fab', width: 2.8, radius: 33 })
+                    .at(444, 214)
+                    .glow(12, '#ff6b8b')
+                    .opacity(pillVis),
+                txt('H ↔ ∞   CONTRADICTION', 444, 216, 30, '#fff3c4', 'mono')
+                    .glow(8, '#ff6b8b')
+                    .opacity(pillVis),
             )
         }
 
@@ -124,22 +151,24 @@ export const diagonal: SceneFunction = (s, c) => {
         txt('1936 · ALAN TURING', 210, -345, 26, '#ffd166', 'mono', 'left'),
         txt('The Halting', 205, -268, 66, '#f8f4ec', 'serif', 'left'),
         txt('Matrix', 205, -196, 66, '#5ce1e6', 'serif', 'left').glow(6, '#38bdf8'),
-        txt('H  =  program halts', 210, -110, 28, '#5ce1e6', 'mono', 'left'),
-        txt('∞  =  loops forever', 210, -64, 28, '#818cf8', 'mono', 'left'),
+        txt('H  =  program halts', 210, -110, 28, '#6ef0f5', 'mono', 'left'),
+        txt('∞  =  loops forever', 210, -64, 28, '#c4b5fd', 'mono', 'left'),
     )
 
     const rebelRules = group(
-        txt('Rebel Machine D(P)', 210, 22, 40, '#ff6b8b', 'serif', 'left').glow(6, '#ff6b8b'),
-        txt('P(P) halts  →  D loops', 210, 82, 28, '#f8f4ec', 'sans', 'left'),
-        txt('P(P) loops  →  D halts', 210, 128, 28, '#ffd166', 'sans', 'left'),
+        txt('Rebel Machine D(P)', 210, 20, 40, '#ff8fab', 'serif', 'left').glow(6, '#ff6b8b'),
+        txt('P(P) halts  →  D loops', 210, 80, 28, '#f8f4ec', 'sans', 'left'),
+        txt('P(P) loops  →  D halts', 210, 126, 28, '#ffd166', 'sans', 'left'),
     )
 
     const paradoxPunch = group(
         tex(String.raw`D(D)\text{ halts} \iff D(D)\text{ loops}`, {
-            size: 40,
+            size: 38,
             color: '#ffd166',
-        }).at(515, 232).glow(8, '#ff6b8b'),
-        txt('CONTRADICTION — NO ORACLE EXISTS', 210, 315, 28, '#ff6b8b', 'mono', 'left').glow(6, '#ff6b8b'),
+        })
+            .at(465, 308)
+            .glow(8, '#ff6b8b'),
+        txt('NO HALTING ORACLE CAN EXIST', 210, 376, 28, '#ff8fab', 'mono', 'left').glow(6, '#ff6b8b'),
     )
 
     s.add(matrixHeaders, liveMatrix, rightIntro)

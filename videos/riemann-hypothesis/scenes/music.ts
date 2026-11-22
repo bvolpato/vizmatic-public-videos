@@ -1,6 +1,6 @@
 import { txt as text } from '../../../factory/style'
 import {
-    Node, dynamic, group, line, linear, linearGradient, polyPath,
+    Node, dot, dynamic, group, line, linear, linearGradient, polyPath,
     type SceneFunction, type Vec,
 } from 'vizmatic/stage'
 import { ZETA_ZEROS, chebyshevPsi, explicitPsi, isPrime } from '../math'
@@ -39,6 +39,7 @@ const C_ROGUE = buildY(9, 0.74)
 
 const HARMONIC_COLORS = ['#5ce1e6', '#60a5fa', '#a78bfa', '#ff6b8b', '#ffd166'] as const
 const PRIMES_32 = Array.from({ length: 31 }, (_, i) => i + 2).filter(isPrime)
+const PRIME_STEPS = PRIMES_32.map((p) => ({ p, x: mapX(p), yStep: mapY(chebyshevPsi(p)) }))
 
 export const music: SceneFunction = (s, c) => {
     const waveDrift = s.value(0)
@@ -49,6 +50,27 @@ export const music: SceneFunction = (s, c) => {
     const harpStrings = dynamic(() => {
         const ph = waveDrift.value
         const nodes: Node[] = []
+
+        // Soft vertical blend('screen') harmonic energy filaments linking the 5 zero strings down to the prime staircase!
+        for (let pi = 0; pi < PRIME_STEPS.length; pi++) {
+            const { p, x, yStep } = PRIME_STEPS[pi]!
+            const k = pi % 5
+            const g = ZETA_ZEROS[k]!
+            const col = HARMONIC_COLORS[k]!
+            // Start below the left γ1..γ5 labels when x < -530, and directly on the vibrating strings when x >= -530
+            const strY = x < -530 ? -95 : -315 + k * 44
+            const resonance = 0.5 + 0.5 * Math.cos(g * Math.log(p) - ph * (0.6 + k * 0.15))
+            const op = (0.14 + 0.24 * resonance)
+            const filGrad = linearGradient([x, strY], [x, yStep], [col, '#ffd166'])
+            nodes.push(
+                line([x, strY], [x, yStep], { stroke: filGrad, width: 1.8 })
+                    .opacity(op)
+                    .glow(6, col)
+                    .set('blend', 'screen'),
+                dot(3.8, '#ffd166').at(x, yStep).opacity(0.55 + 0.35 * resonance).glow(8, '#ffd166').set('blend', 'screen'),
+            )
+        }
+
         for (let k = 0; k < 5; k++) {
             const g = ZETA_ZEROS[k]!
             const yc = -315 + k * 44
@@ -59,25 +81,27 @@ export const music: SceneFunction = (s, c) => {
                 yc - amp * Math.cos(g * Math.log(x) - ph * (0.6 + k * 0.15)),
             ])
             nodes.push(
-                text(`γ${k + 1} = ${g.toFixed(2)}`, -810, yc, 26, col, 'mono', 'left').opacity(0.9),
-                new Node(polyPath(pts)).stroke(col, 2.8, 0.85).glow(6, col),
+                text(`γ${k + 1} = ${g.toFixed(2)}`, -810, yc, 26, col, 'mono', 'left').opacity(0.92),
+                new Node(polyPath(pts)).stroke(col, 3.0, 0.9).glow(8, col).set('blend', 'screen'),
+                new Node(polyPath(pts)).stroke('#ffffff', 0.9, 0.32),
             )
         }
         return group(...nodes)
     })
 
-    // Bottom stage: Subtle vertical prime light pillars + exact ghost staircase
+    // Bottom stage: Subtle vertical prime light pillars + bright golden exact prime staircase!
     const pillars = group(
         line([X0, BOT_Y0], [X1, BOT_Y0], { stroke: '#2c3754', width: 2 }),
         ...PRIMES_32.map((p) => {
             const px = mapX(p)
             const showLabel = [2, 5, 11, 17, 23, 29].includes(p)
             return group(
-                line([px, BOT_Y0], [px, BOT_Y1 + 15], { stroke: '#ffd166', width: 1.2 }).opacity(0.14),
+                line([px, BOT_Y0], [px, BOT_Y1 + 15], { stroke: '#ffd166', width: 1.2 }).opacity(0.16),
                 ...(showLabel ? [text(String(p), px, BOT_Y0 + 36, 26, '#ffd166', 'mono')] : []),
             )
         }),
-        new Node(polyPath(EXACT_PSI_PTS)).stroke('#8c733a', 2.4, 0.75),
+        new Node(polyPath(EXACT_PSI_PTS)).stroke('#f5c969', 2.8, 0.92).glow(6, '#ffd166').set('blend', 'screen'),
+        new Node(polyPath(EXACT_PSI_PTS)).stroke('#ffd166', 1.6, 0.85),
     )
 
     const synthGrad = linearGradient([X0, BOT_Y0], [X1, BOT_Y1], ['#5ce1e6', '#a78bfa', '#ffd166'])
@@ -111,7 +135,7 @@ export const music: SceneFunction = (s, c) => {
         const isRogue = v > 4.2
         return group(
             text(readout, 830, -412, 30, col, 'mono', 'right'),
-            new Node(polyPath(pts)).stroke(isRogue ? '#ff6b8b' : synthGrad, 5.0, 0.95).glow(10, isRogue ? '#ff6b8b' : '#5ce1e6'),
+            new Node(polyPath(pts)).stroke(isRogue ? '#ff6b8b' : synthGrad, 5.2, 0.96).glow(11, isRogue ? '#ff6b8b' : '#5ce1e6').set('blend', 'screen'),
             new Node(polyPath(pts)).stroke('#ffffff', 1.4, 0.45),
         )
     })

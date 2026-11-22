@@ -10,14 +10,14 @@ const CY = 0
 const RIVER_XS = Array.from({ length: 64 }, (_, i) => CX - 260 + (520 * i) / 63)
 
 export const intro: IntroFunction = (stage, clock) => {
-    const prog = stage.value(0.2)
+    const prog = stage.value(0.25)
     const goldGrad = linearGradient([CX - 260, CY + 120], [CX + 260, CY + 120], ['#ffd16620', '#ffd166', '#ffffff', '#ffd166'])
 
     stage.add(
-        circle(520, {
-            fill: radialGradient([0, 0], 520, [
-                [0, '#ffd16624'],
-                [0.45, '#ff6b8b18'],
+        circle(530, {
+            fill: radialGradient([0, 0], 530, [
+                [0, '#ffd16628'],
+                [0.45, '#ff6b8b1e'],
                 [1, '#07091000'],
             ]),
             stroke: null,
@@ -25,27 +25,50 @@ export const intro: IntroFunction = (stage, clock) => {
         txt('NVME SILICON & STORAGE ENGINES', -840, -195, 26, '#5ce1e6', 'mono', 'left'),
         txt('Inside an SSD', -848, -72, 114, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
         txt('B-Trees vs LSM', -848, 56, 106, '#ffd166', 'serif', 'left').glow(9, '#ffd166'),
-        txt('Breaking the flash write-amplification wall', -840, 178, 34, '#b8c5df', 'sans', 'left'),
+        txt('Breaking the flash write-amplification wall', -840, 178, 34, '#c8d4ec', 'sans', 'left'),
         dynamic(() => {
             const p = prog.value
             const nodes: Node[] = [
                 // Silicon NVMe Die outer frame + glowing micro-pins
-                rect(460, 440, { fill: '#0d1324', stroke: '#3a4b73', width: 3.2, radius: 18 }).at(CX, CY).glow(10, '#5ce1e6'),
-                rect(420, 400, { fill: null, stroke: '#1f2b48', width: 1.5, radius: 12 }).at(CX, CY),
+                rect(480, 450, { fill: '#0d1324', stroke: '#4d6596', width: 3.4, radius: 18 }).at(CX, CY).glow(10, '#5ce1e6'),
+                rect(440, 410, { fill: null, stroke: '#28395e', width: 1.6, radius: 12 }).at(CX, CY),
             ]
-            // Flash page cells inside upper half (random rose strikes)
+            // Flash page cells inside upper half (brightened unlit grid + hot random rose strikes with incoming 4 KB rays!)
+            const hotTargets: Vec[] = []
             for (let r = 0; r < 4; r++) {
                 for (let colIdx = 0; colIdx < 6; colIdx++) {
                     const x = CX - 165 + colIdx * 66
                     const y = CY - 140 + r * 52
                     const hot = (r * 7 + colIdx * 3) % 5 === 0
-                    const c = hot ? '#ff6b8b' : '#5ce1e6'
+                    const c = hot ? '#ff6b8b' : '#5882b8'
+                    if (hot) hotTargets.push([x, y])
                     nodes.push(
-                        rect(52, 36, { fill: hot ? '#ff6b8b38' : '#5ce1e618', stroke: c, width: hot ? 2.4 : 1.4, radius: 5 })
+                        rect(54, 38, { fill: hot ? '#ff6b8b48' : '#182b4a', stroke: c, width: hot ? 2.6 : 1.6, radius: 5 })
                             .at(x, y)
-                            .opacity(hot ? 0.95 : 0.6),
+                            .opacity(hot ? 0.98 : 0.85),
                     )
                 }
+            }
+            // Incoming glowing 4 KB write rays smashing into hot pages with additive screen flashes
+            for (let k = 0; k < Math.min(3, hotTargets.length); k++) {
+                const [tx, ty] = hotTargets[k]!
+                const sx = tx - 90 + k * 45
+                const sy = CY - 265
+                nodes.push(
+                    line([sx, sy], [tx, ty], { stroke: '#ff6b8b', width: 3.2, opacity: 0.78 })
+                        .glow(10, '#ff6b8b')
+                        .set('blend', 'screen'),
+                    circle(26, {
+                        fill: radialGradient([0, 0], 26, [
+                            [0, '#ffffffcc'],
+                            [0.45, '#ff6b8b88'],
+                            [1, '#07091000'],
+                        ]),
+                        stroke: null,
+                    })
+                        .at(tx, ty)
+                        .set('blend', 'screen'),
+                )
             }
             // Sequential golden river gliding cleanly through lower silicon channel
             const riverPts: Vec[] = RIVER_XS.map((x) => [
@@ -53,9 +76,9 @@ export const intro: IntroFunction = (stage, clock) => {
                 CY + 125 + Math.sin(x * 0.025 - p * 5.0) * 14,
             ])
             nodes.push(
-                new Node(polyPath(riverPts)).stroke(goldGrad, 6.5, 0.96).glow(12, '#ffd166'),
-                new Node(polyPath(riverPts)).stroke('#ffffff', 1.8, 0.55),
-                dot(8, '#ffffff').at(CX - 220 + p * 440, CY + 125).glow(16, '#ffd166'),
+                new Node(polyPath(riverPts)).stroke(goldGrad, 7.0, 0.98).glow(14, '#ffd166').set('blend', 'screen'),
+                new Node(polyPath(riverPts)).stroke('#ffffff', 2.0, 0.65).set('blend', 'screen'),
+                dot(8.5, '#ffffff').at(CX - 220 + p * 440, CY + 125).glow(16, '#ffd166').set('blend', 'screen'),
             )
             return group(...nodes)
         }),

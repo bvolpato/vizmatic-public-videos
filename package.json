@@ -11,6 +11,6 @@
     "new": "node factory/new-video.mjs"
   },
   "dependencies": {
-    "vizmatic": "github:bvolpato/vizmatic#25123865"
+    "vizmatic": "github:bvolpato/vizmatic#d5c5b03c"
   }
 }

@@ -1,55 +1,173 @@
 import {
-    Node, arc, circle, dot, dynamic, group, line, radialGradient,
-    type IntroFunction,
+    Node, arc, circle, curve3d, dot, dynamic, group, line, line3d, par, point3d, radialGradient, scene3d, tex,
+    type IntroFunction, type Vec3,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
 
-const CX = 340
-const CY = 0
-const RING_RADII = [66, 114, 162, 210, 258, 306, 354] as const
+const CX = 310
+const CY = -10
+const RING_RADII = [64, 110, 156, 202, 248, 294, 340] as const
 const RING_COLORS = [
     COSMOS.cyan, '#38bdf8', COSMOS.blue, COSMOS.violet, '#c084fc', COSMOS.rose, COSMOS.gold,
 ] as const
-// Geometric speeds matching theta_i = 10000^(-2i/d) visual ratio
+// Geometric speeds matching theta_i = 10000^(-2i/d)
 const RING_SPEEDS = [1.0, 0.52, 0.27, 0.14, 0.075, 0.04, 0.022] as const
 
+const HERO_HELIX_BANDS = [
+    { freq: 0.95, radius: 0.95, color: COSMOS.cyan, width: 3.6, glow: 10 },
+    { freq: 0.46, radius: 1.55, color: COSMOS.blue, width: 3.2, glow: 9 },
+    { freq: 0.23, radius: 2.15, color: COSMOS.violet, width: 3.2, glow: 9 },
+    { freq: 0.12, radius: 2.75, color: COSMOS.gold, width: 3.8, glow: 12 },
+] as const
+
 export const intro: IntroFunction = (stage, clock) => {
-    const pos = stage.value(10)
+    const pos = stage.value(10.5)
+    const beadT = stage.value(0.28)
+
+    // Bespoke 3D multi-frequency helix receding in depth behind the luminous concentric clock dial
+    const hero3d = scene3d({
+        theta: -0.68,
+        phi: 1.18,
+        distance: 15.6,
+        unit: 102,
+        perspective: true,
+        ambient: 0.45,
+        shine: 0.35,
+        brightness: 1.12,
+        fog: 0.22,
+        focus: [0.3, 0, 0.2],
+    }).at(CX + 35, CY)
+
+    // Glowing central depth axis receding away from the clock face
+    hero3d.add(
+        line3d([-4.2, 0, 0], [5.4, 0, 0], {
+            color: COSMOS.gold,
+            width: 3.0,
+            opacity: 0.78,
+            glow: 10,
+            blend: 'screen',
+        }),
+    )
+
+    for (const band of HERO_HELIX_BANDS) {
+        hero3d.add(
+            curve3d(
+                (t): Vec3 => {
+                    const m = t * 44
+                    const x = -4.2 + t * 9.6
+                    const ang = m * band.freq
+                    return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
+                },
+                0,
+                1,
+                {
+                    color: band.color,
+                    width: band.width,
+                    glow: band.glow,
+                    blend: 'screen',
+                    samples: 260,
+                    opacity: 0.72,
+                },
+            ),
+            point3d(
+                (): Vec3 => {
+                    const t = beadT.value
+                    const m = t * 44
+                    const x = -4.2 + t * 9.6
+                    const ang = m * band.freq
+                    return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
+                },
+                { color: '#ffffff', radius: 7.5, glow: 14, blend: 'screen' },
+            ),
+            point3d(
+                (): Vec3 => {
+                    const t = (beadT.value + 0.45) % 1
+                    const m = t * 44
+                    const x = -4.2 + t * 9.6
+                    const ang = m * band.freq
+                    return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
+                },
+                { color: band.color, radius: 6.2, glow: 12, blend: 'screen' },
+            ),
+        )
+    }
 
     stage.add(
-        circle(540, {
-            fill: radialGradient([0, 0], 540, [
-                [0, '#ffd16622'],
-                [0.45, '#5ce1e614'],
+        // Deep luminous nebula halo behind the clock-helix fusion
+        circle(560, {
+            fill: radialGradient([0, 0], 560, [
+                [0, '#ffd1662c'],
+                [0.42, '#5ce1e61c'],
+                [0.72, '#4c2f8a14'],
                 [1, '#07091000'],
             ]),
             stroke: null,
-        }).at(CX, CY),
-        txt('ROTARY POSITIONAL EMBEDDINGS', -850, -210, 26, COSMOS.gold, 'mono', 'left'),
-        txt('RoPE', -856, -78, 136, COSMOS.ink, 'serif', 'left').glow(6, '#90b4ff'),
-        txt('Spinning Clocks', -856, 52, 102, COSMOS.cyan, 'serif', 'left').glow(8, '#38bdf8'),
-        txt('How LLMs remember long context', -850, 174, 34, '#b8c5df', 'sans', 'left'),
+        }).at(CX, CY).set('blend', 'screen'),
+        hero3d,
+        // Crisp LaTeX formula & hero editorial typography on the left
+        txt('ROTARY POSITIONAL EMBEDDINGS', -852, -268, 26, COSMOS.cyan, 'mono', 'left'),
+        tex(String.raw`\theta_i = 10000^{-2i/d}`, {
+            size: 38,
+            color: COSMOS.gold,
+        }).at(-668, -196).glow(6, COSMOS.gold),
+        txt('RoPE', -858, -62, 140, COSMOS.ink, 'serif', 'left').glow(8, '#90b4ff'),
+        txt('Spinning Clocks', -858, 66, 98, COSMOS.cyan, 'serif', 'left').glow(10, '#38bdf8'),
+        txt('Why LLMs turn token order into angle', -852, 184, 34, '#cbd5e8', 'sans', 'left'),
+        // Brightened concentric luminous clock dial fused over the 3D helix origin
         dynamic(() => {
             const m = pos.value
-            const nodes: Node[] = [
-                dot(7, '#ffffff').at(CX, CY).glow(14, COSMOS.gold),
-            ]
+            const nodes: Node[] = []
+
+            // 60 fine dial ticks + 12 bright cardinal hour ticks around the outer bezel
+            for (let t = 0; t < 60; t++) {
+                const ta = (t * Math.PI) / 30
+                const major = t % 5 === 0
+                const r0 = major ? 326 : 334
+                const r1 = major ? 358 : 350
+                nodes.push(
+                    line(
+                        [CX + Math.cos(ta) * r0, CY + Math.sin(ta) * r0],
+                        [CX + Math.cos(ta) * r1, CY + Math.sin(ta) * r1],
+                        { stroke: major ? '#93c5fd' : '#536898', width: major ? 2.6 : 1.3 },
+                    ).opacity(major ? 0.88 : 0.45),
+                )
+            }
+
+            // Crosshair reticle
+            nodes.push(
+                line([CX - 366, CY], [CX + 366, CY], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
+                line([CX, CY - 366], [CX, CY + 366], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
+            )
+
             for (let i = 0; i < RING_RADII.length; i++) {
                 const r = RING_RADII[i]!
                 const col = RING_COLORS[i]!
                 const ang = -Math.PI / 2 + m * RING_SPEEDS[i]!
                 const hx = CX + Math.cos(ang) * r
                 const hy = CY + Math.sin(ang) * r
+                const trail = 0.72 + (RING_RADII.length - i) * 0.08
                 nodes.push(
-                    circle(r, { fill: null, stroke: col, width: 1.6 }).at(CX, CY).opacity(0.32),
-                    arc(r, ang - 0.85, ang, { fill: null, stroke: col, width: 3.4 }).at(CX, CY).opacity(0.85).glow(6, col),
-                    line([CX, CY], [hx, hy], { stroke: col, width: 2.0 }).opacity(0.55),
-                    dot(6.5, '#ffffff').at(hx, hy).glow(12, col),
+                    circle(r, { fill: null, stroke: col, width: 2.0 }).at(CX, CY).opacity(0.48),
+                    arc(r, ang - trail, ang, { fill: null, stroke: col, width: 4.4 })
+                        .at(CX, CY).opacity(0.95).glow(10, col).set('blend', 'screen'),
+                    line([CX, CY], [hx, hy], { stroke: col, width: 2.4 }).opacity(0.72).set('blend', 'screen'),
+                    dot(7.5, '#ffffff').at(hx, hy).glow(14, col).set('blend', 'screen'),
                 )
             }
+
+            nodes.push(
+                dot(10, '#ffffff').at(CX, CY).glow(18, COSMOS.gold).set('blend', 'screen'),
+            )
             return group(...nodes)
         }),
     )
 
-    stage.at(0.02, () => stage.play(pos.to(16, { duration: Math.max(0.4, clock.intro - 0.08) })))
+    const dur = Math.max(0.4, clock.intro - 0.06)
+    stage.at(0.02, () => {
+        stage.play(par(
+            pos.to(15.5, { duration: dur }),
+            beadT.to(0.68, { duration: dur }),
+            hero3d.orbit({ theta: -0.42, phi: 1.08 }, { duration: dur }),
+        ))
+    })
 }

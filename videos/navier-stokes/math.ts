@@ -1,9 +1,9 @@
 /**
  * Exact, self-contained fluid dynamics computations for The Navier-Stokes film.
  * Implements incompressible 2D Biot-Savart / Lamb-Oseen Gaussian vortex cores,
- * 4th-order Runge-Kutta (RK4) streamline & passive ribbon advection, numerical
- * divergence and circulation conservation checks, Kolmogorov k^{-5/3} cascade,
- * and a 3D vorticity / enstrophy landscape.
+ * exact analytical streamfunction psi(x, y), 4th-order Runge-Kutta (RK4) full-width
+ * streamline & passive ribbon advection, numerical divergence and circulation
+ * conservation checks, Kolmogorov k^{-5/3} cascade, and a 3D vorticity / enstrophy landscape.
  */
 
 export type Vec2 = readonly [number, number]
@@ -46,6 +46,56 @@ export function vortexVelocity(
         v += dx * factor
     }
     return [u, v]
+}
+
+/** Entire exponential integral Ein(z) = integral_0^z (1 - e^{-s}) / s ds, smooth for all z >= 0. */
+function ein(z: number): number {
+    if (z <= 0) return 0
+    if (z < 6.0) {
+        // Fast convergent alternating power series
+        let term = z
+        let sum = z
+        for (let k = 2; k <= 34; k++) {
+            term *= -z / k
+            const add = term / k
+            sum += add
+            if (Math.abs(add) < 1e-12) break
+        }
+        return sum
+    }
+    // For z >= 6: Ein(z) = ln(z) + gamma + E1(z), where E1(z) ~ e^{-z}/z * (1 - 1/z + 2/z^2 - 6/z^3)
+    const EULER_GAMMA = 0.5772156649015329
+    const iz = 1 / z
+    const e1 = (Math.exp(-z) * iz) * (1 - iz + 2 * iz * iz - 6 * iz * iz * iz)
+    return Math.log(z) + EULER_GAMMA + e1
+}
+
+/**
+ * Exact analytical streamfunction psi(x, y) such that u = d(psi)/dy and v = -d(psi)/dx
+ * for Lamb-Oseen vortices plus shear + mean flow.
+ */
+export function vortexStreamfunction(
+    x: number,
+    y: number,
+    vortices: readonly Vortex[],
+    shear = 0,
+    shearWidth = 0.85,
+    meanFlow = 0,
+): number {
+    let psi = meanFlow * y
+    if (shear !== 0) {
+        const ay = Math.abs(y / shearWidth)
+        // Stable log(cosh(ay)) = ay + log(1 + e^{-2 ay}) - ln(2)
+        psi += shear * shearWidth * (ay + Math.log1p(Math.exp(-2 * ay)) - Math.LN2)
+    }
+    const inv4Pi = 1 / (4 * Math.PI)
+    for (const vt of vortices) {
+        const dx = x - vt.x
+        const dy = y - vt.y
+        const z = (dx * dx + dy * dy) / (vt.core * vt.core)
+        psi -= vt.gamma * inv4Pi * ein(z)
+    }
+    return psi
 }
 
 /** Exact scalar vorticity omega = dv/dx - du/dy for Lamb-Oseen vortices + shear layer. */
@@ -158,12 +208,97 @@ export function traceStreamline(
     return pts
 }
 
+/** Uniformly resample a polyline by arc length to exactly `count` vertices. */
+export function resamplePolyline(pts: readonly Vec2[], count: number): Vec2[] {
+    if (pts.length <= 1 || count <= 1) return pts.slice(0, Math.max(1, count))
+    const cum: number[] = [0]
+    let total = 0
+    for (let i = 1; i < pts.length; i++) {
+        const dx = pts[i]![0] - pts[i - 1]![0]
+        const dy = pts[i]![1] - pts[i - 1]![1]
+        total += Math.hypot(dx, dy)
+        cum.push(total)
+    }
+    if (total < 1e-9) return Array.from({ length: count }, () => pts[0]!)
+    const out: Vec2[] = []
+    let seg = 0
+    for (let i = 0; i < count; i++) {
+        const target = (total * i) / (count - 1)
+        while (seg < cum.length - 2 && cum[seg + 1]! < target) seg++
+        const segLen = cum[seg + 1]! - cum[seg]!
+        const f = segLen > 1e-9 ? (target - cum[seg]!) / segLen : 0
+        const a = pts[seg]!
+        const b = pts[seg + 1]!
+        out.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f])
+    }
+    return out
+}
+
+/**
+ * Trace a continuous RK4 streamline completely across [xStart, xEnd] with ZERO mid-air cutoffs,
+ * interpolating the exact exit crossing at x = xEnd and resampling uniformly by arc length.
+ */
+export function traceFullStreamline(
+    xStart: number,
+    y0: number,
+    xEnd: number,
+    outSamples: number,
+    vortices: readonly Vortex[],
+    shear = 0,
+    shearWidth = 0.85,
+    meanFlow = 2.4,
+    dt = 0.022,
+    maxSteps = 900,
+): Vec2[] {
+    const pts: Vec2[] = [[xStart, y0]]
+    let x = xStart
+    let y = y0
+    const vel = (px: number, py: number) => vortexVelocity(px, py, vortices, shear, shearWidth, meanFlow)
+    for (let i = 0; i < maxSteps; i++) {
+        const [nx, ny] = rk4Step(x, y, dt, vel)
+        if (nx >= xEnd) {
+            const frac = nx > x + 1e-9 ? (xEnd - x) / (nx - x) : 1
+            pts.push([xEnd, y + (ny - y) * frac])
+            break
+        }
+        pts.push([nx, ny])
+        x = nx
+        y = ny
+    }
+    // Safety extension if a seed stalled near a saddle: smoothly continue along mean flow to xEnd
+    const last = pts[pts.length - 1]!
+    if (last[0] < xEnd - 1e-4) {
+        const rem = xEnd - last[0]
+        const extra = Math.max(4, Math.ceil(rem / 0.12))
+        for (let k = 1; k <= extra; k++) {
+            pts.push([last[0] + (rem * k) / extra, last[1]])
+        }
+    }
+    return resamplePolyline(pts, outSamples)
+}
+
 // ── Canonical Vortex Sets for Invariant Checks & Visuals ──────────────────────
 // Staggered alternating-sign von Karman / Kelvin-Helmholtz vortex street
 export const SHEAR_VORTICES: readonly Vortex[] = [
     { x: -1.75, y: 0.42, gamma: -3.6, core: 0.56 },
     { x: 0.0, y: -0.42, gamma: 3.9, core: 0.58 },
     { x: 1.75, y: 0.42, gamma: -3.6, core: 0.56 },
+]
+
+// Rich multi-scale turbulent eddy hierarchy for high-Reynolds Re = 5000 channel eruption!
+export const TURB_EDDIES: readonly Vortex[] = [
+    { x: -2.45, y: 0.58, gamma: -3.4, core: 0.52 },
+    { x: -1.35, y: -0.48, gamma: 3.8, core: 0.54 },
+    { x: -0.25, y: 0.44, gamma: -4.1, core: 0.5 },
+    { x: 0.95, y: -0.52, gamma: 4.0, core: 0.52 },
+    { x: 2.15, y: 0.48, gamma: -3.7, core: 0.5 },
+    // Secondary daughter eddies (medium & fine scale cascade!)
+    { x: -1.9, y: -0.92, gamma: 2.1, core: 0.34 },
+    { x: -0.78, y: 0.96, gamma: -2.2, core: 0.32 },
+    { x: 0.38, y: -0.98, gamma: 2.3, core: 0.34 },
+    { x: 1.52, y: 0.94, gamma: -2.2, core: 0.32 },
+    { x: 2.78, y: -0.62, gamma: 2.0, core: 0.36 },
+    { x: -2.85, y: -0.35, gamma: 1.8, core: 0.35 },
 ]
 
 /** Exact co-rotating equal Lamb-Oseen vortex pair orbiting at angular velocity Omega = Gamma / (pi d^2) * (1 - exp(-d^2 / a^2)). */
@@ -180,11 +315,11 @@ export function coRotatingPair(t: number, separation = 1.5, gamma = 5.2, core = 
 }
 
 // ── Precomputed 2D Vortex-Pair Passive Tracer Ribbon Evolution (Scene 3) ──────
-// Precomputes 48 time snapshots of 7 silky-smooth glowing fluid ribbons (260 pts each!)
+// Precomputes 48 time snapshots of 9 silky-smooth glowing fluid ribbons (260 pts each!)
 // advected via RK4 in the exact time-dependent co-rotating Lamb-Oseen velocity field!
 export const PAIR_FRAMES = 48
 export const PAIR_DT_FRAME = 0.092
-export const PAIR_RIBBON_COUNT = 7
+export const PAIR_RIBBON_COUNT = 9
 export const PAIR_RIBBON_PTS = 260
 
 export interface PairSnapshot {
@@ -196,7 +331,7 @@ export interface PairSnapshot {
 export const PAIR_HISTORY: readonly PairSnapshot[] = (() => {
     const history: PairSnapshot[] = []
     let ribbons: Vec2[][] = []
-    const ySeeds = [-1.75, -1.3, -0.9, -0.52, 0.52, 0.9, 1.3]
+    const ySeeds = [-1.85, -1.45, -1.08, -0.72, -0.38, 0.38, 0.72, 1.08, 1.45]
     for (const y0 of ySeeds) {
         const line: Vec2[] = []
         for (let i = 0; i < PAIR_RIBBON_PTS; i++) {

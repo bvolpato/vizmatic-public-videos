@@ -1,6 +1,6 @@
 import {
-    circle, curve3d, dot, dynamic, group, line3d, point3d, radialGradient, scene3d, surface, tex,
-    type SceneFunction,
+    circle, curve3d, dot, dynamic, gridPlane3d, group, label3d, line3d, point3d, radialGradient,
+    rect, scene3d, surface, tex, type SceneFunction,
 } from 'vizmatic/stage'
 import {
     CHALLENGE_FORGED_Z, CHALLENGE_HONEST_Z, CHALLENGE_RX, CHALLENGE_RY,
@@ -9,19 +9,20 @@ import {
 import { txt } from '../../../factory/style'
 
 const RANGE = 2.55
+const FLOOR_Z = -0.95
 
 export const poly3d: SceneFunction = (s, c) => {
     const beamProg = s.value(0)
     const gapReveal = s.value(0)
 
-    const aura = circle(640, {
-        fill: radialGradient([0, 0], 640, [
-            [0, '#5ce1e61c'],
-            [0.45, '#ff6b8b14'],
+    const aura = circle(650, {
+        fill: radialGradient([0, 0], 650, [
+            [0, '#5ce1e620'],
+            [0.45, '#ff6b8b16'],
             [1, '#07091000'],
         ]),
         stroke: null,
-    }).at(200, 20)
+    }).at(205, 25)
 
     const view3d = scene3d({
         theta: -0.82,
@@ -29,38 +30,56 @@ export const poly3d: SceneFunction = (s, c) => {
         distance: 14.5,
         unit: 132,
         perspective: true,
-        ambient: 0.38,
-        shine: 0.32,
-        brightness: 1.08,
-        fog: 0.1,
-        focus: [0, 0, 0.45],
-    }).at(200, 30)
+        ambient: 0.4,
+        shine: 0.34,
+        brightness: 1.1,
+        fog: 0.09,
+        focus: [0, 0, 0.4],
+    }).at(205, 32)
 
-    // Honest polynomial surface P(x, y) in glowing cyan
+    // Visible 3D coordinate grid floor + glowing perimeter frame
+    const floorGrid = gridPlane3d({
+        x: [-RANGE, RANGE],
+        y: [-RANGE, RANGE],
+        z: FLOOR_Z,
+        step: 0.85,
+        color: '#4a6294',
+        width: 1.25,
+        opacity: 0.58,
+    })
+
+    const baseFrame = [
+        line3d([-RANGE, -RANGE, FLOOR_Z], [RANGE, -RANGE, FLOOR_Z], { color: '#5ce1e6', width: 1.8, opacity: 0.55 }),
+        line3d([RANGE, -RANGE, FLOOR_Z], [RANGE, RANGE, FLOOR_Z], { color: '#5ce1e6', width: 1.8, opacity: 0.55 }),
+        line3d([RANGE, RANGE, FLOOR_Z], [-RANGE, RANGE, FLOOR_Z], { color: '#5ce1e6', width: 1.8, opacity: 0.55 }),
+        line3d([-RANGE, RANGE, FLOOR_Z], [-RANGE, -RANGE, FLOOR_Z], { color: '#5ce1e6', width: 1.8, opacity: 0.55 }),
+    ]
+
+    // Smoothly subdivided [52, 52] Honest polynomial surface P(x, y) in glowing cyan
     const honestSurf = surface((x, y) => honestPoly3D(x, y), {
         x: [-RANGE, RANGE],
         y: [-RANGE, RANGE],
-        resolution: [38, 38],
+        resolution: [52, 52],
         colors: ['#0a2540', '#0e5a78', '#22b8cf', '#5ce1e6'],
         mesh: '#7ce8ff',
-        meshOpacity: 0.3,
-        meshWidth: 0.8,
+        meshOpacity: 0.24,
+        meshWidth: 0.65,
         opacity: 0.78,
     })
 
-    // Forged polynomial surface Q(x, y) (1-bit lie) in glowing rose
+    // Smoothly subdivided [52, 52] Forged polynomial surface Q(x, y) (1-bit lie) in glowing rose
     const forgedSurf = surface((x, y) => forgedPoly3D(x, y), {
         x: [-RANGE, RANGE],
         y: [-RANGE, RANGE],
-        resolution: [38, 38],
+        resolution: [52, 52],
         colors: ['#3b071e', '#881337', '#e11d48', '#ff6b8b'],
         mesh: '#fda4af',
-        meshOpacity: 0.28,
-        meshWidth: 0.75,
-        opacity: 0.7,
+        meshOpacity: 0.24,
+        meshWidth: 0.65,
+        opacity: 0.72,
     })
 
-    // Exact razor-thin intersection hyperbola x^2 - y^2 = 0.55 (both branches!)
+    // Exact razor-thin intersection hyperbola x^2 - y^2 = 0.55 (both branches, additive screen glow!)
     const posBranch = curve3d(
         (u) => {
             const x = Math.sqrt(0.55 + u * u)
@@ -68,7 +87,7 @@ export const poly3d: SceneFunction = (s, c) => {
         },
         -2.2,
         2.2,
-        { color: '#ffffff', width: 4.5, glow: 10, opacity: 0.96, samples: 80, bias: 0.06 },
+        { color: '#ffffff', width: 4.5, glow: 10, blend: 'screen', opacity: 0.96, samples: 88, bias: 0.06 },
     )
     const negBranch = curve3d(
         (u) => {
@@ -77,24 +96,53 @@ export const poly3d: SceneFunction = (s, c) => {
         },
         -2.2,
         2.2,
-        { color: '#ffffff', width: 4.5, glow: 10, opacity: 0.96, samples: 80, bias: 0.06 },
+        { color: '#ffffff', width: 4.5, glow: 10, blend: 'screen', opacity: 0.96, samples: 88, bias: 0.06 },
     )
 
-    // Subtle glowing base frame
-    const baseFrame = [
-        line3d([-RANGE, -RANGE, -0.9], [RANGE, -RANGE, -0.9], { color: '#334266', width: 1.4, opacity: 0.5 }),
-        line3d([RANGE, -RANGE, -0.9], [RANGE, RANGE, -0.9], { color: '#334266', width: 1.4, opacity: 0.5 }),
-        line3d([RANGE, RANGE, -0.9], [-RANGE, RANGE, -0.9], { color: '#334266', width: 1.4, opacity: 0.5 }),
-        line3d([-RANGE, RANGE, -0.9], [-RANGE, -RANGE, -0.9], { color: '#334266', width: 1.4, opacity: 0.5 }),
-    ]
+    // Glowing (r_x, r_y) crosshair projected onto the 3D coordinate grid floor!
+    const crossX = line3d([-RANGE, CHALLENGE_RY, FLOOR_Z + 0.02], [RANGE, CHALLENGE_RY, FLOOR_Z + 0.02], {
+        color: '#ffd166',
+        width: 2.6,
+        glow: 8,
+        blend: 'screen',
+        opacity: 0.85,
+    })
+    const crossY = line3d([CHALLENGE_RX, -RANGE, FLOOR_Z + 0.02], [CHALLENGE_RX, RANGE, FLOOR_Z + 0.02], {
+        color: '#ffd166',
+        width: 2.6,
+        glow: 8,
+        blend: 'screen',
+        opacity: 0.85,
+    })
+    const crossRing = curve3d(
+        (t) => [CHALLENGE_RX + Math.cos(t) * 0.38, CHALLENGE_RY + Math.sin(t) * 0.38, FLOOR_Z + 0.03],
+        0,
+        Math.PI * 2,
+        { color: '#ffd166', width: 3.2, glow: 10, blend: 'screen', opacity: 0.95, samples: 48 },
+    )
+    const crossDot = point3d([CHALLENGE_RX, CHALLENGE_RY, FLOOR_Z + 0.04], {
+        color: '#ffd166',
+        radius: 7,
+        glow: 12,
+        blend: 'screen',
+        onTop: true,
+    })
+    const pill3d = (label: string, w: number, col: string) =>
+        group(
+            rect(w, 38, { fill: '#0b1020', stroke: col, width: 2.0, radius: 19 }),
+            txt(label, 0, 2, 26, col, 'mono'),
+        )
+
+    const crossLabel = label3d(pill3d('(rₓ, rᵧ)', 124, '#ffd166'), [CHALLENGE_RX, CHALLENGE_RY, FLOOR_Z + 0.05], {
+        offset: [78, 28],
+    })
 
     // Reactive random golden verifier challenge beam piercing both surfaces at (r_x, r_y)
-    const zTop = 2.6
-    const zBot = -0.9
+    const zTop = 2.65
     const beamLaser = line3d(
         () => [CHALLENGE_RX, CHALLENGE_RY, zTop],
-        () => [CHALLENGE_RX, CHALLENGE_RY, zTop - beamProg.value * (zTop - zBot)],
-        { color: '#ffd166', width: 6, glow: 12, opacity: 0.98, onTop: true },
+        () => [CHALLENGE_RX, CHALLENGE_RY, zTop - beamProg.value * (zTop - FLOOR_Z)],
+        { color: '#ffd166', width: 6.5, glow: 12, blend: 'screen', opacity: 0.98, onTop: true },
     )
     const gapBar = line3d(
         () => [CHALLENGE_RX, CHALLENGE_RY, CHALLENGE_HONEST_Z],
@@ -103,18 +151,24 @@ export const poly3d: SceneFunction = (s, c) => {
             CHALLENGE_RY,
             CHALLENGE_HONEST_Z + gapReveal.value * (CHALLENGE_FORGED_Z - CHALLENGE_HONEST_Z),
         ],
-        { color: '#ffffff', width: 8.5, glow: 14, opacity: 1, onTop: true },
+        { color: '#ffffff', width: 9.0, glow: 14, blend: 'screen', opacity: 1, onTop: true },
     )
     const hitHonest = point3d(
         () => [CHALLENGE_RX, CHALLENGE_RY, CHALLENGE_HONEST_Z],
-        { color: '#5ce1e6', radius: 9.5, halo: 0, onTop: true },
+        { color: '#5ce1e6', radius: 10, glow: 12, blend: 'screen', halo: 0, onTop: true },
     )
     const hitForged = point3d(
         () => [CHALLENGE_RX, CHALLENGE_RY, CHALLENGE_FORGED_Z],
-        { color: '#ff6b8b', radius: 9.5, halo: 0, onTop: true },
+        { color: '#ff6b8b', radius: 10, glow: 12, blend: 'screen', halo: 0, onTop: true },
     )
+    const tagP = label3d(pill3d('P(r)', 84, '#7ce8ff'), [CHALLENGE_RX, CHALLENGE_RY, CHALLENGE_HONEST_Z], {
+        offset: [60, -18],
+    })
+    const tagQ = label3d(pill3d('Q(r)', 84, '#ff96b0'), [CHALLENGE_RX, CHALLENGE_RY, CHALLENGE_FORGED_Z], {
+        offset: [60, 22],
+    })
 
-    view3d.add(honestSurf, forgedSurf, posBranch, negBranch, ...baseFrame)
+    view3d.add(floorGrid, ...baseFrame, honestSurf, forgedSurf, posBranch, negBranch)
 
     const leftCopy = group(
         txt('SCHWARTZ-ZIPPEL LEMMA', -850, -385, 26, '#ffd166', 'mono', 'left'),
@@ -134,25 +188,32 @@ export const poly3d: SceneFunction = (s, c) => {
         txt('Gap exposed instantly at (rₓ, rᵧ)', -850, 315, 28, '#ffd166', 'mono', 'left'),
     )
 
+    // Full-opacity glowing pill badge snapping in immediately when the golden laser pierces the surfaces!
     const gapBadge = dynamic(() => {
         if (gapReveal.value < 0.05) return []
-        const a = gapReveal.value
+        const a = Math.min(1, gapReveal.value)
         return group(
-            txt('P(r) ≠ Q(r)  ·  CAUGHT!', 575, -355, 32, '#ffd166', 'mono').opacity(a).glow(10, '#ffd166'),
+            rect(500, 62, { fill: '#111626ee', stroke: '#ffd166', width: 3.2, radius: 31 })
+                .at(555, -360)
+                .opacity(a)
+                .glow(12, '#ffd166'),
+            txt('P(r) ≠ Q(r)  ·  CAUGHT!', 555, -358, 30, '#ffd166', 'mono').opacity(a).glow(8, '#ffd166'),
         )
     })
 
     s.add(aura, view3d, leftCopy, gapBadge)
     const orbitDur = Math.max(15.5, c.end - c.start - 0.5)
     c.at(0.1, () => {
-        s.play(view3d.orbit({ theta: 0.45, phi: 0.92 }), { duration: orbitDur })
+        s.play(view3d.orbit({ theta: 0.45, phi: 0.92 }, { duration: orbitDur }))
     })
     c.show('razor-thin curves', boundEq)
     c.on('random golden challenge', () => {
-        view3d.add(beamLaser, hitHonest, hitForged, gapBar)
-        s.play(beamProg.to(1, { duration: 1.1 }))
+        view3d.add(crossX, crossY, crossRing, crossDot, crossLabel, beamLaser, hitHonest, hitForged, gapBar, tagP, tagQ)
+        s.play(beamProg.to(1, { duration: 0.95 }))
     })
-    c.on('exposing the gap', () => {
-        s.play(gapReveal.to(1, { duration: 0.8 }))
+    // Snap the gap bar & glowing P(r) != Q(r) badge in immediately as the laser pierces both surfaces!
+    const laserPierceTime = c.cue('random golden challenge').start + 0.75
+    s.at(laserPierceTime, () => {
+        s.play(gapReveal.to(1, { duration: 0.45 }))
     })
 }

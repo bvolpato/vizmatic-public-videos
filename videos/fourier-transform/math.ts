@@ -225,7 +225,7 @@ export const STFT_NF = 52
 export const STFT_FULL_TABLE = new Float32Array(STFT_NT * STFT_NF)
 export const STFT_COMPRESSED_TABLE = new Float32Array(STFT_NT * STFT_NF)
 
-function stftSignal(t: number): number {
+export function stftSignalClean(t: number): number {
     // Musical triad chord active across t in [0, 1] at 3 crisp, well-separated harmonic ridges
     const env1 = Math.exp(-Math.pow((t - 0.34) / 0.36, 2))
     const env2 = Math.exp(-Math.pow((t - 0.52) / 0.4, 2))
@@ -240,12 +240,16 @@ function stftSignal(t: number): number {
     const chirpPhase = 2 * Math.PI * (f0 * t + 0.5 * (f1 - f0) * t * t)
     const chirpEnv = 0.95 * Math.sin(Math.PI * Math.max(0, Math.min(1, t)))
     const chirp = 1.22 * chirpEnv * Math.cos(chirpPhase)
+    return chord + chirp
+}
+
+export function stftSignal(t: number): number {
     // Deterministic gentle noise floor (representing ambient room / quantization hiss)
     const noise =
         0.15 * Math.sin(2 * Math.PI * 47.3 * t + 0.7) +
         0.13 * Math.cos(2 * Math.PI * 63.9 * t + 1.9) +
         0.11 * Math.sin(2 * Math.PI * 81.1 * t + 2.6)
-    return chord + chirp + noise
+    return stftSignalClean(t) + noise
 }
 
 ;(() => {
