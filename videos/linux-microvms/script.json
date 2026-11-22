@@ -1,0 +1,87 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "KVM": "K V M",
+    "VMM": "V M M",
+    "QEMU": "Q emu",
+    "EPT": "E P T",
+    "CPU": "C P U",
+    "VM": "V M",
+    "VMs": "V Ms",
+    "microVM": "micro V M",
+    "microVMs": "micro V Ms",
+    "virtio": "virt I O",
+    "seccomp": "sec comp",
+    "MiB": "mebibytes",
+    "VMGenID": "V M gen I D"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Isolating untrusted code in milliseconds",
+      "beats": [
+        {
+          "say": "How do cloud platforms run untrusted user code and AI agents side by side on the same bare-metal host — booting a full Linux kernel in milliseconds? Containers share one host kernel, so one kernel bug breaks the wall. Traditional VMs bring heavy legacy emulators. Enter KVM and Firecracker microVMs.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "kvm",
+      "title": "One CPU instruction out through KVM and back",
+      "beats": [
+        {
+          "say": "At the silicon level, hardware virtualization splits the CPU into two worlds: host root mode and guest non-root mode. Guest instructions run natively at full speed — until one privileged instruction tries to touch real hardware.",
+          "hold": 0.35
+        },
+        {
+          "say": "The CPU immediately triggers a VM exit, trapping out into Linux KVM in the host kernel. KVM hands device I/O to the user-space monitor, emulates the operation, and fires VM resume to drop back into the guest. Two sets of page tables, called EPT, keep guest physical memory strictly walled off.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "firecracker",
+      "title": "Stripping the monitor to bare essentials",
+      "beats": [
+        {
+          "say": "Traditional monitors like QEMU emulate decades of legacy hardware — BIOS, USB, PCI buses, and graphics cards — widening both boot time and attack surface. Firecracker keeps KVM and replaces the monitor with a minimal Rust process.",
+          "hold": 0.35
+        },
+        {
+          "say": "Every microVM runs as one stripped-down process exposing just virtio block, virtio network, and a minimal console, cutting memory overhead under five MiB and cold boots toward one hundred twenty-five milliseconds. Around that process sits a layered fortress: seccomp syscall filters, cgroups, and a chroot jailer.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "snapshots",
+      "title": "Snapshots, lazy memory, and the clone trap",
+      "beats": [
+        {
+          "say": "Want even faster starts? Pause a booted microVM and save its CPU state and memory image to disk. A fresh clone resumes in a handful of milliseconds by mapping memory lazily on first page fault, sharing clean read-only host pages and allocating new blocks only on copy-on-write writes.",
+          "hold": 0.35
+        },
+        {
+          "say": "Watch the subtle clone trap: two restored clones start with identical memory, identical random number generators, and identical clocks. Production operators combine VMGenID notifications, fresh entropy seeding, and unique network identities before letting cloned sandboxes talk to the world.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Hardware isolation at container speed",
+      "beats": [
+        {
+          "say": "Every isolation layer trades speed against blast radius: containers for trusted services, gVisor for syscall interception, full QEMU for legacy operating systems, and KVM microVMs when you need a dedicated kernel for code you do not trust. Hardware isolation at container speed.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

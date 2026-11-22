@@ -1,0 +1,43 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "AI": "A I"
+  },
+  "scenes": [
+    {
+      "id": "tiles",
+      "title": "One list, then every finite list",
+      "beats": [
+        {
+          "say": "Watch three colored tiles — one, two, three — flip through a tail-recursive list reversal by moving each head into an accumulator. Testing checks that one list reverses to three, two, one. Lean 4 lets us prove the algorithm matches the specification for every finite list.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "induction",
+      "title": "Generalizing the accumulator",
+      "beats": [
+        {
+          "say": "Try induction directly with an empty accumulator and the proof gets stuck: after moving one element, the recursive call carries a non-empty accumulator that the hypothesis cannot match. Generalize the theorem to hold for any starting accumulator, and the inductive regrouping snaps together cleanly for both base and step cases.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "kernel",
+      "title": "Inside Lean's tiny trusted kernel",
+      "beats": [
+        {
+          "say": "Why can you trust a Lean proof — even one written by an AI? Because tactics and search only build a formal proof term. Before Lean accepts the theorem, its tiny trusted kernel checks every single type rule from first principles. One small kernel. Infinite certainty.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

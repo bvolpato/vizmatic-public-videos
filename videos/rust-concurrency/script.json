@@ -1,0 +1,109 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "rustc": "rust see",
+    "Rc": "R C",
+    "Arc": "ark",
+    "RefCell": "ref cell",
+    "Mutex": "mutex",
+    "MutexGuard": "mutex guard",
+    "mpsc": "M P S C",
+    "oneshot": "one shot",
+    "Tokio": "Tokyo",
+    "epoll": "E poll",
+    "kqueue": "K queue",
+    "JoinSet": "join set",
+    "Semaphore": "semaphore",
+    "CancellationToken": "cancellation token",
+    "Rayon": "ray on",
+    "CPU": "C P U",
+    "OS": "O S",
+    "I/O": "I O",
+    "MiB": "mebibytes",
+    "E0277": "E zero two seven seven",
+    "E0373": "E zero three seven three"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Fearless concurrency before the binary exists",
+      "beats": [
+        {
+          "say": "Data races are the nastiest bugs in systems engineering — two threads colliding on the same memory with no lock in sight. Rust eliminates the entire class before your program even compiles. One single rule governs everything: many shared readers, or one exclusive writer, never both at once.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "ownership",
+      "title": "Send, Sync, and locks that own their data",
+      "beats": [
+        {
+          "say": "Two compiler marker traits police every thread boundary. Send means ownership can cross threads; Sync means shared references can cross safely. A plain String sails straight through. An Rc pointer or an Arc of RefCell shatters against the wall with error E0277.",
+          "hold": 0.35
+        },
+        {
+          "say": "Wrap your state in Arc of Mutex, and Rust unlocks a signature design: Mutex owns the data inside it. You cannot touch the inner value without locking, and its MutexGuard unlocks automatically when it drops — even during a panic.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "scopes",
+      "title": "Scoped threads, atomics, and bounded channels",
+      "beats": [
+        {
+          "say": "Ordinary thread spawn demands a static closure because a detached thread can outlive your stack. Switch to thread scope, and the compiler proves every worker joins before the scope returns — letting four threads mutate disjoint stack slices in place with zero Arc allocations and zero locks.",
+          "hold": 0.35
+        },
+        {
+          "say": "When threads coordinate, choose atomics with Acquire and Release for lock-free flags, or pass ownership through a bounded channel. Once full, the buffer pushes backpressure upstream; once every sender drops, the consumer drains and exits cleanly.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "futures",
+      "title": "Zero-cost async: 48-byte state machines",
+      "beats": [
+        {
+          "say": "OS threads reserve roughly two MiB of stack each — wasteful for ten thousand idle sockets. Rust async allocates no stack at all. Calling an async function returns a lazy Future compiled into a tiny state machine enum. In our lab, a two-await pipeline compiles down to forty-eight bytes.",
+          "hold": 0.35
+        },
+        {
+          "say": "Nothing runs until an executor calls poll. If the socket is not ready, the future stores a Waker and returns Pending, freeing the thread immediately. When epoll or kqueue fires, wake signals the executor to poll again until Ready — while Pin keeps self-references locked in memory.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "tokio",
+      "title": "Inside Tokio: work stealing, blocking, and cancellation",
+      "beats": [
+        {
+          "say": "Tokio pairs that OS reactor with a multi-threaded work-stealing runtime. Idle workers steal half of a busy neighbor's local queue in one batch. The biggest trap is blocking a worker thread with synchronous work, starving every task behind it. Offload blocking calls with spawn blocking, or CPU parallelism with Rayon.",
+          "hold": 0.35
+        },
+        {
+          "say": "For structured lifecycles, a JoinSet aborts unfinished tasks on drop, while a Semaphore caps in-flight concurrency. And when select races a timeout against an RPC, cancellation is not an exception — Rust simply drops the losing Future, running every destructor automatically.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Ownership is Rust's concurrency model",
+      "beats": [
+        {
+          "say": "Put it all together in a real service: async ingesters gated by a Semaphore feed owned batches through a bounded mpsc channel to an actor that owns its state with zero mutexes, answering queries over oneshot and draining cleanly on a CancellationToken. Ownership is not bolted onto Rust concurrency. Ownership is Rust's concurrency model.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

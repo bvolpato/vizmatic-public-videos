@@ -1,0 +1,9 @@
+{
+  "title": "io_uring: Inside Linux's Zero-Syscall I/O Engine",
+  "description": "Follow one 4 KiB read across the user/kernel boundary, through io_uring's twin shared ring buffers, SQPOLL zero-syscall batching, and below the rings into the page cache versus O_DIRECT on NVMe.",
+  "category": "Linux & Storage",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.0
+}

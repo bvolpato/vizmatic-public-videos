@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Install Vizmatic
+        run: npm install --no-audit --no-fund
+
+      - name: Typecheck and run Vizmatic layout checks on all videos
+        run: uv run factory/build.py --all --check-only
+
+      - name: Verify static site generator
+        run: node factory/build-site.mjs
+
+      - name: Run Rust Concurrency Cargo lab tests
+        working-directory: videos/rust-concurrency/lab
+        run: cargo test --locked

@@ -1,0 +1,37 @@
+{
+  "entry": "film.ts",
+  "output": "Formal-01-Why-Tests-Miss-the-Bug",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 701,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "fail",
+        "sound": "latch",
+        "gain": 0.045
+      },
+      {
+        "scene": "ai",
+        "beat": 0,
+        "word": "holds",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

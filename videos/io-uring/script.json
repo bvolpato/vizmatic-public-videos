@@ -1,0 +1,81 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "io_uring": "I O you ring",
+    "KiB": "kibibyte",
+    "CPU": "C P U",
+    "I/O": "I O",
+    "SQE": "S Q E",
+    "CQE": "C Q E",
+    "SQPOLL": "S Q poll",
+    "NVMe": "N V M E",
+    "O_DIRECT": "O direct",
+    "blk-mq": "block M Q",
+    "seccomp": "sec comp"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Crossing the kernel wall",
+      "beats": [
+        {
+          "say": "Every time a Linux program reads four KiB from disk or a socket with a classic syscall, the CPU slams across the user-kernel wall, saves registers, and flushes state. Modern NVMe drives finish millions of operations per second — turning syscalls into the bottleneck. Linux io_uring cuts those crossings all the way to zero.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "rings",
+      "title": "Two shared rings in memory",
+      "beats": [
+        {
+          "say": "Instead of passing one request per system call, io_uring maps two lock-free ring buffers directly into memory shared by both your application and the kernel. Your app writes sixty-four-byte submission entries into the Submission Queue and advances the tail pointer with a release store.",
+          "hold": 0.35
+        },
+        {
+          "say": "As the kernel finishes each read, write, or network accept, it writes a compact sixteen-byte completion entry into the Completion Queue and advances its tail. Your app reads completions straight out of user-space RAM with zero syscalls at all.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "batching",
+      "title": "From thirty-two crossings to one, to zero",
+      "beats": [
+        {
+          "say": "With batching, an application drops thirty-two operations into the submission ring and makes one single enter syscall to hand them all over at once. Turn on SQPOLL, and a dedicated kernel thread polls the submission ring directly — dropping system calls per read all the way to zero, at the cost of burning a polling CPU core.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "Below the rings: page cache vs direct I/O",
+      "beats": [
+        {
+          "say": "Submitting a read through io_uring does not automatically bypass the rest of Linux storage. With ordinary buffered I/O, a hot four KiB page returns straight from the kernel page cache in RAM, while a miss can hand off to an internal worker thread.",
+          "hold": 0.35
+        },
+        {
+          "say": "Add O_DIRECT with registered buffers, and that same four KiB read skips the page cache completely — traveling straight through the multi-queue block layer, blk-mq, into the NVMe drive's hardware queues with deterministic latency and zero extra memory copies.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "Power, policy, and shared memory",
+      "beats": [
+        {
+          "say": "That speed carries a security bill: io_uring is a second door into the kernel that bypasses per-syscall seccomp filters unless you lock down ring operations with explicit restrictions. When I/O rate is your bottleneck, io_uring is unmatched. Shared memory turns syscalls into pointers.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

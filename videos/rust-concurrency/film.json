@@ -1,0 +1,51 @@
+{
+  "entry": "film.ts",
+  "output": "Rust-Concurrency-Ownership-Across-Time",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.12
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 1991,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 0,
+        "word": "compiles",
+        "sound": "bell",
+        "gain": 0.045
+      },
+      {
+        "scene": "ownership",
+        "beat": 0,
+        "word": "shatters",
+        "sound": "latch",
+        "gain": 0.045
+      },
+      {
+        "scene": "futures",
+        "beat": 0,
+        "word": "bytes",
+        "sound": "resolve",
+        "gain": 0.05
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "model",
+        "sound": "bell",
+        "gain": 0.05
+      }
+    ]
+  }
+}

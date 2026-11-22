@@ -1,0 +1,46 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "SMT": "S M T",
+    "Z3": "Z three",
+    "TLA+": "T L A plus",
+    "AI": "A I"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Half the plane was broken",
+      "beats": [
+        {
+          "say": "A single line of binary search — low plus high divided by two — survived in production libraries for twenty years. Plot every valid thirty-two-bit pair of low and high on a plane. Your unit tests sit in one tiny safe corner, while half of all valid inputs overflow and fail.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "spectrum",
+      "title": "Tests sample; formal methods cover",
+      "beats": [
+        {
+          "say": "Testing checks the points you thought to write. Formal verification checks the entire space. An SMT solver like Z3 proves the overflow mathematically in milliseconds. TLA+ model checking exhaustively explores distributed protocol states. Proof assistants like Lean 4 verify theorems over infinitely many inputs.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "When AI writes the code",
+      "beats": [
+        {
+          "say": "When AI generates thousands of lines of code, human code review becomes the bottleneck. Formal verification flips the game: the proof checker does not care who wrote the code or the proof — only that every logical step holds. Next in the series: watching TLA+ hunt down a five-step distributed bug.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

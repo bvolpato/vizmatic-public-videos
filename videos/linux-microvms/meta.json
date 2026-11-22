@@ -1,0 +1,9 @@
+{
+  "title": "MicroVMs & KVM: From One CPU Instruction to Sub-Second Sandboxes",
+  "description": "How Linux KVM hardware virtualization and AWS Firecracker combine to isolate untrusted code in milliseconds \u2014 from VM exits and EPT to minimal Rust VMMs, seccomp jails, and snapshot clones.",
+  "category": "Linux & Virtualization",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 2.0
+}

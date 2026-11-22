@@ -1,0 +1,94 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.22,
+    "gap": 0.4,
+    "tail": 1.6
+  },
+  "pronounce": {
+    "Riemann": "Ree mahn",
+    "Euler": "Oiler",
+    "Gauss": "Gowss",
+    "zeta": "zay tah",
+    "pi": "pie",
+    "Li": "L I"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "A million-dollar mystery on one line",
+      "beats": [
+        {
+          "say": "A million-dollar math mystery keeps breaking the internet — and almost nobody can explain what it actually says. In under three minutes, you will literally see how one razor-thin line conducts the hidden music of every prime number in the universe.",
+          "hold": 0.35
+        }
+      ]
+    },
+    {
+      "id": "primes",
+      "title": "The scattered atoms of arithmetic",
+      "beats": [
+        {
+          "say": "Every whole number is built from primes — the atoms of math. Cross out every composite from one to one hundred, and twenty-five primes shine like stars. Zoom out to sixteen hundred numbers, and eerie diagonal filaments emerge out of pure chaos.",
+          "hold": 0.35
+        },
+        {
+          "say": "Count the primes up to each number, stepping up by one at every prime. Zoom out, and that jagged staircase hugs a smooth curve discovered by Gauss — wobbling gently above and below. For over a century and a half, one question has haunted mathematics: what hidden rhythm drives that wobble?",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "landscape",
+      "title": "A golden bridge to a complex landscape",
+      "beats": [
+        {
+          "say": "In seventeen thirty-seven, Leonhard Euler found a golden bridge: a simple infinite sum over every whole number equals an infinite product over every single prime. Plug in two, and it settles to pi squared over six.",
+          "hold": 0.35
+        },
+        {
+          "say": "Then Bernhard Riemann lifted that sum off the real line onto an entire two-dimensional complex landscape. Right down the center, deep funnels plunge all the way to zero — lined up along one single golden ridge at real part one half.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "spiral",
+      "title": "The critical line and its zeros",
+      "beats": [
+        {
+          "say": "Watch the complex plane fold like silk under the zeta function. Now climb straight up that golden critical line at one half, and trace where zeta lands on the right.",
+          "hold": 0.3
+        },
+        {
+          "say": "Keep your eyes on the glowing center: zero. At height fourteen point one three — bullseye. Twenty-one point zero two — zero again. Twenty-five point zero one, thirty point four two, thirty-two point nine four. The Riemann Hypothesis makes one breathtaking claim: every single non-trivial zero in all of infinity sits dead-center on that one line at one half.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "music",
+      "title": "How the zeros play the music of the primes",
+      "beats": [
+        {
+          "say": "Why should anyone care where zeros sit on a complex map? Because Riemann discovered each zero is a pure musical note — a wave vibrating at its exact height on the line. Add them to the smooth baseline: one zero, five zeros, fifteen, thirty. Those pure waves interfere until the smooth line literally snaps onto the prime numbers.",
+          "hold": 0.45
+        },
+        {
+          "say": "And here is the secret of one half. A zero's horizontal position sets the volume of its wave. On the line, every wave stays as balanced as fair coin flips. One single rogue zero off the line creates a massive wave that distorts the primes forever.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "stakes",
+      "title": "Why every proof claim stops the world",
+      "beats": [
+        {
+          "say": "Supercomputers have checked over ten trillion zeros — every single one dead-center on one half. Yet trillions is not infinity. That is why it carries a million-dollar Clay Millennium Prize, and why every viral proof claim stops the math world cold until it survives full peer review. One line. Infinitely many zeros. The hidden harmony of the primes.",
+          "hold": 1.6
+        }
+      ]
+    }
+  ]
+}

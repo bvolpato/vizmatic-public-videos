@@ -1,0 +1,16 @@
+{
+  "name": "vizmatic-public-videos",
+  "private": true,
+  "type": "module",
+  "description": "Open-source cinematic explainer videos built with Vizmatic.",
+  "scripts": {
+    "build": "uv run factory/build.py",
+    "build:all": "uv run factory/build.py --all",
+    "check": "uv run factory/build.py --all --check-only",
+    "site": "node factory/build-site.mjs",
+    "new": "node factory/new-video.mjs"
+  },
+  "dependencies": {
+    "vizmatic": "github:bvolpato/vizmatic#25123865"
+  }
+}
