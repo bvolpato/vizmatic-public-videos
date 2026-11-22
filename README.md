@@ -42,6 +42,14 @@ uv run factory/build.py --all
 
 Pass `--draft` for a fast 720p preview render, `--check-only` to run TypeScript and `vizmatic check` without rendering, or `--changed origin/main` to rebuild only modified videos (rebuilding all videos automatically whenever `factory/`, `package.json`, or `tsconfig.base.json` changes).
 
+### Multi-Layer Caching & Parallel Pages Deploys
+
+Both local runs and GitHub Actions cache every expensive stage independently:
+
+- **Voice cache (`audio/*.wav`, `timing.json`, and `audio/.cache/voice.json`):** Changing scene code or animations skips voice synthesis completely. When you edit one line of `script.json`, both Kokoro and ElevenLabs still reuse unchanged per-beat `.wav` files under `audio/`.
+- **Mix cache (`narration.wav` and `audio/.cache/mix.json`):** Changing visuals skips sound mixing. Changing only `film.json["mix"]` skips voice synthesis and remuxes `narration.wav` into the existing MP4 (`ffmpeg -c:v copy`) with zero frame re-rendering.
+- **Parallel Pages fan-out (`.github/workflows/pages.yml`):** A `plan` job warms the built Vizmatic cache once, then every video runs in its own parallel matrix job with `actions/cache@v4` for Vizmatic, `uv` Python packages, HuggingFace Kokoro weights, per-video audio, and per-video MP4s. Unchanged videos restore in seconds while changed videos render concurrently.
+
 ### Optional: Studio Voices with ElevenLabs
 
 Copy `.env.example` to `.env` (gitignored) and enable ElevenLabs locally:

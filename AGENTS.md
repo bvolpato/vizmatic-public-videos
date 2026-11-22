@@ -44,5 +44,5 @@ An explainer fails when it looks like a narrated slide deck. Follow these visual
 
 ## CI & GitHub Pages Behavior
 
-- `.github/workflows/ci.yml` runs on every PR: installs Vizmatic, runs `uv run factory/build.py --all --check-only` (TypeScript + `vizmatic check`), verifies `npm run site`, and runs the Rust Cargo lab tests (`videos/rust-concurrency/lab`).
-- `.github/workflows/pages.yml` runs on `main`: uses `factory/build.py --changed` with **Kokoro** (never ElevenLabs) to render only modified videos — or automatically rebuilds **all** videos when `factory/`, `package.json`, or `tsconfig.base.json` changes — then publishes the static watch gallery to GitHub Pages.
+- `.github/workflows/ci.yml` runs on every PR: restores or builds pinned Vizmatic (cached under `.cache`), runs `uv run factory/build.py --all --check-only` (TypeScript + `vizmatic check`), verifies `npm run site`, and runs the Rust Cargo lab tests (`videos/rust-concurrency/lab`).
+- `.github/workflows/pages.yml` runs on `main`: warms the pinned Vizmatic cache in `plan`, fans out one parallel matrix job per video using **Kokoro** (never ElevenLabs), caches `uv` packages, HuggingFace Kokoro weights, per-video audio (`audio/`, `narration.wav`, `timing.json`), and per-video renders (`dist/`, `poster.png`), and then builds and publishes the static watch gallery to GitHub Pages. Unchanged stages are skipped locally and in CI.

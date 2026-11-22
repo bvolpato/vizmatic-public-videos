@@ -26,6 +26,12 @@ jobs:
 
       - uses: astral-sh/setup-uv@v5
 
+      - name: Cache built Vizmatic engine
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: vizmatic-${{ runner.os }}-${{ hashFiles('package.json') }}
+
       - name: Build and link pinned Vizmatic
         run: ./factory/setup-vizmatic.sh
 
