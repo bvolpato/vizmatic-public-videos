@@ -27,7 +27,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VIDEOS_DIR = REPO_ROOT / "videos"
 VIZ_CLI = REPO_ROOT / "node_modules/vizmatic/dist/cli.js"
-TSC_BIN = REPO_ROOT / "node_modules/vizmatic/node_modules/typescript/bin/tsc"
+TSC_BIN = (
+    REPO_ROOT / "node_modules/vizmatic/node_modules/typescript/bin/tsc"
+    if (REPO_ROOT / "node_modules/vizmatic/node_modules/typescript/bin/tsc").is_file()
+    else REPO_ROOT / "node_modules/typescript/bin/tsc"
+)
 GLOBAL_TRIGGERS = ("factory/", "package.json", "package-lock.json", "tsconfig.base.json", ".github/workflows/pages.yml")
 
 

@@ -16,14 +16,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - uses: astral-sh/setup-uv@v5
 
-      - name: Install Vizmatic
-        run: npm install --no-audit --no-fund
+      - name: Build and link pinned Vizmatic
+        run: ./factory/setup-vizmatic.sh
 
       - name: Typecheck and run Vizmatic layout checks on all videos
         run: uv run factory/build.py --all --check-only

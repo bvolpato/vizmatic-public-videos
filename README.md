@@ -27,7 +27,7 @@ Every video in this repository is built as code: exact numerical math, live 3D s
 ### Install & Check
 
 ```sh
-npm install
+./factory/setup-vizmatic.sh
 npm run check
 ```
 

@@ -27,6 +27,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -36,8 +40,8 @@ jobs:
       - name: Install FFmpeg
         run: sudo apt-get update -y && sudo apt-get install -y ffmpeg
 
-      - name: Install Vizmatic
-        run: npm install --no-audit --no-fund
+      - name: Build and link pinned Vizmatic
+        run: ./factory/setup-vizmatic.sh
 
       - name: Determine changed videos
         id: plan
