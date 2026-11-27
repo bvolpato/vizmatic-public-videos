@@ -26,7 +26,7 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
 4. **Finalize `script.json` and synthesize voice once:**
    - Write `beat.say` so ElevenLabs can read it directly (`"omega"`, `"Lean four"`, `"cat zero"`) while keeping `pronounce` entries for Kokoro.
    - Default free local Kokoro: `uv run factory/build.py <slug> --voice-only`
-   - Optional ElevenLabs studio voice: `VIZMATIC_VOICE_PROVIDER=elevenlabs ELEVENLABS_VOICE=bella ELEVENLABS_SPEED=1.12 uv run factory/build.py <slug> --voice-only`
+   - Optional ElevenLabs studio voice: `VIZMATIC_VOICE_PROVIDER=elevenlabs ELEVENLABS_VOICE=david ELEVENLABS_SPEED=1.08 uv run factory/build.py <slug> --voice-only`
    - Commit `timing.json`; GitHub Actions always renders with Kokoro so CI spends zero API credits.
 5. **Verify at 30 fps and inspect rendered stills before full 1080p render:**
    - `uv run factory/build.py <slug> --check-only` (must pass with 0 errors, 0 warnings)

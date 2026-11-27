@@ -12,7 +12,7 @@ Caches each stage independently so unchanged work is never repeated:
                re-rendering video frames when only narration.wav changed.
 
 Defaults to free local Kokoro narration. Loads .env from the repository root so setting
-VIZMATIC_VOICE_PROVIDER=elevenlabs + ELEVENLABS_VOICE=bella opts into ElevenLabs cleanly.
+VIZMATIC_VOICE_PROVIDER=elevenlabs + ELEVENLABS_VOICE=david opts into ElevenLabs cleanly.
 """
 from __future__ import annotations
 

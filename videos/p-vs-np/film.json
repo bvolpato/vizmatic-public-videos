@@ -3,8 +3,8 @@
   "output": "P-vs-NP-Millennium-Prize-and-AI-Fleet",
   "look": "midnight",
   "voice": {
-    "name": "af_heart",
-    "speed": 1.13
+    "name": "am_michael",
+    "speed": 1.12
   },
   "check": [
     "--text-size",

@@ -93,7 +93,7 @@ Edit `.env`:
 ```env
 VIZMATIC_VOICE_PROVIDER=elevenlabs
 ELEVENLABS_API_KEY=sk_...          # or save to ~/.config/fido/elevenlabs_api_key (chmod 600)
-ELEVENLABS_VOICE=bella             # presets: bella | sarah | alice | matilda | jessica | lily (or any voice_id)
+ELEVENLABS_VOICE=david             # presets: david | will | chris | eric | brian | bella | sarah | alice | matilda | jessica | lily (or any voice_id)
 ELEVENLABS_MODEL_ID=eleven_multilingual_v2
 ELEVENLABS_SPEED=1.10
 ```
