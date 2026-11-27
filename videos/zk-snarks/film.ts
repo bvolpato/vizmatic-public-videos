@@ -5,7 +5,6 @@ import {
     BN254_FIELD_ORDER, CHALLENGE_GAP, FORGED_QAP, FORGED_WITNESS, GATE_ROOTS,
     HONEST_QAP, HONEST_WITNESS, WIRE_TRACE_POLY, evalPoly, evaluateR1CS, schwartzZippelBound,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { circuit } from './scenes/circuit'
 import { poly3d } from './scenes/poly3d'
@@ -55,7 +54,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

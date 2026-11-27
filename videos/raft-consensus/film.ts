@@ -4,7 +4,6 @@ import { COSMOS, nebula, starfield } from '../../factory/style'
 import {
     ALL_3_OF_5_QUORUMS, CLUSTER_SIZE, MAJORITY_QUORUM, MIN_OVERLAP_5, SPLIT_BRAIN_SIM,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { election } from './scenes/election'
 import { partition } from './scenes/partition'
@@ -51,7 +50,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

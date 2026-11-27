@@ -16,13 +16,13 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
    - Set `"featured": true` and `"published": "YYYY-MM-DD"` in `videos/<slug>/meta.json` to feature new releases on the homepage spotlight.
 2. **Design for cinema, not PowerPoint:**
    - Full-bleed `1920 x 1080` dark canvas (`bleed: true`, `bloom: 0.22-0.24`, `#070910`), zero slide headers, zero `01 / 05` counters, zero boxy bullet cards, and zero unnecessary caveats/credits.
-   - Hook in the first 8-15 seconds (`intro: 0.7s`) with live motion and clear stakes. Target **2:30-3:30** total duration.
+   - Open directly on Scene 1 (`hook`) from frame 0 (`intro: false`, `firstSceneTransition: 'cut'` in `film.ts`) with zero split-second intro title flash in the MP4. Put dedicated 1920x1080 thumbnail artwork in `scenes/poster.ts` (`export const poster: IntroFunction`); `factory/build.py` renders `poster.png` directly from `scenes/poster.ts` (and supports `--poster-only`). Target **2:30-3:30** total duration.
    - Teach **mechanisms** visually (crossing wires with traveling photons, sweeping laser cuts, 3D surface morphs) rather than static history charts.
    - Use plain-English analogies for hard concepts and visceral scale analogies for large numbers (for example, comparing `2^300` to atoms in the observable universe).
-   - Keep all visible text `>= 26 px` and diversify poster layouts relative to neighboring videos.
+   - Keep all visible text `>= 26 px`, diversify poster layouts relative to neighboring videos, and rely on `factory/style.ts`'s 9-stop smooth `nebula()` plus `libx264` final encoding (default in `factory/build.py`) to avoid dark-gradient banding.
 3. **Compute real models & assert invariants:**
    - Put exact numerical/algorithmic logic in `videos/<slug>/math.ts` and assert key invariants at build time in `videos/<slug>/film.ts` with `assertEqual`.
-   - For 3D spheres (`parametricSurface`), span `v` over `[0, 1]` (`phi = v * Math.PI`) to avoid polar holes, and compute exact latitude/great-circle radii. For sequential 3D walls, use a 3/4 side-angle camera (`theta ~ -1.3`) and dynamic `line3d` segments for growing arcs.
+   - For 3D spheres (`parametricSurface`), span `v` over `[0, 1]` (`phi = v * Math.PI`) with `resolution: [56, 32]`+ to avoid polar holes and faceted edges, and compute exact latitude/great-circle radii (`samples: 200+`). For sequential 3D walls, use a 3/4 side-angle camera (`theta ~ -1.3`) and dynamic `line3d` segments for growing arcs.
 4. **Finalize `script.json` and synthesize voice once:**
    - Write `beat.say` so ElevenLabs can read it directly (`"omega"`, `"Lean four"`, `"cat zero"`) while keeping `pronounce` entries for Kokoro.
    - Default free local Kokoro: `uv run factory/build.py <slug> --voice-only`
@@ -30,8 +30,8 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
    - Commit `timing.json`; GitHub Actions always renders with Kokoro so CI spends zero API credits.
 5. **Verify at 30 fps and inspect rendered stills before full 1080p render:**
    - `uv run factory/build.py <slug> --check-only` (must pass with 0 errors, 0 warnings)
-   - `(cd videos/<slug> && node ../../node_modules/vizmatic/dist/cli.js check film.ts --motion --text-size 26)` (target 0 non-intro findings across every frame; sequence crossfades with `delay(..., 0.2)` and guard hidden `dynamic` nodes with `< 0.02`)
-   - Render preview stills (`node node_modules/vizmatic/dist/cli.js film videos/<slug>/film.ts --frame 0.45,20,60,120 --width 1280 --out videos/<slug>/stills/preview`) and inspect every scene visually before running `uv run factory/build.py <slug>` and `npm run site`.
+   - `(cd videos/<slug> && node ../../node_modules/vizmatic/dist/cli.js check film.ts --motion --text-size 26)` (target 0 findings across every frame; sequence crossfades with `delay(..., 0.2)` and guard hidden `dynamic` nodes with `< 0.02`)
+   - Render preview stills (`node node_modules/vizmatic/dist/cli.js film videos/<slug>/film.ts --frame 0,20,60,120 --width 1280 --out videos/<slug>/stills/preview`) and standalone poster (`uv run factory/build.py <slug> --poster-only`), inspect every scene visually, then run `uv run factory/build.py <slug>` and `npm run site`.
 
 ## Key Repository Files
 

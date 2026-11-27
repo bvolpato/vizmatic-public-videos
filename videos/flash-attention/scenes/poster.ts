@@ -31,7 +31,7 @@ function sampleHero(wx: number, wy: number): number {
     return (h00 * (1 - fu) + h10 * fu) * (1 - fv) + (h01 * (1 - fu) + h11 * fu) * fv
 }
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const flow = stage.value(0.22)
 
     // Bespoke isometric 3D hero: high-res 56x56 attention manifold + glowing gold SRAM tile hovering above

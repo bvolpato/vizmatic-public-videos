@@ -41,7 +41,7 @@ const OUTER_VERTS: Vec3[] = [
     [0, -2.45, 0],
 ]
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const prog = stage.value(0.25)
     const beamGrad = linearGradient([CX - 340, CY], [CX + 340, CY], ['#5ce1e600', '#ffd166', '#ffffff', '#ffd166', '#5ce1e600'])
 

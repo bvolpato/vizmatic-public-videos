@@ -10,7 +10,6 @@ import {
     gcd,
     modPow,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { bloch3d } from './scenes/bloch3d'
 import { period } from './scenes/period'
@@ -55,7 +54,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

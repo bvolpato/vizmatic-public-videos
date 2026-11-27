@@ -12,7 +12,7 @@ const GX = -395
 const GY = 18
 const HALF = ((GRID - 1) * PITCH) / 2
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const beam = stage.value(0.76)
     const beamGrad = linearGradient([GX - HALF, GY - HALF], [GX + HALF, GY + HALF], ['#ff6b8b', '#ffd166', '#ffffff'])
 

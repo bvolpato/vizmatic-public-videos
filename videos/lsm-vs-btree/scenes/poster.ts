@@ -10,7 +10,7 @@ const CY = 0
 
 const RIVER_XS = Array.from({ length: 64 }, (_, i) => CX - 260 + (520 * i) / 63)
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const prog = stage.value(0.25)
     const goldGrad = linearGradient([CX - 260, CY + 120], [CX + 260, CY + 120], ['#ffd16620', '#ffd166', '#ffffff', '#ffd166'])
 

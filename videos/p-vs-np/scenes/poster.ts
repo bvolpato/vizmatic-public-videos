@@ -45,7 +45,7 @@ function buildExpTree(x: number, y: number, depth: number, spreadY: number, isKe
 }
 buildExpTree(325, 0, 0, 178, true)
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const prog = stage.value(0.25)
     const polyGrad = linearGradient([-940, 0], [-295, 0], ['#1d4ed844', COSMOS.cyan, COSMOS.emerald])
 

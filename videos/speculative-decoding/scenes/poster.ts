@@ -51,7 +51,7 @@ function addHeroPrism(
 const CX = 245
 const CY = -85
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const pulse = stage.value(0.35)
 
     const hero3d = scene3d({

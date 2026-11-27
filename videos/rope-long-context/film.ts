@@ -5,7 +5,6 @@ import {
     PROOF_FREQS, PROOF_K, PROOF_Q, ROPE_DEFAULT_BASE, ROPE_DEMO_DIM,
     applyRoPE, dot, ntkScaledBase, relativePositionError, ropeKernel,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { clocks } from './scenes/clocks'
 import { helix3d } from './scenes/helix3d'
@@ -66,7 +65,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

@@ -4,7 +4,6 @@ import { COSMOS, nebula, starfield } from '../../factory/style'
 import {
     HOOK_PARTICLES, TARGET_MODES, flowMatchingTrajectory, lerpPt,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { noisefield } from './scenes/noisefield'
 import { curvedvsstraight } from './scenes/curvedvsstraight'
@@ -59,7 +58,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

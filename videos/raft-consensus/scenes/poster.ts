@@ -14,7 +14,7 @@ const NODES: readonly { readonly name: string; readonly pos: Vec }[] = Array.fro
     return { name: `S${i + 1}`, pos: [CX + Math.cos(a) * R * 1.45, CY + Math.sin(a) * R * 0.92] as Vec }
 })
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const prog = stage.value(0.2)
 
     stage.add(

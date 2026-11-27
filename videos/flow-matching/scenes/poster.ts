@@ -58,7 +58,7 @@ function curvedPt(x0: readonly [number, number], x1: readonly [number, number], 
     return [CX + (base[0] + nx * arch) * SCALE, CY + (base[1] + ny * arch) * SCALE]
 }
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const morph = stage.value(0.76)
 
     const auraField = scalarField(

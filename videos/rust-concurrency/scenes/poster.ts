@@ -5,7 +5,7 @@ import {
 import { COSMOS, txt } from '../../../factory/style'
 
 // Theatrical One-Sheet: Monumental Upper-Center 3D Borrow-Checker Prism + Bottom-Center Editorial Title (zero overlap!)
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const cx = 0
     const cy = -196
     const phase = stage.value(0)

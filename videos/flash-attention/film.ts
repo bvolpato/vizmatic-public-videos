@@ -5,7 +5,6 @@ import {
     DEMO_EXACT, DEMO_LOGITS, DEMO_ONLINE, H100, H100_RIDGE_AI,
     flashHbmBytes, naiveAttention1D, naiveHbmBytes, tiledAttention1D,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { memorywall } from './scenes/memorywall'
 import { tiling } from './scenes/tiling'
@@ -61,7 +60,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

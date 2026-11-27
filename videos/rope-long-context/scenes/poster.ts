@@ -20,7 +20,7 @@ const HERO_HELIX_BANDS = [
     { freq: 0.12, radius: 2.75, color: COSMOS.gold, width: 3.8, glow: 12 },
 ] as const
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const pos = stage.value(10.5)
     const beadT = stage.value(0.28)
 

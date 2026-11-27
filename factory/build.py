@@ -185,6 +185,53 @@ def ensure_local_node_modules(video_dir: Path) -> None:
     link.symlink_to(target)
 
 
+def render_standalone_poster(video_dir: Path, meta_cfg: dict, film_cfg: dict) -> bool:
+    """Render poster.png directly from scenes/poster.ts without baking a split-second intro into the MP4."""
+    poster_src = video_dir / "scenes/poster.ts"
+    if not poster_src.is_file():
+        return False
+    poster_t = float(meta_cfg.get("posterFrame", meta_cfg.get("posterAt", 0.45)))
+    if poster_t <= 0 or poster_t >= 0.68:
+        poster_t = 0.45
+    width = str(meta_cfg.get("width", 1920))
+    rel_factory = os.path.relpath(REPO_ROOT / "factory/style", video_dir).replace(os.sep, "/")
+    bloom = str(meta_cfg.get("posterBloom", 0.24))
+    entry_path = video_dir / ".poster-entry.ts"
+    tmp_dir = video_dir / ".poster-tmp"
+    entry_code = (
+        "import { film } from 'vizmatic/stage'\n"
+        f"import {{ COSMOS }} from '{rel_factory}'\n"
+        "import { poster } from './scenes/poster'\n\n"
+        f"export default film({{ width: 1920, height: 1080, fps: 30, background: COSMOS.bg, bloom: {bloom}, bleed: true }}, (s) => {{\n"
+        "    poster(s, { intro: 0.7, gap: 0.35, tail: 0, end: 0.7 })\n"
+        "    s.at(0.7, () => {})\n"
+        "})\n"
+    )
+    try:
+        entry_path.write_text(entry_code, encoding="utf-8")
+        if tmp_dir.exists():
+            import shutil
+            shutil.rmtree(tmp_dir)
+        run_cmd(
+            [
+                "node", str(VIZ_CLI), "film", entry_path.name,
+                "--frame", f"{poster_t:.3f}",
+                "--width", width,
+                "--out", tmp_dir.name,
+            ],
+            video_dir,
+        )
+        rendered = sorted(tmp_dir.glob("*.png"))
+        assert rendered, f"{video_dir.name}: standalone poster render produced no PNG"
+        rendered[0].replace(video_dir / "poster.png")
+        return True
+    finally:
+        entry_path.unlink(missing_ok=True)
+        if tmp_dir.exists():
+            import shutil
+            shutil.rmtree(tmp_dir)
+
+
 def build_video(slug: str, video_dir: Path, args: argparse.Namespace) -> None:
     print(f"\n=== [{slug}] ===", flush=True)
     if not VIZ_CLI.is_file():
@@ -200,6 +247,22 @@ def build_video(slug: str, video_dir: Path, args: argparse.Namespace) -> None:
     audio_cache_dir = video_dir / "audio/.cache"
     render_cache_dir = video_dir / "dist/.cache"
     provider = os.environ.get("VIZMATIC_VOICE_PROVIDER", "kokoro").strip().lower()
+
+    if args.poster_only:
+        ensure_local_node_modules(video_dir)
+        if not render_standalone_poster(video_dir, meta_cfg, film_cfg):
+            if mp4.is_file():
+                poster_at = str(meta_cfg.get("posterAt", 2.0))
+                run_cmd(
+                    [
+                        "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                        "-ss", poster_at, "-i", str(mp4), "-frames:v", "1", "-update", "1", "poster.png",
+                    ],
+                    video_dir,
+                )
+            else:
+                print("  poster: no scenes/poster.ts and no rendered MP4 yet (skipping)", flush=True)
+        return
 
     # ── Stage 1 & 2: Voice + Mix (independently cached under audio/.cache) ────
     if not args.check_only:
@@ -267,14 +330,15 @@ def build_video(slug: str, video_dir: Path, args: argparse.Namespace) -> None:
             )
             tmp_mp4.replace(mp4)
         if not args.draft and not poster.is_file():
-            poster_at = str(meta_cfg.get("posterAt", 2.0))
-            run_cmd(
-                [
-                    "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
-                    "-ss", poster_at, "-i", str(mp4), "-frames:v", "1", "-update", "1", "poster.png",
-                ],
-                video_dir,
-            )
+            if not render_standalone_poster(video_dir, meta_cfg, film_cfg):
+                poster_at = str(meta_cfg.get("posterAt", 2.0))
+                run_cmd(
+                    [
+                        "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                        "-ss", poster_at, "-i", str(mp4), "-frames:v", "1", "-update", "1", "poster.png",
+                    ],
+                    video_dir,
+                )
         write_stamp(r_stamp, {"picture": p_key, "audio": a_key, "provider": provider})
         return
 
@@ -300,14 +364,15 @@ def build_video(slug: str, video_dir: Path, args: argparse.Namespace) -> None:
     )
 
     if not args.draft:
-        poster_at = str(meta_cfg.get("posterAt", 2.0))
-        run_cmd(
-            [
-                "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
-                "-ss", poster_at, "-i", str(mp4), "-frames:v", "1", "-update", "1", "poster.png",
-            ],
-            video_dir,
-        )
+        if not render_standalone_poster(video_dir, meta_cfg, film_cfg):
+            poster_at = str(meta_cfg.get("posterAt", 2.0))
+            run_cmd(
+                [
+                    "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+                    "-ss", poster_at, "-i", str(mp4), "-frames:v", "1", "-update", "1", "poster.png",
+                ],
+                video_dir,
+            )
     write_stamp(r_stamp, {"picture": p_key, "audio": a_key, "provider": provider})
 
 
@@ -322,6 +387,7 @@ def main() -> None:
     parser.add_argument("--list-changed", metavar="BASE_REF", help="Print changed video slugs as JSON")
     parser.add_argument("--check-only", action="store_true", help="Run TypeScript and Vizmatic checks without synthesizing or rendering")
     parser.add_argument("--voice-only", action="store_true", help="Synthesize voice and mix narration.wav only")
+    parser.add_argument("--poster-only", action="store_true", help="Render standalone poster.png from scenes/poster.ts (or MP4 fallback) only")
     parser.add_argument("--draft", action="store_true", help="Render 720p draft MP4")
     parser.add_argument("--force", action="store_true", help="Ignore cached stage stamps")
     args = parser.parse_args()

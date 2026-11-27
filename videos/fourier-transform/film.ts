@@ -11,7 +11,6 @@ import {
     parsevalTimeEnergy,
     windingCenterOfMass,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { winding } from './scenes/winding'
 import { epicycles } from './scenes/epicycles'
@@ -70,7 +69,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

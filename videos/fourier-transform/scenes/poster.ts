@@ -18,7 +18,7 @@ const FULL_TRACE: Vec[] = Array.from({ length: 240 }, (_, i) => {
 
 const RING_COLS = ['#ffd166', '#5ce1e6', '#a78bfa', '#ff6b8b', '#ffd166'] as const
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const grad = linearGradient([CX - 300, CY + 300], [CX + 320, CY - 300], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
     const prog = stage.value(0.62)
     const ghostPts: Vec[] = [...HOOK_CONTOUR, HOOK_CONTOUR[0]!].map(([re, im]) => [CX + re * SCALE, CY - im * SCALE])

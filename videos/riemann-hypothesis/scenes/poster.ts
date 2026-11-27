@@ -58,7 +58,7 @@ const ZETA_CONTOURS = contourPaths(sampleZetaLogField, {
 
 const CONTOUR_COLORS = ['#38bdf8', '#7c8cff', '#c084fc', '#ffd166'] as const
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const grad = linearGradient([CX - 320, CY + 340], [CX + 440, CY - 340], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
     const prog = stage.value(0.68)
 

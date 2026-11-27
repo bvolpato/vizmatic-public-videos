@@ -2,7 +2,6 @@ import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../factory/style'
 import { ZETA_ZEROS, primePi, zeta } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { primes } from './scenes/primes'
 import { landscape } from './scenes/landscape'
@@ -45,7 +44,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

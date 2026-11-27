@@ -44,6 +44,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.22,
     bleed: true,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

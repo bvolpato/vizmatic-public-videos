@@ -39,7 +39,7 @@ function fieldToStage([wx, wy]: Vec): Vec {
     return [sx, sy]
 }
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const prog = stage.value(0.78)
     const waveGrad = linearGradient([CX - WIDTH / 2, CY], [CX + WIDTH / 2, CY], ['#5ce1e6', '#a78bfa', '#ffd166', '#5ce1e6'])
 

@@ -5,7 +5,6 @@ import {
     BLOOM_FPR_10BIT, BLOOM_MISS_BYPASS_PCT, BLOOM_OPTIMAL_K, BTREE_REAL_WA,
     PAGES_PER_ERASE_BLOCK, RANDOM_SSD_FTL_WA, SEQ_SSD_FTL_WA,
 } from './math'
-import { intro } from './scenes/intro'
 import { hook } from './scenes/hook'
 import { flashphysics } from './scenes/flashphysics'
 import { btreewall } from './scenes/btreewall'
@@ -50,7 +49,8 @@ export default narrated({
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,
-    intro,
+    intro: false,
+    firstSceneTransition: 'cut',
     timing,
     scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
 })

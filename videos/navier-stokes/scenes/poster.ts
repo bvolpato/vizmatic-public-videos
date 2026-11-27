@@ -75,7 +75,7 @@ function featheredVorticity(x: number, y: number): number {
     return vortexVorticity(x, y, SHEAR_VORTICES, 0.35, 0.9) * edge
 }
 
-export const intro: IntroFunction = (stage, clock) => {
+export const poster: IntroFunction = (stage, clock) => {
     const streamGrad = linearGradient([-960, CY], [960, CY], ['#5ce1e6', '#7c8cff', '#ff6b8b', '#ffd166'])
     const prog = stage.value(0.68)
 
