@@ -178,20 +178,20 @@ export const hook: SceneFunction = (s, c) => {
                     stroke: null,
                     radius: 16,
                 }).at(scanX, BOT_Y).opacity(flashOp * 0.92).set('blend', 'screen'),
-                line([scanX, BOT_Y - 76], [scanX, BOT_Y + 76], { stroke: COSMOS.gold, width: 6.5 })
+                line([scanX, BOT_Y - 54], [scanX, BOT_Y + 54], { stroke: COSMOS.gold, width: 6.5 })
                     .glow(18, COSMOS.gold).opacity(flashOp).set('blend', 'screen'),
                 dot(10, '#ffffff').at(scanX, BOT_Y).glow(20, COSMOS.gold).opacity(flashOp).set('blend', 'screen'),
-                txt('PARALLEL 70B VERIFY  ×5  —  1 HBM PASS', TRACK_LEFT, BOT_Y + 68, 28, COSMOS.gold, 'mono', 'left')
+                txt('70B VERIFY  ×5', TRACK_LEFT, BOT_Y + 78, 28, COSMOS.gold, 'mono', 'left')
                     .glow(8, COSMOS.gold),
             )
         } else if (isDrafting) {
             nodes.push(
-                txt('7B draft model firing 5 candidate tokens...', TRACK_LEFT, BOT_Y + 68, 28, COSMOS.cyan, 'sans', 'left')
+                txt('7B DRAFT  ×5', TRACK_LEFT, BOT_Y + 78, 28, COSMOS.cyan, 'mono', 'left')
                     .glow(5, COSMOS.cyan),
             )
         } else {
             nodes.push(
-                txt('5 tokens verified & committed in 1 single HBM pass!', TRACK_LEFT, BOT_Y + 68, 28, COSMOS.emerald, 'sans', 'left')
+                txt('5 ACCEPTED  ·  1 PASS', TRACK_LEFT, BOT_Y + 78, 28, COSMOS.emerald, 'mono', 'left')
                     .glow(6, COSMOS.emerald),
             )
         }

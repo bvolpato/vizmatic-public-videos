@@ -1,5 +1,5 @@
 import {
-    Node, circle, dot, dynamic, group, line, linear, par, radialGradient, rect, tex,
+    Node, circle, delay, dot, dynamic, group, line, linear, par, radialGradient, rect, tex,
     type SceneFunction,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -234,9 +234,9 @@ export const speculative: SceneFunction = (s, c) => {
         if (sp > 0.25) {
             const bOp = Math.min(1, (sp - 0.25) * 2.5) * a
             nodes.push(
-                circle(18 + pulse * 58, { fill: null, stroke: COSMOS.gold, width: 2.8 })
+                circle(16 + pulse * 36, { fill: null, stroke: COSMOS.gold, width: 2.8 })
                     .at(bonusX, bonusTopY).opacity((1 - pulse) * 0.88 * bOp).glow(10, COSMOS.gold).set('blend', 'screen'),
-                txt('Bonus draw (+0.13 residual)', bonusX, bonusTopY - 62, 27, COSMOS.violet, 'sans')
+                txt('Bonus draw (+0.13 residual)', bonusX, bonusTopY - 78, 27, COSMOS.violet, 'sans')
                     .glow(6, COSMOS.violet).opacity(bOp),
             )
         }
@@ -251,8 +251,8 @@ export const speculative: SceneFunction = (s, c) => {
     const mathDur = Math.max(4.0, c.end - c.cue('mathematical proof').start - 0.6)
     c.on('mathematical proof', () => {
         s.play(par(
-            showStreak.to(0, { duration: 0.25 }),
-            showMath.to(1, { duration: 0.35 }),
+            showStreak.to(0, { duration: 0.16 }),
+            delay(showMath.to(1, { duration: 0.28 }), 0.2),
             sampleProg.to(1, { duration: mathDur, ease: linear }),
         ))
     })

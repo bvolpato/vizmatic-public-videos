@@ -2,9 +2,9 @@
 
 Open-source, code-first cinematic explainer videos covering AI internals, mathematics, quantum interference, cryptography, Rust concurrency, distributed consensus, Linux virtualization, and storage -- authored in TypeScript and rendered reproducibly with **[Vizmatic](https://bvolpato.github.io/vizmatic/)**.
 
-Every video in this repository is built as code: exact numerical math, live 3D surfaces, conformal grid warps, state-machine visualizations, synchronized word-level captions, subtle musical sound cues, and an automated GitHub Pages gallery.
+Every video in this repository is built as code: exact numerical math, live 3D surfaces, conformal grid warps, state-machine visualizations, synchronized word-level captions, subtle musical sound cues, and an automated GitHub Pages gallery (with an agent-ready [`llms.txt`](llms.txt) published alongside the site).
 
-## Video Catalog (18 Explainers)
+## Video Catalog (20 Explainers)
 
 ### AI & ML Internals
 
@@ -19,6 +19,8 @@ Every video in this repository is built as code: exact numerical math, live 3D s
 
 | Video | What it teaches | Source |
 | --- | --- | --- |
+| **P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet** *(Millennium Prize #3)* | Exponential search (`2^300` vs universe atoms) vs linear 3-SAT verification, what breaks if `P = NP` vs `P != NP`, three proof walls explained intuitively in 3D, and the live `pequalnp.com` Lean 4 AI proof fleet (`42,500+` PRs). | [videos/p-vs-np](videos/p-vs-np/) |
+| **Matrix Multiplication: Why ω = 9/4 Changes Computing** | Live crossing-wire Strassen (`8 -> 7`), Border Rank & Laser block packing, polynomial degenerations, CAT(0) tripod geometry (`6 / (8/3) = 9/4`), the exact `α = 1/2` rectangular law, and real AI/GPU implications. | [videos/matrix-exponent](videos/matrix-exponent/) |
 | **The Riemann Hypothesis: Music of the Primes** | 15-second `$1,000,000` shockwave hook, 1,681-star Ulam prime galaxy, prime staircase vs Gauss curve, orbiting 3D `|zeta(s)|` landscape, conformal complex warp, critical-line spiral, and explicit-formula prime wave synthesis. | [videos/riemann-hypothesis](videos/riemann-hypothesis/) |
 | **The Navier-Stokes $1,000,000 Problem: Why Turbulence Breaks Math** *(Millennium Prize #2)* | Kelvin-Helmholtz vortex shear, divergence-free Lamb-Oseen vortex advection, 3D vortex stretching, orbiting 3D enstrophy blow-up spire, and Kolmogorov `k^(-5/3)` energy cascade. | [videos/navier-stokes](videos/navier-stokes/) |
 | **The Fourier Transform: Turning Chaos Into Epicycles & Music** | Spinning golden DFT epicycles, complex winding machine (`2, 5, 8 Hz` peaks), exact Parseval energy conservation, and orbiting 3D STFT spectrogram sparse-ridge compression (`MP3`, `JPEG`, `Wi-Fi`). | [videos/fourier-transform](videos/fourier-transform/) |

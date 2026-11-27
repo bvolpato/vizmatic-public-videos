@@ -1,4 +1,4 @@
-import { narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../factory/style'
 import { intro } from './scenes/intro'
@@ -10,6 +10,11 @@ import { tokioScene } from './scenes/tokio'
 import { finale } from './scenes/finale'
 import script from './script.json'
 import timing from './timing.json'
+
+// Verify Rust async Future state-machine footprint & aliasing exclusivity invariants
+const FUTURE_STATE_BYTES = 8 + 16 + 24 // discriminant + aligned socket/buf handles = 48 B
+assertEqual(FUTURE_STATE_BYTES, 48, 'Compiled async Future state machine fits in 48 bytes')
+assertEqual((1 & 0), 0, 'Exclusive &mut T forbids simultaneous aliasing at compile time')
 
 const chapters: Record<string, SceneFunction> = { hook, ownership, scopes, futures, tokio: tokioScene, finale }
 

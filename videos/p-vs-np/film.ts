@@ -1,0 +1,66 @@
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
+import { retimeBeatCaptions } from '../../factory/caption-alignment'
+import { COSMOS, nebula, starfield } from '../../factory/style'
+import {
+    DEMO_3SAT,
+    DEMO_WITNESS,
+    EXP_300,
+    EXP_300_UNIVERSE_RATIO,
+    PEQUALNP_FRONTS,
+    THREE_BARRIERS,
+    UNIVERSE_ATOMS,
+    countSolutions3SAT,
+    verify3SAT,
+} from './math'
+import { intro } from './scenes/intro'
+import { hook } from './scenes/hook'
+import { worlds } from './scenes/worlds'
+import { barriers } from './scenes/barriers'
+import { pequalnp } from './scenes/pequalnp'
+import { finale } from './scenes/finale'
+import script from './script.json'
+import timing from './timing.json'
+
+// Build-time verification of 3-SAT verifier, witness, and universe-scale exponential bounds
+assertEqual(verify3SAT(DEMO_3SAT, DEMO_WITNESS), true, 'DEMO_WITNESS must satisfy all 4 DEMO_3SAT clauses')
+assertEqual(verify3SAT(DEMO_3SAT, [false, false, false, true]), false, 'Counter-assignment must fail DEMO_3SAT')
+assertEqual(countSolutions3SAT(DEMO_3SAT, 4) > 0, true, 'DEMO_3SAT must be satisfiable')
+assertEqual(EXP_300 > UNIVERSE_ATOMS * 1e10, true, '2^300 must exceed 10 billion times atoms in the observable universe')
+assertEqual(EXP_300_UNIVERSE_RATIO > 2e10 && EXP_300_UNIVERSE_RATIO < 2.1e10, true, '2^300 / 10^80 ~ 2.04e10')
+assertEqual(THREE_BARRIERS.length, 3, 'Must cover all three proof walls')
+assertEqual(PEQUALNP_FRONTS.length, 5, 'Must list all 5 active Lean research fronts')
+
+const chapters: Record<string, SceneFunction> = { hook, worlds, barriers, pequalnp, finale }
+
+function chapter(index: number): SceneFunction {
+    const scene = timing.scenes[index]!
+    return (stage, cue, clock) => {
+        for (const [i, beat] of cue.beats.entries()) {
+            const captions = stage.captions.filter((c) => c.t0 >= beat.start - 0.002 && c.t0 < beat.end - 0.002)
+            if (captions.length > 0) {
+                const measured = { ...scene.beats[i]!, start: beat.start, end: beat.end }
+                if (!(typeof measured.wav === 'string' && measured.wav.includes('-el-'))) {
+                    const aligned = retimeBeatCaptions(captions, measured, script.pronounce)
+                    stage.captions.splice(stage.captions.indexOf(captions[0]!), captions.length, ...aligned.captions)
+                }
+            }
+        }
+        stage.add(nebula(0, -40, 1180, '#18244d28', '#10153010'), ...starfield(135, index + 31, COSMOS.cyan))
+        chapters[scene.id]!(stage, cue, clock)
+    }
+}
+
+export default narrated({
+    title: 'P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet',
+    description:
+        'A cinematic breakdown of P vs NP, what breaks if P = NP vs P ≠ NP, the three proof walls explained intuitively, and the live AI fleet attacking it in Lean 4 at pequalnp.com.',
+    width: 1920,
+    height: 1080,
+    fps: 30,
+    background: COSMOS.bg,
+    bloom: 0.24,
+    bleed: true,
+    intro,
+    timing,
+    scenes: Object.fromEntries(timing.scenes.map((scene, index) => [scene.id, chapter(index)])),
+})

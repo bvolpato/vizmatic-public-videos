@@ -212,8 +212,8 @@ export const poly3d: SceneFunction = (s, c) => {
         s.play(beamProg.to(1, { duration: 0.95 }))
     })
     // Snap the gap bar & glowing P(r) != Q(r) badge in immediately as the laser pierces both surfaces!
-    const laserPierceTime = c.cue('random golden challenge').start + 0.75
-    s.at(laserPierceTime, () => {
+    const laserPierceRel = Math.max(0.2, c.cue('random golden challenge').start - c.start + 0.75)
+    c.at(laserPierceRel, () => {
         s.play(gapReveal.to(1, { duration: 0.45 }))
     })
 }

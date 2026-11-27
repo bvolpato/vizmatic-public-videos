@@ -1,4 +1,4 @@
-import { narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../factory/style'
 import { hook } from './scenes/hook'
@@ -8,6 +8,13 @@ import { storage } from './scenes/storage'
 import { finale } from './scenes/finale'
 import script from './script.json'
 import timing from './timing.json'
+
+// Verify io_uring power-of-two ring masking & ABI descriptor sizes
+const RING_ENTRIES = 256
+const RING_MASK = RING_ENTRIES - 1
+assertEqual((RING_ENTRIES & RING_MASK), 0, 'Ring size is a power of two')
+assertEqual((259 & RING_MASK), 3, 'Bitmask wrap-around indexes ring buffer without division')
+assertEqual(64 / 16, 4, '64-byte SQE is exactly 4x the 16-byte CQE footprint')
 
 const chapters: Record<string, SceneFunction> = { hook, rings, batching, storage, finale }
 

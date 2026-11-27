@@ -4,13 +4,13 @@ import {
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
 
-const CX = 310
-const CY = -10
-const RING_RADII = [64, 110, 156, 202, 248, 294, 340] as const
+// Mirrored composition: Giant iridescent spinning clockwork + 3D multi-frequency helix on LEFT, Right-Aligned Editorial on RIGHT
+const CX = -345
+const CY = -8
+const RING_RADII = [66, 114, 162, 210, 258, 306, 354] as const
 const RING_COLORS = [
     COSMOS.cyan, '#38bdf8', COSMOS.blue, COSMOS.violet, '#c084fc', COSMOS.rose, COSMOS.gold,
 ] as const
-// Geometric speeds matching theta_i = 10000^(-2i/d)
 const RING_SPEEDS = [1.0, 0.52, 0.27, 0.14, 0.075, 0.04, 0.022] as const
 
 const HERO_HELIX_BANDS = [
@@ -24,23 +24,21 @@ export const intro: IntroFunction = (stage, clock) => {
     const pos = stage.value(10.5)
     const beadT = stage.value(0.28)
 
-    // Bespoke 3D multi-frequency helix receding in depth behind the luminous concentric clock dial
     const hero3d = scene3d({
-        theta: -0.68,
+        theta: 0.68,
         phi: 1.18,
-        distance: 15.6,
-        unit: 102,
+        distance: 15.2,
+        unit: 106,
         perspective: true,
         ambient: 0.45,
         shine: 0.35,
-        brightness: 1.12,
-        fog: 0.22,
-        focus: [0.3, 0, 0.2],
-    }).at(CX + 35, CY)
+        brightness: 1.14,
+        fog: 0.2,
+        focus: [-0.3, 0, 0.2],
+    }).at(CX - 30, CY)
 
-    // Glowing central depth axis receding away from the clock face
     hero3d.add(
-        line3d([-4.2, 0, 0], [5.4, 0, 0], {
+        line3d([-5.4, 0, 0], [4.2, 0, 0], {
             color: COSMOS.gold,
             width: 3.0,
             opacity: 0.78,
@@ -54,7 +52,7 @@ export const intro: IntroFunction = (stage, clock) => {
             curve3d(
                 (t): Vec3 => {
                     const m = t * 44
-                    const x = -4.2 + t * 9.6
+                    const x = 4.2 - t * 9.6
                     const ang = m * band.freq
                     return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
                 },
@@ -66,14 +64,14 @@ export const intro: IntroFunction = (stage, clock) => {
                     glow: band.glow,
                     blend: 'screen',
                     samples: 260,
-                    opacity: 0.72,
+                    opacity: 0.74,
                 },
             ),
             point3d(
                 (): Vec3 => {
                     const t = beadT.value
                     const m = t * 44
-                    const x = -4.2 + t * 9.6
+                    const x = 4.2 - t * 9.6
                     const ang = m * band.freq
                     return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
                 },
@@ -83,7 +81,7 @@ export const intro: IntroFunction = (stage, clock) => {
                 (): Vec3 => {
                     const t = (beadT.value + 0.45) % 1
                     const m = t * 44
-                    const x = -4.2 + t * 9.6
+                    const x = 4.2 - t * 9.6
                     const ang = m * band.freq
                     return [x, Math.cos(ang) * band.radius, Math.sin(ang) * band.radius]
                 },
@@ -93,37 +91,34 @@ export const intro: IntroFunction = (stage, clock) => {
     }
 
     stage.add(
-        // Deep luminous nebula halo behind the clock-helix fusion
-        circle(560, {
-            fill: radialGradient([0, 0], 560, [
-                [0, '#ffd1662c'],
-                [0.42, '#5ce1e61c'],
-                [0.72, '#4c2f8a14'],
+        circle(580, {
+            fill: radialGradient([0, 0], 580, [
+                [0, '#ffd16630'],
+                [0.42, '#5ce1e620'],
+                [0.72, '#4c2f8a16'],
                 [1, '#07091000'],
             ]),
             stroke: null,
         }).at(CX, CY).set('blend', 'screen'),
         hero3d,
-        // Crisp LaTeX formula & hero editorial typography on the left
-        txt('ROTARY POSITIONAL EMBEDDINGS', -852, -268, 26, COSMOS.cyan, 'mono', 'left'),
+        // Crisp Right-Aligned Editorial Typography
+        txt('ROTARY POSITIONAL EMBEDDINGS', 854, -268, 26, COSMOS.cyan, 'mono', 'right'),
         tex(String.raw`\theta_i = 10000^{-2i/d}`, {
             size: 38,
             color: COSMOS.gold,
-        }).at(-668, -196).glow(6, COSMOS.gold),
-        txt('RoPE', -858, -62, 140, COSMOS.ink, 'serif', 'left').glow(8, '#90b4ff'),
-        txt('Spinning Clocks', -858, 66, 98, COSMOS.cyan, 'serif', 'left').glow(10, '#38bdf8'),
-        txt('Why LLMs turn token order into angle', -852, 184, 34, '#cbd5e8', 'sans', 'left'),
-        // Brightened concentric luminous clock dial fused over the 3D helix origin
+        }).at(668, -196).glow(6, COSMOS.gold),
+        txt('RoPE', 860, -62, 144, COSMOS.ink, 'serif', 'right').glow(8, '#90b4ff'),
+        txt('Spinning Clocks', 860, 66, 98, COSMOS.cyan, 'serif', 'right').glow(10, '#38bdf8'),
+        txt('Why LLMs turn token order into angle', 854, 184, 34, '#cbd5e8', 'sans', 'right'),
         dynamic(() => {
             const m = pos.value
             const nodes: Node[] = []
 
-            // 60 fine dial ticks + 12 bright cardinal hour ticks around the outer bezel
             for (let t = 0; t < 60; t++) {
                 const ta = (t * Math.PI) / 30
                 const major = t % 5 === 0
-                const r0 = major ? 326 : 334
-                const r1 = major ? 358 : 350
+                const r0 = major ? 340 : 348
+                const r1 = major ? 372 : 364
                 nodes.push(
                     line(
                         [CX + Math.cos(ta) * r0, CY + Math.sin(ta) * r0],
@@ -133,10 +128,9 @@ export const intro: IntroFunction = (stage, clock) => {
                 )
             }
 
-            // Crosshair reticle
             nodes.push(
-                line([CX - 366, CY], [CX + 366, CY], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
-                line([CX, CY - 366], [CX, CY + 366], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
+                line([CX - 380, CY], [CX + 380, CY], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
+                line([CX, CY - 380], [CX, CY + 380], { stroke: '#3a4c78', width: 1.4, dash: [6, 10] }).opacity(0.45),
             )
 
             for (let i = 0; i < RING_RADII.length; i++) {
@@ -167,7 +161,7 @@ export const intro: IntroFunction = (stage, clock) => {
         stage.play(par(
             pos.to(15.5, { duration: dur }),
             beadT.to(0.68, { duration: dur }),
-            hero3d.orbit({ theta: -0.42, phi: 1.08 }, { duration: dur }),
+            hero3d.orbit({ theta: 0.42, phi: 1.08 }, { duration: dur }),
         ))
     })
 }

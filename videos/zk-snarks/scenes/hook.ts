@@ -5,7 +5,8 @@ import {
 } from 'vizmatic/stage'
 import { txt } from '../../../factory/style'
 
-const CX = 355
+// Mirrored composition: Monumental 3D Nested Witness Vault on LEFT, Right-Aligned Editorial on RIGHT
+const CX = -370
 const CY = -10
 
 function octaEdges(r: number, rotZ = 0): readonly (readonly [Vec3, Vec3])[] {
@@ -71,10 +72,10 @@ export const hook: SceneFunction = (s, c) => {
     const shot2Loop = s.value(0)
 
     const shot1Title = group(
-        txt('192 BYTES', -840, -175, 86, '#ffd166', 'mono', 'left').glow(10, '#ffd166'),
-        txt('Zero-Knowledge', -848, -32, 102, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('Proofs', -848, 86, 106, '#5ce1e6', 'serif', 'left').glow(8, '#38bdf8'),
-        txt('Million-step secret  ·  Zero bits revealed', -840, 206, 32, '#d2dcf0', 'sans', 'left'),
+        txt('192 BYTES', 852, -175, 88, '#ffd166', 'mono', 'right').glow(10, '#ffd166'),
+        txt('Zero-Knowledge', 858, -32, 102, '#f8f4ec', 'serif', 'right').glow(6, '#90b4ff'),
+        txt('Proofs', 858, 86, 108, '#5ce1e6', 'serif', 'right').glow(9, '#38bdf8'),
+        txt('Million-step secret  ·  Zero bits revealed', 852, 206, 32, '#d2dcf0', 'sans', 'right'),
     )
 
     // Orbiting glowing 3D faceted wireframe octahedron/vault surrounding the blazing 192-byte diamond

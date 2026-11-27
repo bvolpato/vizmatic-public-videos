@@ -66,18 +66,21 @@ export const firecracker: SceneFunction = (s, c) => {
                     nodes.push(txt(LEGACY_32[i]!, lx, ly, 26, COSMOS.rose, 'mono').opacity(legOp))
                 }
             }
-            nodes.push(
-                txt('QEMU MONOLITH:  ~1.8M LOC  ·  30+ LEGACY DEVICES', 0, 385, 28, COSMOS.rose, 'mono')
-                    .glow(6, COSMOS.rose)
-                    .opacity(legOp),
-            )
+            if (col < 0.42) {
+                const qOp = Math.max(0, 1 - col / 0.42)
+                nodes.push(
+                    txt('QEMU MONOLITH:  ~1.8M LOC  ·  30+ LEGACY DEVICES', 0, 385, 28, COSMOS.rose, 'mono')
+                        .glow(6, COSMOS.rose)
+                        .opacity(qOp),
+                )
+            }
         }
 
-        // Firecracker minimal Rust VMM core + 3 animated virtio ring streams (virtio-blk, virtio-net, vsock)
+        // Firecracker minimal Rust VMM core (radius 122 gives generous padding around "~50k LOC Rust") + 3 virtio streams
         const fcCol = col > 0.4 ? COSMOS.amber : COSMOS.rose
         nodes.push(
-            circle(102, { fill: '#12182b', stroke: fcCol, width: 4 }).at(coreX, coreY).glow(14, fcCol),
-            txt(col > 0.35 ? 'Firecracker' : 'QEMU VMM', coreX, coreY - 16, 28, COSMOS.ink, 'serif'),
+            circle(122, { fill: '#12182b', stroke: fcCol, width: 4 }).at(coreX, coreY).glow(14, fcCol),
+            txt(col > 0.35 ? 'Firecracker' : 'QEMU VMM', coreX, coreY - 18, 28, COSMOS.ink, 'serif'),
             txt(col > 0.35 ? '~50k LOC Rust' : '1.8M LOC C', coreX, coreY + 22, 26, fcCol, 'mono'),
         )
 
@@ -85,11 +88,11 @@ export const firecracker: SceneFunction = (s, c) => {
         if (virtioOp > 0.04) {
             const rings = [
                 { name: 'virtio-blk', ang: -Math.PI / 2, col: COSMOS.cyan, lx: 0, ly: -38 },
-                { name: 'virtio-net', ang: Math.PI / 6, col: COSMOS.emerald, lx: 18, ly: 42 },
-                { name: 'vsock', ang: (5 * Math.PI) / 6, col: COSMOS.gold, lx: -18, ly: 42 },
+                { name: 'virtio-net', ang: Math.PI / 6, col: COSMOS.emerald, lx: -4, ly: 42 },
+                { name: 'vsock', ang: (5 * Math.PI) / 6, col: COSMOS.gold, lx: 4, ly: 42 },
             ] as const
-            const rStart = 104
-            const rDist = 172
+            const rStart = 124
+            const rDist = 184
             for (let i = 0; i < rings.length; i++) {
                 const rg = rings[i]!
                 const sx = coreX + Math.cos(rg.ang) * rStart
@@ -106,10 +109,11 @@ export const firecracker: SceneFunction = (s, c) => {
                     txt(rg.name, vx + rg.lx, vy + rg.ly, 26, rg.col, 'mono').opacity(virtioOp),
                 )
             }
-            if (ft < 0.35) {
+            if (col > 0.56 && ft < 0.14) {
+                const footOp = Math.min(1, (col - 0.56) * 3.2) * (1 - ft / 0.14)
                 nodes.push(
                     txt('< 5 MiB overhead  ·  ~125 ms cold boot  ·  3 virtio devices', 0, 385, 28, COSMOS.cyan, 'mono')
-                        .opacity(virtioOp * (1 - ft * 2.5)),
+                        .opacity(footOp),
                 )
             }
         }
@@ -117,16 +121,21 @@ export const firecracker: SceneFunction = (s, c) => {
         // Layered Fortress: visible chroot jailer + cgroups walls around core + 16x12 Linux syscall seccomp matrix on right!
         if (ft > 0.04) {
             nodes.push(
-                regularPolygon(6, 286, { fill: null, stroke: COSMOS.gold, width: 3.5, dash: [14, 8] })
+                regularPolygon(6, 304, { fill: null, stroke: COSMOS.gold, width: 3.5, dash: [14, 8] })
                     .at(coreX, coreY)
                     .glow(10, COSMOS.gold)
                     .opacity(ft),
-                regularPolygon(6, 322, { fill: null, stroke: COSMOS.emerald, width: 3.5 })
+                regularPolygon(6, 338, { fill: null, stroke: COSMOS.emerald, width: 3.5 })
                     .at(coreX, coreY)
                     .glow(12, COSMOS.emerald)
                     .opacity(ft * 0.92),
-                txt('chroot jailer  +  cgroups', coreX, 396, 26, COSMOS.emerald, 'mono').opacity(ft),
             )
+            if (ft > 0.24) {
+                nodes.push(
+                    txt('chroot jailer  +  cgroups', coreX, 404, 26, COSMOS.emerald, 'mono')
+                        .opacity(Math.min(1, (ft - 0.24) * 2.2)),
+                )
+            }
 
             // Right side: 16x12 Linux Syscall Filter Matrix (300+ syscalls blocked crimson, ~40 emerald seccomp allowlist!)
             const matCx = 465

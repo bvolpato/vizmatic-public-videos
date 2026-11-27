@@ -1,0 +1,12 @@
+{
+  "title": "P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet",
+  "description": "A cinematic breakdown of P vs NP, what breaks if P = NP vs P ≠ NP, the three proof walls explained with everyday analogies, and the live AI fleet attacking it in Lean 4 at pequalnp.com.",
+  "category": "Mathematics",
+  "series": "Millennium Prize #3",
+  "featured": true,
+  "published": "2026-11-27",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 0.45
+}

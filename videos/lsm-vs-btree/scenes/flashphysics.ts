@@ -98,7 +98,7 @@ export const flashphysics: SceneFunction = (s, c) => {
             const fillW = Math.max(46, barW * chargeFrac)
             nodes.push(
                 rect(barW, 38, { fill: '#1e0c16', stroke: '#ff6b8b', width: 2.4, radius: 19 }).at(blockAX, barY).opacity(barOp),
-                rect(fillW, 32, { fill: eraseGrad, stroke: '#ff6b8b', width: 1.4, radius: 16 })
+                rect(fillW, 32, { fill: eraseGrad, stroke: null, radius: 16 })
                     .at(blockAX - barW / 2 + fillW / 2, barY)
                     .opacity(0.95 * barOp)
                     .glow(12, '#ff6b8b'),

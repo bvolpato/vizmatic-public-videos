@@ -174,7 +174,7 @@ export const hook: SceneFunction = (s, c) => {
         tex(String.raw`P(x) \;=\; \left|\sum \alpha_x\right|^2`, { size: 58, color: '#ffd166' })
             .at(0, -330)
             .glow(8, '#ffd166'),
-        txt('Constructive interference turns hidden structure into blazing peaks', 0, 355, 32, '#cbd5e8', 'sans'),
+        txt('Interference turns hidden structure into blazing peaks', 0, 355, 32, '#cbd5e8', 'sans'),
     )
 
     const liveComb = dynamic(() => {

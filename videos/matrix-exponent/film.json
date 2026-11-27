@@ -1,0 +1,58 @@
+{
+  "entry": "film.ts",
+  "output": "Matrix-Multiplication-Omega-Nine-Fourths",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.14
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 379,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 1,
+        "word": "nine",
+        "sound": "bell",
+        "gain": 0.055
+      },
+      {
+        "scene": "race",
+        "beat": 3,
+        "word": "rockets",
+        "sound": "latch",
+        "gain": 0.055
+      },
+      {
+        "scene": "geometry",
+        "beat": 2,
+        "word": "nine",
+        "sound": "bell",
+        "gain": 0.055
+      },
+      {
+        "scene": "ai",
+        "beat": 0,
+        "word": "free",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "locks",
+        "sound": "resolve",
+        "gain": 0.06
+      }
+    ]
+  }
+}

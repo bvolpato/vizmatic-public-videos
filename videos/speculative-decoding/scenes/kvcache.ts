@@ -1,5 +1,5 @@
 import {
-    Node, arrow, circle, dot, dynamic, fadeIn, gridPlane3d, group, line, line3d, linear, linearGradient, par,
+    Node, arrow, circle, delay, dot, dynamic, fadeIn, gridPlane3d, group, line, line3d, linear, linearGradient, par,
     parametricSurface, point3d, polyPath, radialGradient, rect, scalarField, scene3d, tex,
     type Scene3D, type SceneFunction, type Vec, type Vec3,
 } from 'vizmatic/stage'
@@ -391,8 +391,8 @@ export const kvcache: SceneFunction = (s, c) => {
     c.swap('hidden wall', [cacheAuras, pyramidView, crystalView, cacheTitle], [roofField, wallCopy])
     c.on('hidden wall', () => {
         s.play(par(
-            showCache.to(0, { duration: 0.25 }),
-            showWall.to(1, { duration: 0.35 }),
+            showCache.to(0, { duration: 0.16 }),
+            delay(showWall.to(1, { duration: 0.28 }), 0.2),
             streamPhase.to(6.0, { duration: wallDur, ease: linear }),
         ))
     })

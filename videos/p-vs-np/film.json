@@ -1,0 +1,58 @@
+{
+  "entry": "film.ts",
+  "output": "P-vs-NP-Millennium-Prize-and-AI-Fleet",
+  "look": "midnight",
+  "voice": {
+    "name": "af_heart",
+    "speed": 1.13
+  },
+  "check": [
+    "--text-size",
+    "26"
+  ],
+  "mix": {
+    "seed": 1971,
+    "levels": {
+      "under": -31,
+      "pause": -25,
+      "card": -21
+    },
+    "effects": [
+      {
+        "scene": "hook",
+        "beat": 1,
+        "word": "microseconds",
+        "sound": "latch",
+        "gain": 0.055
+      },
+      {
+        "scene": "worlds",
+        "beat": 0,
+        "word": "shatters",
+        "sound": "bell",
+        "gain": 0.055
+      },
+      {
+        "scene": "barriers",
+        "beat": 0,
+        "word": "walls",
+        "sound": "latch",
+        "gain": 0.05
+      },
+      {
+        "scene": "pequalnp",
+        "beat": 0,
+        "word": "public",
+        "sound": "bell",
+        "gain": 0.05
+      },
+      {
+        "scene": "finale",
+        "beat": 0,
+        "word": "million",
+        "sound": "resolve",
+        "gain": 0.055
+      }
+    ]
+  }
+}

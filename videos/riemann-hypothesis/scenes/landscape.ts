@@ -57,12 +57,14 @@ interface BridgeArc {
     readonly phase0: number
 }
 
+// Harmonic bridge arcs connecting integer sum 1/n^s (left) to prime Euler factors 1/(1 - p^{-s}) (right),
+// curving cleanly in the open band (y = 164..196) BELOW prodEq and ABOVE zetaTwo so zero lines cross equations!
 const BRIDGE_ARCS: readonly BridgeArc[] = [
-    { x0: -380, x1: 185, y0: 45, y1: 45, lift: -125, col: '#ffd166', speed: 0.34, phase0: 0.05 },
-    { x0: -320, x1: 270, y0: 45, y1: 45, lift: -158, col: '#5ce1e6', speed: 0.29, phase0: 0.28 },
-    { x0: -255, x1: 355, y0: 45, y1: 45, lift: 132, col: '#a78bfa', speed: 0.31, phase0: 0.52 },
-    { x0: -415, x1: 410, y0: 45, y1: 45, lift: 170, col: '#ff6b8b', speed: 0.26, phase0: 0.74 },
-    { x0: -195, x1: 230, y0: 45, y1: 45, lift: -92, col: '#6ee7b7', speed: 0.38, phase0: 0.4 },
+    { x0: -395, x1: 215, y0: 164, y1: 164, lift: 10, col: '#ffd166', speed: 0.34, phase0: 0.05 },
+    { x0: -330, x1: 290, y0: 164, y1: 164, lift: 18, col: '#5ce1e6', speed: 0.29, phase0: 0.28 },
+    { x0: -265, x1: 375, y0: 164, y1: 164, lift: 25, col: '#a78bfa', speed: 0.31, phase0: 0.52 },
+    { x0: -430, x1: 430, y0: 164, y1: 164, lift: 32, col: '#ff6b8b', speed: 0.26, phase0: 0.74 },
+    { x0: -200, x1: 240, y0: 164, y1: 164, lift: 4, col: '#6ee7b7', speed: 0.38, phase0: 0.4 },
 ].map((spec) => {
     const pts: Vec[] = []
     const steps = 42
@@ -87,15 +89,17 @@ export const landscape: SceneFunction = (s, c) => {
         const ph = ribbonPhase.value
         const ag = arcGlow.value
         const nodes: Node[] = []
-        for (let k = -4; k <= 4; k++) {
+        // Upper and lower cosmic aurora framing bands cleanly clear of the centered TeX equations!
+        const bandYs = [-460, -430, -400, 412, 444, 476]
+        for (let bIdx = 0; bIdx < bandYs.length; bIdx++) {
+            const by = bandYs[bIdx]!
             const pts: Vec[] = []
             for (let i = 0; i <= 48; i++) {
                 const x = -960 + (1920 * i) / 48
-                const y = k * 48 + Math.sin(x * 0.0038 + ph + k * 0.55) * 44 + Math.cos(x * 0.0021 - ph * 0.7) * 26
+                const y = by + Math.sin(x * 0.0038 + ph + bIdx * 0.65) * 16 + Math.cos(x * 0.0021 - ph * 0.7) * 9
                 pts.push([x, y])
             }
-            const w = 1 - Math.abs(k) / 5.5
-            nodes.push(new Node(polyPath(pts)).stroke(ribbonGrad, 1.9, 0.16 * w * a).set('blend', 'screen'))
+            nodes.push(new Node(polyPath(pts)).stroke(ribbonGrad, 2.0, 0.24 * a).set('blend', 'screen'))
         }
         // Glowing prime-sieve harmonic arcs linking 1/n^s -> 1/(1 - p^{-s})
         if (ag > 0.02) {

@@ -1,0 +1,103 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.2,
+    "gap": 0.36,
+    "tail": 1.3
+  },
+  "pronounce": {
+    "P = NP": "P equals N P",
+    "P ≠ NP": "P does not equal N P",
+    "3-SAT": "three sat",
+    "Lean 4": "Lean four",
+    "pequalnp.com": "P equal N P dot com"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "Finding vs. Checking: More Than Atoms in the Universe",
+      "beats": [
+        {
+          "say": "Some problems look impossible to solve, yet effortless to check. Test just three hundred yes-or-no variables by brute force, and you face two to the three hundred combinations: ten billion times more than every atom in the observable universe.",
+          "hold": 0.32
+        },
+        {
+          "say": "Hand me one candidate key, and a computer checks every rule in microseconds. P versus N P asks one staggering question: if an answer is fast to check, is it always fast to find?",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "worlds",
+      "title": "Two Universes: P = NP vs. P ≠ NP",
+      "beats": [
+        {
+          "say": "If P equals N P, the digital world shatters overnight. Encryption, digital signatures, and online security collapse, because cracking a secret key becomes as easy as checking one.",
+          "hold": 0.32
+        },
+        {
+          "say": "At the same time, discovery explodes. Proving math theorems, folding proteins, designing chips, and routing global supply chains all collapse into one fast solver.",
+          "hold": 0.35
+        },
+        {
+          "say": "If P does not equal N P, creativity stays fundamentally harder than checking. Encryption survives, and AI heuristics stay essential for navigating exponential mazes.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "barriers",
+      "title": "Three Hidden Walls Explained Simply",
+      "beats": [
+        {
+          "say": "So why has this defeated mathematicians for fifty-five years? Because three hidden walls keep stopping every standard proof.",
+          "hold": 0.3
+        },
+        {
+          "say": "First, the black-box wall: any proof that treats code as a black box fails, because you can plug in fake helper oracles where P equals N P in one world and fails in another.",
+          "hold": 0.32
+        },
+        {
+          "say": "Second, the paradox trap: any simple test that spots hard problems would accidentally crack modern encryption, breaking the exact hardness you are trying to prove. Third, smooth polynomial shortcuts get fooled by algebraic cheat-sheets too.",
+          "hold": 0.35
+        },
+        {
+          "say": "To beat all three walls at once, a proof must look deep inside how circuits compute, using geometry, proof length, and meta-complexity.",
+          "hold": 0.4
+        }
+      ]
+    },
+    {
+      "id": "pequalnp",
+      "title": "Inside pequalnp.com: Live AI Fleet & Real Progress",
+      "beats": [
+        {
+          "say": "That is what pequalnp dot com is testing live in public. Anyone can plug an AI coding agent into a shared desk tackling five active math fronts at once.",
+          "hold": 0.3
+        },
+        {
+          "say": "Agents lease one exact Lean four lemma, try to prove it, refute it with a counterexample, or split it into smaller pieces. Over forty-two thousand pull requests have flooded in, and every single one faces one ruthless judge: Lean four. Zero shortcuts, zero fake proofs.",
+          "hold": 0.36
+        },
+        {
+          "say": "So is there real progress? Yes, and no. P versus N P is still unsolved, with a massive chasm left to the summit. Yet the fleet has already machine-checked foundational theorems like the time hierarchy, narrow three-SAT lower bounds, and counterexamples pruning dead ends, proving crowdsourced AI plus formal verification actually works.",
+          "hold": 0.42
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "One Million Dollars, One Strict Judge",
+      "beats": [
+        {
+          "say": "Fifty-five years on, P versus N P still guards a million-dollar prize and the boundary of what can be computed.",
+          "hold": 0.32
+        },
+        {
+          "say": "Whether the answer is equal or not equal, thousands of AI agents and one strict checker have permanently changed how we attack our hardest problems.",
+          "hold": 0.6
+        }
+      ]
+    }
+  ]
+}

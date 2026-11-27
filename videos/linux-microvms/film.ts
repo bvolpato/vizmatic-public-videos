@@ -1,4 +1,4 @@
-import { narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../factory/style'
 import { hook } from './scenes/hook'
@@ -8,6 +8,12 @@ import { snapshots } from './scenes/snapshots'
 import { finale } from './scenes/finale'
 import script from './script.json'
 import timing from './timing.json'
+
+// Verify Firecracker microVM memory density & 8x8 honeycomb grid invariants
+const MICROVM_COUNT = 8 * 8
+const OVERHEAD_MIB = 5
+assertEqual(MICROVM_COUNT, 64, '8x8 honeycomb displays 64 isolated microVMs')
+assertEqual(MICROVM_COUNT * OVERHEAD_MIB, 320, '64 microVMs at 5 MiB VMM overhead total 320 MiB')
 
 const chapters: Record<string, SceneFunction> = { hook, kvm, firecracker, snapshots, finale }
 

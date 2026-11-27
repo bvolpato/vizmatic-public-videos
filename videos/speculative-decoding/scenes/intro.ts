@@ -4,7 +4,6 @@ import {
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
 
-/** Add a translucent glowing 3D prism to the hero Scene3D. */
 function addHeroPrism(
     view: Scene3D,
     x0: number,
@@ -48,33 +47,30 @@ function addHeroPrism(
     )
 }
 
-const CX = 285
-const CY = 25
+// Asymmetric Diagonal Composition: Massive Towering 3D Verification Plane Upper-Right + Punchy Lower-Left Editorial
+const CX = 245
+const CY = -85
 
 export const intro: IntroFunction = (stage, clock) => {
     const pulse = stage.value(0.35)
 
-    // Dramatic 3D hero: translucent PagedAttention KV cubes + cyan 7B draft arc launching 5 candidate prisms
-    // into a massive radiant golden 70B parallel verification light plane!
     const hero3d = scene3d({
         theta: -0.78,
         phi: 1.06,
-        distance: 14.8,
-        unit: 122,
+        distance: 13.8,
+        unit: 134,
         perspective: true,
         ambient: 0.44,
-        shine: 0.36,
-        brightness: 1.12,
-        fog: 0.14,
+        shine: 0.38,
+        brightness: 1.14,
+        fog: 0.12,
         focus: [0.1, 0, 0.9],
     }).at(CX, CY)
 
-    // Subtle 3D VRAM grid floor
     hero3d.add(
         gridPlane3d({ x: [-4.4, 4.4], y: [-3.2, 3.2], z: -0.35, step: 1.1, color: '#27385c', width: 1.1, opacity: 0.45 }),
     )
 
-    // Backdrop: Translucent 3D PagedAttention KV cubes grounded in physical VRAM
     const kvCubes: readonly { x: number; y: number; h: number; col: string }[] = [
         { x: -3.4, y: -2.4, h: 0.95, col: COSMOS.gold },
         { x: -1.9, y: -2.4, h: 0.85, col: COSMOS.cyan },
@@ -89,12 +85,10 @@ export const intro: IntroFunction = (stage, clock) => {
         addHeroPrism(hero3d, cube.x, cube.y, -0.32, 1.05, 1.05, cube.h, cube.col, cube.col, 0.36, 1.5, 4)
     }
 
-    // Fast cyan 7B draft emitter node + sweeping launch arc firing 5 candidate token prisms!
     const emitter: Vec3 = [-4.1, -0.35, 1.05]
     const planeX = 1.95
     hero3d.add(
         point3d(emitter, { color: '#ffffff', radius: 10, glow: 16, blend: 'screen' }),
-        // Main sweeping cyan 7B draft trajectory arc
         curve3d(
             (t): Vec3 => {
                 const x = emitter[0] + t * (planeX - emitter[0] + 1.3)
@@ -104,11 +98,10 @@ export const intro: IntroFunction = (stage, clock) => {
             },
             0,
             1,
-            { color: COSMOS.cyan, width: 4.5, glow: 12, blend: 'screen', samples: 90, opacity: 0.95 },
+            { color: COSMOS.cyan, width: 4.6, glow: 12, blend: 'screen', samples: 90, opacity: 0.95 },
         ),
     )
 
-    // 5 glowing candidate token prisms arranged in a parallel fan piercing the radiant golden 70B plane!
     const prismYs = [-1.65, -0.82, 0.0, 0.82, 1.65] as const
     const prismZs = [1.55, 2.08, 2.38, 2.08, 1.55] as const
     for (let i = 0; i < 5; i++) {
@@ -117,7 +110,6 @@ export const intro: IntroFunction = (stage, clock) => {
         const px = planeX - 0.52
         const col = i < 4 ? COSMOS.emerald : COSMOS.cyan
 
-        // Individual glowing cyan draft arc from 7B emitter into each candidate prism
         hero3d.add(
             curve3d(
                 (t): Vec3 => {
@@ -135,7 +127,6 @@ export const intro: IntroFunction = (stage, clock) => {
                 1,
                 { color: COSMOS.cyan, width: 2.6, glow: 9, blend: 'screen', samples: 44, opacity: 0.78 },
             ),
-            // Animated streaming draft photon along each launch arc
             point3d(
                 (): Vec3 => {
                     const t = (pulse.value + i * 0.14) % 1
@@ -153,24 +144,21 @@ export const intro: IntroFunction = (stage, clock) => {
             ),
         )
 
-        // Glowing candidate token prism piercing the verification plane
-        addHeroPrism(hero3d, px - 0.35, py - 0.28, pz - 0.28, 0.92, 0.56, 0.56, col, col, 0.72, 2.4, 10)
+        addHeroPrism(hero3d, px - 0.35, py - 0.28, pz - 0.28, 0.92, 0.56, 0.56, col, col, 0.74, 2.5, 10)
 
-        // Radiant golden verification impact spark right at the plane intersection!
         hero3d.add(
             point3d([planeX, py, pz], { color: '#ffffff', radius: 8.5, glow: 16, blend: 'screen' }),
             line3d([planeX, py, pz], [planeX + 1.35, py * 0.92, pz], {
                 color: COSMOS.gold,
-                width: 3.4,
+                width: 3.6,
                 glow: 12,
                 blend: 'screen',
-                opacity: 0.9,
+                opacity: 0.92,
             }),
-            point3d([planeX + 1.35, py * 0.92, pz], { color: COSMOS.gold, radius: 6.0, glow: 12, blend: 'screen' }),
+            point3d([planeX + 1.35, py * 0.92, pz], { color: COSMOS.gold, radius: 6.2, glow: 12, blend: 'screen' }),
         )
     }
 
-    // Massive radiant golden 70B parallel verification light plane (surface + glowing frame + lattice)
     hero3d.add(
         parametricSurface(
             (u, v): Vec3 => [planeX, -2.55 + u * 5.1, 0.55 + v * 2.55],
@@ -179,51 +167,55 @@ export const intro: IntroFunction = (stage, clock) => {
             {
                 resolution: [10, 8],
                 color: COSMOS.gold,
-                opacity: 0.28,
+                opacity: 0.3,
                 mesh: '#ffe8a3',
-                meshOpacity: 0.35,
+                meshOpacity: 0.38,
                 meshWidth: 1.0,
                 shaded: false,
             },
         ),
-        // Radiant outer frame of the 70B verification light plane
-        line3d([planeX, -2.55, 0.55], [planeX, 2.55, 0.55], { color: COSMOS.gold, width: 4.0, glow: 14, blend: 'screen' }),
-        line3d([planeX, -2.55, 3.10], [planeX, 2.55, 3.10], { color: COSMOS.gold, width: 4.0, glow: 14, blend: 'screen' }),
-        line3d([planeX, -2.55, 0.55], [planeX, -2.55, 3.10], { color: COSMOS.gold, width: 4.0, glow: 14, blend: 'screen' }),
-        line3d([planeX, 2.55, 0.55], [planeX, 2.55, 3.10], { color: COSMOS.gold, width: 4.0, glow: 14, blend: 'screen' }),
+        line3d([planeX, -2.55, 0.55], [planeX, 2.55, 0.55], { color: COSMOS.gold, width: 4.2, glow: 14, blend: 'screen' }),
+        line3d([planeX, -2.55, 3.10], [planeX, 2.55, 3.10], { color: COSMOS.gold, width: 4.2, glow: 14, blend: 'screen' }),
+        line3d([planeX, -2.55, 0.55], [planeX, -2.55, 3.10], { color: COSMOS.gold, width: 4.2, glow: 14, blend: 'screen' }),
+        line3d([planeX, 2.55, 0.55], [planeX, 2.55, 3.10], { color: COSMOS.gold, width: 4.2, glow: 14, blend: 'screen' }),
     )
 
     stage.add(
-        // Dramatic warm-gold + cool-cyan volumetric backlight behind the 3D verification plane
-        circle(580, {
-            fill: radialGradient([0, 0], 580, [
-                [0, '#ffd16634'],
-                [0.42, '#5ce1e61c'],
-                [0.75, '#4c2f8a14'],
+        circle(640, {
+            fill: radialGradient([0, 0], 640, [
+                [0, '#ffd16638'],
+                [0.42, '#5ce1e620'],
+                [0.75, '#4c2f8a16'],
                 [1, '#07091000'],
             ]),
             stroke: null,
         }).at(CX + 40, CY - 10).set('blend', 'screen'),
         hero3d,
-        // Subtle 2D additive shockwave halo pulsing from the golden verification plane
         dynamic(() => {
             const p = pulse.value
             const nodes: Node[] = [
-                circle(90 + p * 210, { fill: null, stroke: COSMOS.gold, width: 2.2 })
-                    .at(CX + 95, CY - 25).opacity((1 - p) * 0.45).glow(10, COSMOS.gold).set('blend', 'screen'),
+                circle(95 + p * 230, { fill: null, stroke: COSMOS.gold, width: 2.2 })
+                    .at(CX + 100, CY - 25).opacity((1 - p) * 0.45).glow(10, COSMOS.gold).set('blend', 'screen'),
             ]
             return group(...nodes)
         }),
-        // Crisp editorial typography on the left
-        txt('HIGH-SPEED LLM INFERENCE', -852, -264, 26, COSMOS.gold, 'mono', 'left'),
-        txt('1,000 tok/s', -858, -124, 126, COSMOS.ink, 'serif', 'left').glow(8, '#90b4ff'),
-        txt('Speculative', -858, 2, 92, COSMOS.cyan, 'serif', 'left').glow(10, '#38bdf8'),
-        txt('Decoding', -858, 96, 92, COSMOS.gold, 'serif', 'left').glow(10, COSMOS.gold),
-        txt('KV Cache  ·  PagedAttention  ·  Parallel Verify', -852, 206, 29, '#cbd5e8', 'sans', 'left'),
+        // Lower-left asymmetric editorial anchor
+        circle(560, {
+            fill: radialGradient([0, 0], 560, [
+                [0, '#070910e6'],
+                [0.58, '#07091096'],
+                [1, '#07091000'],
+            ]),
+            stroke: null,
+        }).at(-540, 225),
+        txt('HIGH-SPEED LLM INFERENCE', -852, 4, 26, COSMOS.gold, 'mono', 'left'),
+        txt('1,000 tok/s', -858, 108, 122, COSMOS.ink, 'serif', 'left').glow(8, '#90b4ff'),
+        txt('Speculative Decoding', -858, 220, 74, COSMOS.cyan, 'serif', 'left').glow(10, '#38bdf8'),
+        txt('KV Cache  ·  PagedAttention  ·  Parallel Verify', -852, 304, 28, '#cbd5e8', 'sans', 'left'),
         tex(String.raw`P_{\text{spec}}(x) \equiv p(x)`, {
             size: 36,
             color: COSMOS.emerald,
-        }).at(-702, 290).glow(6, COSMOS.emerald),
+        }).at(-702, 386).glow(6, COSMOS.emerald),
     )
 
     const dur = Math.max(0.4, clock.intro - 0.06)

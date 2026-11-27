@@ -43,8 +43,8 @@ function fieldToStage([wx, wy]: Vec): Vec {
 
 function isInsideTextZone([sx, sy]: Vec): boolean {
     // Keep contour strokes out of the prime p / prime q labels and bottom headline block
-    if (sx > -385 && sx < -145 && sy > -320 && sy < -255) return true
-    if (sx > 145 && sx < 385 && sy > -320 && sy < -255) return true
+    if (sx > -455 && sx < -195 && sy > -350 && sy < -275) return true
+    if (sx > 195 && sx < 455 && sy > -350 && sy < -275) return true
     if (sx > -680 && sx < 680 && sy > 65 && sy < 350) return true
     return false
 }
@@ -139,7 +139,7 @@ export const finale: SceneFunction = (s, c) => {
         }
 
         // Interlocked prime rings p and q emitting synchronized interference pulses
-        const pulseR = 114 + ((ph * 0.55) % 1) * 140
+        const pulseR = 114 + ((ph * 0.55) % 1) * 95
         const pulseOp = (1 - ((ph * 0.55) % 1)) * 0.58
         nodes.push(
             circle(pulseR, { fill: null, stroke: '#5ce1e6', width: 2.0 })
@@ -156,8 +156,8 @@ export const finale: SceneFunction = (s, c) => {
             circle(116, { fill: null, stroke: '#ffd166', width: 4.4 }).at(Q_CX, CY).glow(12, '#ffd166'),
             dot(6, '#5ce1e6').at(P_CX, CY).glow(12, '#38bdf8').set('blend', 'screen'),
             dot(6, '#ffd166').at(Q_CX, CY).glow(12, '#ffd166').set('blend', 'screen'),
-            txt('prime p', P_CX - 180, CY - 124, 30, '#5ce1e6', 'mono').glow(6, '#38bdf8'),
-            txt('prime q', Q_CX + 180, CY - 124, 30, '#ffd166', 'mono').glow(6, '#ffd166'),
+            txt('prime p', P_CX - 235, CY - 148, 30, '#5ce1e6', 'mono').glow(6, '#38bdf8'),
+            txt('prime q', Q_CX + 235, CY - 148, 30, '#ffd166', 'mono').glow(6, '#ffd166'),
             dot(9, '#ffffff').at(0, CY).glow(18, '#ffd166').set('blend', 'screen'),
         )
         return group(...nodes)

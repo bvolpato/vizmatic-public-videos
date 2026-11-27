@@ -1,13 +1,13 @@
 import {
-    Node, circle, dot, dynamic, group, line, linear, linearGradient, polyPath, polygon,
+    Node, circle, delay, dot, dynamic, group, line, linear, linearGradient, polyPath, polygon,
     radialGradient, rect, scalarField, type SceneFunction, type Vec,
 } from 'vizmatic/stage'
 import { txt } from '../../../factory/style'
 
-const CX = 345
-const CY = -10
+// Mirrored layout: Blazing 4 MB Flash Die on LEFT (open top sky for rays, ZERO label crossings!), Right-Aligned Editorial on RIGHT
+const CX = -385
+const CY = -24
 
-// Deterministic random 4 KB page hits inside the 4 MB flash erase block die
 const HIT_ORDER = [2, 19, 7, 31, 14, 26, 4, 22, 11, 34, 9, 28, 16, 1, 24, 33] as const
 const STREAM_XS = Array.from({ length: 120 }, (_, i) => -760 + (1520 * i) / 119)
 
@@ -24,13 +24,13 @@ export const hook: SceneFunction = (s, c) => {
     const riverFlow = s.value(0)
 
     const shot1Copy = group(
-        txt('10× – 30× WA', -840, -175, 84, '#ff6b8b', 'mono', 'left').glow(10, '#ff6b8b'),
-        txt('Inside an SSD', -848, -32, 102, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('B-Tree vs LSM', -848, 84, 100, '#ffd166', 'serif', 'left').glow(8, '#ffd166'),
-        txt('4 KB writes smashing 4 MB erase blocks', -840, 204, 32, '#d2dcf0', 'sans', 'left'),
+        txt('10× – 30× WA', 852, -182, 86, '#ff6b8b', 'mono', 'right').glow(10, '#ff6b8b'),
+        txt('Inside an SSD', 858, -36, 104, '#f8f4ec', 'serif', 'right').glow(6, '#90b4ff'),
+        txt('B-Tree vs LSM', 858, 82, 102, '#ffd166', 'serif', 'right').glow(9, '#ffd166'),
+        txt('4 KB writes smashing 4 MB erase blocks', 852, 202, 32, '#d2dcf0', 'sans', 'right'),
     )
 
-    const heatGrad = linearGradient([CX - 265, CY + 272], [CX + 265, CY + 272], ['#5ce1e6', '#ffd166', '#fb923c', '#ff6b8b'])
+    const heatGrad = linearGradient([CX - 265, CY + 318], [CX + 265, CY + 318], ['#5ce1e6', '#ffd166', '#fb923c', '#ff6b8b'])
 
     const liveDie = dynamic(() => {
         if (showDie.value < 0.02) return []
@@ -41,19 +41,19 @@ export const hook: SceneFunction = (s, c) => {
         const heatFrac = Math.min(1, 0.22 + cp * 0.78)
 
         const nodes: Node[] = [
-            circle(510, {
-                fill: radialGradient([0, 0], 510, [
-                    [0, '#ff6b8b2c'],
-                    [0.5, '#5ce1e614'],
+            circle(540, {
+                fill: radialGradient([0, 0], 540, [
+                    [0, '#ff6b8b2e'],
+                    [0.5, '#5ce1e616'],
                     [1, '#07091000'],
                 ]),
                 stroke: null,
             }).at(CX, CY).opacity(a),
-            // Huge 4 MB Erase Block silicon frame
-            rect(552, 444, { fill: '#0d1428', stroke: '#ff6b8b', width: 3.8, radius: 18 }).at(CX, CY).opacity(a).glow(14, '#ff6b8b'),
+            // Huge 4 MB Erase Block silicon frame (top edge 100% clear for incoming write lasers!)
+            rect(556, 444, { fill: '#0d1428', stroke: '#ff6b8b', width: 3.8, radius: 18 }).at(CX, CY).opacity(a).glow(14, '#ff6b8b'),
         ]
 
-        // 6x6 packed grid of 4 KB pages (brightened unlit cells so grid reads crisply!)
+        // 6x6 packed grid of 4 KB pages
         for (let idx = 0; idx < 36; idx++) {
             const [x, y] = cellPos(idx)
             const hitOrderIdx = HIT_ORDER.indexOf(idx as (typeof HIT_ORDER)[number])
@@ -86,14 +86,14 @@ export const hook: SceneFunction = (s, c) => {
             }
         }
 
-        // Glowing incoming 4 KB write rays smashing into the 3 most recent random pages with blend('screen') impact flashes!
+        // Incoming 4 KB write lasers from open sky above (ZERO rays cross any text label!)
         for (let k = 0; k < 3; k++) {
             const hIdx = Math.max(0, activeHits - k)
             const cellIdx = HIT_ORDER[hIdx]!
             const [tx, ty] = cellPos(cellIdx)
-            const srcX = CX - 260 + k * 215
-            const srcY = CY - 340
-            const rayOp = (k === 0 ? 0.96 : 0.52) * a
+            const srcX = CX - 210 + k * 210
+            const srcY = CY - 325
+            const rayOp = (k === 0 ? 0.96 : 0.54) * a
             const rayCol = k === 0 ? '#ffd166' : '#ff6b8b'
             const pktT = (cp * 7.5 + k * 0.34) % 1
             const px = srcX + (tx - srcX) * pktT
@@ -105,7 +105,6 @@ export const hook: SceneFunction = (s, c) => {
                 line([srcX, srcY], [tx, ty], { stroke: '#ffffff', width: k === 0 ? 1.5 : 0.9, opacity: rayOp * 0.85 })
                     .set('blend', 'screen'),
                 dot(k === 0 ? 8 : 5.5, '#ffffff').at(px, py).opacity(rayOp).glow(14, rayCol).set('blend', 'screen'),
-                // Starburst impact lines at the hit page
                 line([tx - 24, ty - 14], [tx + 24, ty + 14], { stroke: '#ffd166', width: 2.2, opacity: rayOp * 0.85 })
                     .glow(8, '#ffd166')
                     .set('blend', 'screen'),
@@ -116,44 +115,37 @@ export const hook: SceneFunction = (s, c) => {
             if (k === 0) {
                 nodes.push(
                     rect(210, 42, { fill: '#1a0c18', stroke: '#ffd166', width: 2.2, radius: 21 })
-                        .at(srcX, srcY - 22)
+                        .at(srcX, srcY - 26)
                         .opacity(a)
                         .glow(8, '#ffd166'),
-                    txt('4 KB WRITE', srcX, srcY - 20, 26, '#ffd166', 'mono').opacity(a),
+                    txt('4 KB WRITE', srcX, srcY - 24, 26, '#ffd166', 'mono').opacity(a),
                 )
             }
         }
 
-        // Opaque header pill drawn AFTER rays so incoming rays flow cleanly behind the erase-block title!
-        nodes.push(
-            rect(410, 42, { fill: '#0b1020', stroke: '#ff6b8b', width: 2.2, radius: 21 }).at(CX, CY - 246).opacity(a),
-            txt('4 MB FLASH ERASE BLOCK', CX, CY - 244, 26, '#ff85a2', 'mono').opacity(a),
-        )
-
-        // Rising heatglow wear bar directly beneath the 4 MB Erase Block!
-        const barW = 540
+        // Clean label BELOW the die frame (100% free of any laser crossing!) + rising heatglow wear bar
+        const barW = 544
         const fillW = Math.max(40, barW * heatFrac)
         nodes.push(
-            rect(barW, 24, { fill: '#121a30', stroke: '#3c4f7d', width: 2, radius: 12 }).at(CX, CY + 262).opacity(a),
+            txt('4 MB FLASH ERASE BLOCK', CX, CY + 264, 26, '#ff85a2', 'mono').opacity(a).glow(6, '#ff6b8b'),
+            rect(barW, 24, { fill: '#121a30', stroke: '#3c4f7d', width: 2, radius: 12 }).at(CX, CY + 312).opacity(a),
             rect(fillW, 20, { fill: heatGrad, stroke: '#ffffff', width: 1.2, radius: 10 })
-                .at(CX - barW / 2 + fillW / 2, CY + 262)
+                .at(CX - barW / 2 + fillW / 2, CY + 312)
                 .opacity(0.95 * a)
                 .glow(14, '#ff6b8b')
                 .set('blend', 'screen'),
-            txt(`Write Amp: ${waNum}×`, CX - 265, CY + 314, 30, '#ff6b8b', 'mono', 'left').opacity(a).glow(8, '#ff6b8b'),
-            txt('FLASH WEAR ↑', CX + 265, CY + 314, 26, '#fb923c', 'mono', 'right').opacity(a).glow(6, '#fb923c'),
+            txt(`Write Amp: ${waNum}×`, CX - 268, CY + 364, 30, '#ff6b8b', 'mono', 'left').opacity(a).glow(8, '#ff6b8b'),
+            txt('FLASH WEAR ↑', CX + 268, CY + 364, 26, '#fb923c', 'mono', 'right').opacity(a).glow(6, '#fb923c'),
         )
         return group(...nodes)
     })
 
-    // Shot 2: Rich split comparison with scalarField wear heatmaps + translucent gradient area fills
-    // + streaming golden sequential particles + live Random IOPS vs Sequential MB/s counters!
+    // Shot 2: Rich split comparison (unchanged, already cinema!)
     const goldGrad = linearGradient([-760, 145], [760, 145], ['#ffd16640', '#ffd166', '#ffffff', '#ffd166', '#ffd16640'])
     const roseGrad = linearGradient([-760, -145], [760, -145], ['#ff6b8b55', '#ff6b8b', '#fb923c', '#ff6b8b'])
     const roseAreaGrad = linearGradient([0, -210], [0, -15], ['#ff6b8b55', '#fb923c28', '#ff6b8b06'])
     const goldAreaGrad = linearGradient([0, 115], [0, 275], ['#ffd16655', '#6ee7b724', '#ffd16606'])
 
-    // Subtle animated wear thermal scalarField behind the top B-Tree random chaos band
     const chaosHeatmap = scalarField(
         (x, y, time) => {
             const ridge = -0.1 + 0.45 * Math.sin(x * 3.1 + time * 2.2) * Math.cos(x * 1.7 - time * 1.4)
@@ -174,7 +166,6 @@ export const hook: SceneFunction = (s, c) => {
         },
     ).at(0, -135).opacity(0.75).zIndex(-1)
 
-    // Smooth laminar golden scalarField beneath the bottom LSM sequential highway
     const lsmHeatmap = scalarField(
         (x, y, time) => {
             const stream = 0.25 * Math.sin(x * 1.15 - time * 3.2)
@@ -208,7 +199,6 @@ export const hook: SceneFunction = (s, c) => {
             155 + Math.sin(x * 0.008 - f * 4.5) * 16,
         ])
 
-        // Closed polygons for translucent gradient area-fills beneath both waves
         const chaosAreaPts: Vec[] = [...chaosPts, [760, -20], [-760, -20]]
         const goldAreaPts: Vec[] = [...goldPts, [760, 265], [-760, 265]]
 
@@ -216,27 +206,21 @@ export const hook: SceneFunction = (s, c) => {
         const seqMbVal = Math.round(6720 + Math.sin(f * 1.9) * 140)
 
         const nodes: Node[] = [
-            // Top B-Tree header + live Random IOPS counter badge
             txt('B-TREE RANDOM 4 KB WRITES  ·  28.8× WRITE AMP', -760, -325, 28, '#ff6b8b', 'mono', 'left').opacity(a).glow(8, '#ff6b8b'),
             rect(385, 56, { fill: '#230d19e8', stroke: '#ff6b8b', width: 2.4, radius: 14 }).at(568, -325).opacity(a).glow(8, '#ff6b8b'),
             txt(`${iopsVal.toLocaleString()} Random IOPS`, 568, -323, 26, '#ff8fab', 'mono').opacity(a),
-            // Translucent gradient area-fill + blazing chaos wave
             polygon(chaosAreaPts, { fill: roseAreaGrad, stroke: null }).opacity(0.85 * a),
             new Node(polyPath(chaosPts)).stroke(roseGrad, 4.6, 0.94 * a).glow(12, '#ff6b8b').set('blend', 'screen'),
-            // Mid divider rail
             line([-760, 12], [760, 12], { stroke: '#32446e', width: 2.0, dash: [10, 12], opacity: 0.72 * a }),
-            // Bottom LSM-Tree header + live Sequential MB/s counter badge
             txt('LSM-TREE SEQUENTIAL STREAM  ·  1.05× FTL AMP', -760, 325, 28, '#ffd166', 'mono', 'left').opacity(a).glow(8, '#ffd166'),
             rect(385, 56, { fill: '#1b170be8', stroke: '#ffd166', width: 2.4, radius: 14 }).at(568, 325).opacity(a).glow(10, '#ffd166'),
             txt(`${seqMbVal.toLocaleString()} MB/s Sequential`, 568, 327, 26, '#ffd166', 'mono').opacity(a),
-            // Translucent gradient area-fill + blazing golden sequential highway
             polygon(goldAreaPts, { fill: goldAreaGrad, stroke: null }).opacity(0.85 * a),
             new Node(polyPath(goldPts)).stroke(goldGrad, 16, 0.35 * a).glow(18, '#ffd166').set('blend', 'screen'),
             new Node(polyPath(goldPts)).stroke(goldGrad, 7.5, 0.98 * a).glow(14, '#ffd166').set('blend', 'screen'),
             new Node(polyPath(goldPts)).stroke('#ffffff', 2.4, 0.8 * a).set('blend', 'screen'),
         ]
 
-        // Random crimson spikes flashing along B-Tree chaos wave
         for (let k = 0; k < 10; k++) {
             const idx = Math.floor(((k * 13 + f * 9) % 108) + 6)
             const pt = chaosPts[idx]!
@@ -245,7 +229,6 @@ export const hook: SceneFunction = (s, c) => {
             )
         }
 
-        // Streaming data particles + sequential golden SSTable blocks surging along the golden LSM highway!
         for (let k = 0; k < 28; k++) {
             const t = (f * 0.55 + k / 28) % 1
             const px = -745 + t * 1490
@@ -276,8 +259,8 @@ export const hook: SceneFunction = (s, c) => {
     c.show('Watch how', lsmHeatmap)
     c.on('Watch how', () => {
         s.play(
-            showDie.to(0, { duration: 0.3 }),
-            showContrast.to(1, { duration: 0.35 }),
+            showDie.to(0, { duration: 0.16 }),
+            delay(showContrast.to(1, { duration: 0.28 }), 0.2),
             riverFlow.to(4.6, { duration: shot2Rem, ease: linear }),
         )
     })

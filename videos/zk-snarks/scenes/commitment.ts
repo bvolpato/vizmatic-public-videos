@@ -173,7 +173,7 @@ export const commitment: SceneFunction = (s, c) => {
         const a = showShield.value
         const f = shieldFlow.value
         const v = verifyHit.value
-        const pulse = 185 + Math.sin(f * 3) * 4
+        const pulse = 208 + Math.sin(f * 3) * 4
 
         const nodes: Node[] = [
             // Radial violet-gold nebula around the homomorphic shield

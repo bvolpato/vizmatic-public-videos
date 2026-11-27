@@ -254,8 +254,8 @@ export const equation: SceneFunction = (s, c) => {
         // Sleek Reynolds Number dial readout in lower band (y = 428)
         if (reVis > 0.02) {
             const reNum = Math.round(50 * Math.pow(100, turb)) // Log sweep 50 -> 5000
-            const regime = turb < 0.3 ? 'Laminar silk' : turb < 0.7 ? 'Transitional instability' : 'Full turbulence'
-            const regimeCol = turb < 0.3 ? '#5ce1e6' : turb < 0.7 ? '#a78bfa' : '#ffd166'
+            const regime = turb < 0.25 ? 'Laminar silk' : turb < 0.78 ? 'Transition' : 'Full turbulence'
+            const regimeCol = turb < 0.25 ? '#5ce1e6' : turb < 0.78 ? '#a78bfa' : '#ffd166'
             nodes.push(
                 txt(`Re = ${reNum.toLocaleString('en-US')}`, -840, 428, 38, regimeCol, 'mono', 'left').glow(8, regimeCol).opacity(reVis),
                 line([-460, 428], [260, 428], { stroke: '#222d4a', width: 10 }).opacity(reVis),

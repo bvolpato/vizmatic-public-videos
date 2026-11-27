@@ -6,10 +6,11 @@ import {
 import { zeta } from '../math'
 import { txt } from '../../../factory/style'
 
+// A24 Theatrical Composition: Towering cosmic zeta spiral upper-right/center + bold Lower-Left editorial title
 const SPIRAL_SAMPLES = 480
-const CX = 330
-const CY = 10
-const SCALE = 158
+const CX = 285
+const CY = -72
+const SCALE = 186
 
 const SPIRAL_PTS: Vec[] = Array.from({ length: SPIRAL_SAMPLES }, (_, i) => {
     const t = 0.6 + (32.8 * i) / (SPIRAL_SAMPLES - 1)
@@ -17,10 +18,9 @@ const SPIRAL_PTS: Vec[] = Array.from({ length: SPIRAL_SAMPLES }, (_, i) => {
     return [CX + re * SCALE, CY - im * SCALE] as Vec
 })
 
-// Precompute log(1 + |zeta(s)|) on a smooth complex-strip grid behind the spiral
-const FW = 980
-const FH = 820
-const FN = 56
+const FW = 1180
+const FH = 920
+const FN = 60
 const ZETA_FIELD_GRID = new Float32Array(FN * FN)
 for (let j = 0; j < FN; j++) {
     const im = 2.0 + (30.0 * j) / (FN - 1)
@@ -32,10 +32,9 @@ for (let j = 0; j < FN; j++) {
 }
 
 function sampleZetaLogField(nx: number, ny: number): number {
-    // nx, ny in [-1, 1] -> bilinear lookup with radial feathering so edges melt into space
     const r2 = nx * nx + ny * ny
     if (r2 >= 0.98) return 0
-    const fade = Math.pow(Math.max(0, 1 - r2 / 0.98), 1.45)
+    const fade = Math.pow(Math.max(0, 1 - r2 / 0.98), 1.35)
     const u = ((nx + 1) * 0.5) * (FN - 1)
     const v = ((ny + 1) * 0.5) * (FN - 1)
     const i0 = Math.max(0, Math.min(FN - 2, Math.floor(u)))
@@ -53,25 +52,25 @@ function sampleZetaLogField(nx: number, ny: number): number {
 const ZETA_CONTOURS = contourPaths(sampleZetaLogField, {
     x: [-1, 1],
     y: [-1, 1],
-    levels: [0.32, 0.62, 0.96, 1.32],
-    resolution: [52, 46],
+    levels: [0.28, 0.56, 0.88, 1.24],
+    resolution: [56, 48],
 })
 
 const CONTOUR_COLORS = ['#38bdf8', '#7c8cff', '#c084fc', '#ffd166'] as const
 
 export const intro: IntroFunction = (stage, clock) => {
-    const grad = linearGradient([CX - 260, CY + 300], [CX + 380, CY - 300], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
+    const grad = linearGradient([CX - 320, CY + 340], [CX + 440, CY - 340], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
     const prog = stage.value(0.68)
 
     const fieldNode = scalarField((x, y) => sampleZetaLogField(x, y), {
         x: [-1, 1],
         y: [-1, 1],
-        domain: [0, 1.55],
-        colors: ['#07091000', '#161b4855', '#3b247880', '#1d6fa590', '#5ce1e688', '#ffd16695'],
+        domain: [0, 1.45],
+        colors: ['#07091000', '#19225c6e', '#4c269499', '#1e7ab8aa', '#5ce1e6a2', '#ffd166aa'],
         width: FW,
         height: FH,
-        resolution: [84, 72],
-    }).at(CX, CY).set('blend', 'screen').opacity(0.58)
+        resolution: [92, 76],
+    }).at(CX, CY).set('blend', 'screen').opacity(0.76)
 
     const contourNodes: Node[] = []
     ZETA_CONTOURS.forEach((lvl, li) => {
@@ -80,7 +79,7 @@ export const intro: IntroFunction = (stage, clock) => {
             if (poly.length < 2) continue
             const pts: Vec[] = poly.map(([nx, ny]) => [CX + nx * (FW * 0.5), CY - ny * (FH * 0.5)] as Vec)
             contourNodes.push(
-                new Node(polyPath(pts)).stroke(col, 1.35, 0.28 + li * 0.06).set('blend', 'screen'),
+                new Node(polyPath(pts)).stroke(col, 1.65, 0.36 + li * 0.08).set('blend', 'screen'),
             )
         }
     })
@@ -88,35 +87,44 @@ export const intro: IntroFunction = (stage, clock) => {
     stage.add(
         fieldNode,
         ...contourNodes,
-        circle(560, {
-            fill: radialGradient([0, 0], 560, [
-                [0, '#ffd1662c'],
-                [0.45, '#4c2f8a1a'],
+        circle(640, {
+            fill: radialGradient([0, 0], 640, [
+                [0, '#ffd16634'],
+                [0.45, '#4c2f8a22'],
                 [1, '#07091000'],
             ]),
             stroke: null,
         }).at(CX, CY).set('blend', 'screen'),
-        line([CX - 340, CY], [CX + 420, CY], { stroke: '#222d48', width: 1.3 }),
-        line([CX, CY - 340], [CX, CY + 340], { stroke: '#222d48', width: 1.3 }),
-        txt('$1,000,000  MILLENNIUM PRIZE', -840, -195, 26, '#ffd166', 'mono', 'left'),
-        txt('The Riemann', -848, -72, 126, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('Hypothesis', -848, 56, 126, '#6be8f2', 'serif', 'left').glow(8, '#38bdf8'),
-        txt('The hidden music of the prime numbers', -840, 178, 34, '#b8c5df', 'sans', 'left'),
+        line([CX - 420, CY], [CX + 500, CY], { stroke: '#222d48', width: 1.4 }),
+        line([CX, CY - 400], [CX, CY + 400], { stroke: '#222d48', width: 1.4 }),
         dynamic(() => {
             const count = Math.max(2, Math.floor(prog.value * SPIRAL_SAMPLES))
             const pts = SPIRAL_PTS.slice(0, count)
             const tip = pts[pts.length - 1]!
-            const pulseR = 34 + ((prog.value * 4) % 1) * 130
-            const pulseOp = (1 - ((prog.value * 4) % 1)) * 0.55
+            const pulseR = 34 + ((prog.value * 4) % 1) * 150
+            const pulseOp = (1 - ((prog.value * 4) % 1)) * 0.62
             return group(
-                circle(pulseR, { fill: null, stroke: '#ffd166', width: 2.2 }).at(CX, CY).opacity(pulseOp).glow(10, '#ffd166').set('blend', 'screen'),
-                circle(16, { fill: null, stroke: '#ffd166', width: 2.2 }).at(CX, CY).opacity(0.8).set('blend', 'screen'),
-                dot(5.5, '#ffffff').at(CX, CY).glow(14, '#ffd166').set('blend', 'screen'),
-                new Node(polyPath(pts)).stroke(grad, 5.2, 0.96).glow(12, '#7c8cff').set('blend', 'screen'),
-                new Node(polyPath(pts)).stroke('#ffffff', 1.4, 0.45),
-                dot(7.5, '#ffffff').at(tip[0], tip[1]).glow(16, '#ffd166').set('blend', 'screen'),
+                circle(pulseR, { fill: null, stroke: '#ffd166', width: 2.4 }).at(CX, CY).opacity(pulseOp).glow(10, '#ffd166').set('blend', 'screen'),
+                circle(18, { fill: null, stroke: '#ffd166', width: 2.4 }).at(CX, CY).opacity(0.85).set('blend', 'screen'),
+                dot(6, '#ffffff').at(CX, CY).glow(16, '#ffd166').set('blend', 'screen'),
+                new Node(polyPath(pts)).stroke(grad, 6.2, 0.96).glow(14, '#7c8cff').set('blend', 'screen'),
+                new Node(polyPath(pts)).stroke('#ffffff', 1.6, 0.48),
+                dot(8, '#ffffff').at(tip[0], tip[1]).glow(18, '#ffd166').set('blend', 'screen'),
             )
         }),
+        // Lower-left theatrical title block with subtle dark cosmic cradle
+        circle(560, {
+            fill: radialGradient([0, 0], 560, [
+                [0, '#070910e6'],
+                [0.58, '#07091096'],
+                [1, '#07091000'],
+            ]),
+            stroke: null,
+        }).at(-540, 240),
+        txt('$1,000,000  MILLENNIUM PRIZE', -852, 68, 26, '#ffd166', 'mono', 'left').glow(6, '#ffd166'),
+        txt('The Riemann', -858, 178, 112, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
+        txt('Hypothesis', -858, 290, 112, '#6be8f2', 'serif', 'left').glow(9, '#38bdf8'),
+        txt('The hidden music of the prime numbers', -852, 392, 32, '#cbd5e8', 'sans', 'left'),
     )
     stage.at(0.02, () => stage.play(prog.to(1, { duration: Math.max(0.4, clock.intro - 0.08) })))
 }

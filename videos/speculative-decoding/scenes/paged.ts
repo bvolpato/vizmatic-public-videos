@@ -1,5 +1,5 @@
 import {
-    circle, curve3d, gridPlane3d, group, label3d, line3d, linear, par, parametricSurface, point3d, radialGradient, rect, scene3d,
+    circle, curve3d, gridPlane3d, group, line3d, linear, par, parametricSurface, point3d, radialGradient, rect, scene3d,
     type Scene3D, type SceneFunction, type Vec3,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -177,10 +177,7 @@ export const paged: SceneFunction = (s, c) => {
     }).at(225, 42)
 
     pagedView.add(
-        gridPlane3d({ x: [-4.2, 4.2], y: [-3.2, 3.2], z: 0, step: 1.2, color: '#27385c', width: 1.2, opacity: 0.48 }),
-        // Crisp 3D tier labels well clear of boxes & pointer arcs across the entire camera orbit
-        label3d('Logical Sequence Blocks', [-0.65, -3.6, 4.25], { size: 26, color: COSMOS.cyan, math: false }),
-        label3d('Physical VRAM Pool', [3.05, 2.75, -0.45], { size: 26, color: COSMOS.gold, math: false }),
+        gridPlane3d({ x: [-3.5, 3.5], y: [-2.6, 2.6], z: 0, step: 1.2, color: '#27385c', width: 1.2, opacity: 0.48 }),
     )
 
     // Tightly packed 4 x 3 physical VRAM pool of glowing 3D memory cubes (zero empty gaps!)
@@ -280,6 +277,9 @@ export const paged: SceneFunction = (s, c) => {
         txt('Logical blocks → physical cubes', -855, 255, 28, COSMOS.cyan, 'sans', 'left'),
         txt('Gold prefix blocks shared across users', -855, 310, 28, COSMOS.gold, 'sans', 'left'),
         txt('Zero contiguous slabs required', -855, 365, 28, COSMOS.emerald, 'sans', 'left'),
+        // Clean 2D tier captions framing the orbiting 3D scene without ever being crossed by cubes or arcs
+        txt('↑  LOGICAL SEQUENCE BLOCKS', 225, -400, 26, COSMOS.cyan, 'mono').glow(5, COSMOS.cyan),
+        txt('↓  PHYSICAL VRAM POOL (PACKED CUBES)', 225, 452, 26, COSMOS.gold, 'mono').glow(5, COSMOS.gold),
     )
 
     s.add(fragAura, fragView, fragCopy)

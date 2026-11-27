@@ -6,22 +6,19 @@ import {
 import { ZETA_ZEROS, zeta } from '../math'
 import { txt } from '../../../factory/style'
 
-// High-energy 14-second viral hook montage:
-// 0..6s: Blazing critical-line spiral piercing zero over log(1+|zeta(s)|) field + "$1,000,000" headline
-// 6..14s: Razor-thin golden line + radiant harmonic waves pulsing outward across the cosmos
+// A24 Theatrical Composition: Towering cosmic zeta spiral upper-right/center + Lower-Left monumental "$1,000,000" title
 const N_SPIRAL = 720
-const CX = 310
-const CY = 10
-const SCALE = 160
+const CX = 285
+const CY = -72
+const SCALE = 186
 const HOOK_SPIRAL: Vec[] = Array.from({ length: N_SPIRAL }, (_, i) => {
     const t = 0.5 + (33.5 * i) / (N_SPIRAL - 1)
     const [re, im] = zeta(0.5, t)
     return [CX + re * SCALE, CY - im * SCALE] as Vec
 })
 
-// Precompute log(1 + |zeta(s)|) backdrop field & isolines behind the spiral
-const FW = 1040
-const FH = 880
+const FW = 1180
+const FH = 920
 const FN = 60
 const ZETA_FIELD_GRID = new Float32Array(FN * FN)
 for (let j = 0; j < FN; j++) {
@@ -36,7 +33,7 @@ for (let j = 0; j < FN; j++) {
 function sampleZetaLogField(nx: number, ny: number): number {
     const r2 = nx * nx + ny * ny
     if (r2 >= 0.98) return 0
-    const fade = Math.pow(Math.max(0, 1 - r2 / 0.98), 1.4)
+    const fade = Math.pow(Math.max(0, 1 - r2 / 0.98), 1.35)
     const u = ((nx + 1) * 0.5) * (FN - 1)
     const v = ((ny + 1) * 0.5) * (FN - 1)
     const i0 = Math.max(0, Math.min(FN - 2, Math.floor(u)))
@@ -54,8 +51,8 @@ function sampleZetaLogField(nx: number, ny: number): number {
 const ZETA_CONTOURS = contourPaths(sampleZetaLogField, {
     x: [-1, 1],
     y: [-1, 1],
-    levels: [0.28, 0.56, 0.88, 1.24, 1.56],
-    resolution: [56, 48],
+    levels: [0.24, 0.5, 0.82, 1.18, 1.5],
+    resolution: [60, 50],
 })
 const CONTOUR_COLS = ['#38bdf8', '#60a5fa', '#a78bfa', '#ff6b8b', '#ffd166'] as const
 
@@ -68,17 +65,17 @@ export const hook: SceneFunction = (s, c) => {
     const showWaveShot = s.value(0)
     const wavePhase = s.value(0)
 
-    const spiralGrad = linearGradient([CX - 280, CY + 300], [CX + 420, CY - 300], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
+    const spiralGrad = linearGradient([CX - 340, CY + 360], [CX + 460, CY - 360], ['#5ce1e6', '#7c8cff', '#c084fc', '#ff6b8b', '#ffd166'])
 
     const fieldBackdrop = scalarField((x, y) => sampleZetaLogField(x, y), {
         x: [-1, 1],
         y: [-1, 1],
-        domain: [0, 1.55],
-        colors: ['#07091000', '#161b4860', '#3d227a88', '#1d6fa598', '#5ce1e690', '#ffd1669a'],
+        domain: [0, 1.45],
+        colors: ['#07091000', '#19225c72', '#4c26949c', '#1e7ab8ad', '#5ce1e6a6', '#ffd166ae'],
         width: FW,
         height: FH,
-        resolution: [88, 76],
-    }).at(CX, CY).set('blend', 'screen').opacity(0.62)
+        resolution: [96, 80],
+    }).at(CX, CY).set('blend', 'screen').opacity(0.78)
 
     const contourBackdrop = group(
         ...ZETA_CONTOURS.flatMap((lvl, li) => {
@@ -87,16 +84,25 @@ export const hook: SceneFunction = (s, c) => {
                 .filter((poly) => poly.length >= 2)
                 .map((poly) => {
                     const pts: Vec[] = poly.map(([nx, ny]) => [CX + nx * (FW * 0.5), CY - ny * (FH * 0.5)] as Vec)
-                    return new Node(polyPath(pts)).stroke(col, 1.4, 0.26 + li * 0.06).set('blend', 'screen')
+                    return new Node(polyPath(pts)).stroke(col, 1.65, 0.34 + li * 0.08).set('blend', 'screen')
                 })
         }),
     )
 
+    // Lower-left theatrical title block (cleanly separated from towering upper-right spiral)
     const shot1Title = group(
-        txt('$1,000,000', -840, -165, 92, '#ffd166', 'mono', 'left').glow(10, '#ffd166'),
-        txt('The Riemann', -848, -22, 110, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('Hypothesis', -848, 92, 110, '#6be8f2', 'serif', 'left').glow(8, '#38bdf8'),
-        txt('Explained in under 3 minutes', -840, 212, 34, '#cbd5e8', 'sans', 'left'),
+        circle(560, {
+            fill: radialGradient([0, 0], 560, [
+                [0, '#070910e8'],
+                [0.58, '#07091096'],
+                [1, '#07091000'],
+            ]),
+            stroke: null,
+        }).at(-540, 225),
+        txt('$1,000,000', -852, 58, 86, '#ffd166', 'mono', 'left').glow(12, '#ffd166'),
+        txt('The Riemann', -858, 178, 108, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
+        txt('Hypothesis', -858, 286, 108, '#6be8f2', 'serif', 'left').glow(9, '#38bdf8'),
+        txt('Explained in under 3 minutes', -852, 392, 32, '#cbd5e8', 'sans', 'left'),
     )
 
     const liveSpiralShot = dynamic(() => {
@@ -107,51 +113,48 @@ export const hook: SceneFunction = (s, c) => {
         const tip = pts[pts.length - 1]!
         const cyc1 = (spiralProg.value * 7.5) % 1
         const cyc2 = (spiralProg.value * 7.5 + 0.5) % 1
-        const pulseR1 = 22 + cyc1 * 155
-        const pulseOp1 = (1 - cyc1) * 0.82 * a
-        const pulseR2 = 22 + cyc2 * 210
-        const pulseOp2 = (1 - cyc2) * 0.52 * a
+        const pulseR1 = 24 + cyc1 * 175
+        const pulseOp1 = (1 - cyc1) * 0.85 * a
+        const pulseR2 = 24 + cyc2 * 235
+        const pulseOp2 = (1 - cyc2) * 0.55 * a
         return group(
-            circle(540, {
-                fill: radialGradient([0, 0], 540, [
-                    [0, '#ffd16634'],
-                    [0.42, '#4c2f8a22'],
+            circle(640, {
+                fill: radialGradient([0, 0], 640, [
+                    [0, '#ffd16638'],
+                    [0.42, '#4c2f8a26'],
                     [1, '#07091000'],
                 ]),
                 stroke: null,
             }).at(CX, CY).set('blend', 'screen').opacity(a),
-            line([CX - 390, CY], [CX + 460, CY], { stroke: '#222d48', width: 1.3 }).opacity(0.85 * a),
-            line([CX, CY - 370], [CX, CY + 370], { stroke: '#222d48', width: 1.3 }).opacity(0.85 * a),
-            circle(SCALE, { fill: null, stroke: '#2a3758', width: 1.2, dash: [5, 9] }).at(CX, CY).opacity(0.65 * a),
-            // Additive screen-blend zero-crossing shockwaves!
-            circle(pulseR1, { fill: null, stroke: '#ffd166', width: 3.0 }).at(CX, CY).opacity(pulseOp1).glow(12, '#ffd166').set('blend', 'screen'),
-            circle(pulseR2, { fill: null, stroke: '#5ce1e6', width: 2.0 }).at(CX, CY).opacity(pulseOp2).glow(10, '#5ce1e6').set('blend', 'screen'),
-            circle(52, {
-                fill: radialGradient([0, 0], 52, [
-                    [0, '#ffd16688'],
-                    [0.45, '#ff6b8b28'],
+            line([CX - 430, CY], [CX + 520, CY], { stroke: '#222d48', width: 1.4 }).opacity(0.85 * a),
+            line([CX, CY - 400], [CX, CY + 400], { stroke: '#222d48', width: 1.4 }).opacity(0.85 * a),
+            circle(SCALE, { fill: null, stroke: '#2a3758', width: 1.3, dash: [5, 9] }).at(CX, CY).opacity(0.68 * a),
+            circle(pulseR1, { fill: null, stroke: '#ffd166', width: 3.2 }).at(CX, CY).opacity(pulseOp1).glow(12, '#ffd166').set('blend', 'screen'),
+            circle(pulseR2, { fill: null, stroke: '#5ce1e6', width: 2.2 }).at(CX, CY).opacity(pulseOp2).glow(10, '#5ce1e6').set('blend', 'screen'),
+            circle(58, {
+                fill: radialGradient([0, 0], 58, [
+                    [0, '#ffd16692'],
+                    [0.45, '#ff6b8b30'],
                     [1, '#ffd16600'],
                 ]),
                 stroke: null,
             }).at(CX, CY).set('blend', 'screen').opacity(a),
-            circle(15, { fill: null, stroke: '#ffd166', width: 2.4 }).at(CX, CY).opacity(0.92 * a).set('blend', 'screen'),
-            dot(6.5, '#ffffff').at(CX, CY).glow(14, '#ffd166').set('blend', 'screen').opacity(a),
-            // Radiant multi-loop critical-line spiral
-            new Node(polyPath(pts)).stroke(spiralGrad, 6.2, 0.96 * a).glow(14, '#a78bfa').set('blend', 'screen'),
-            new Node(polyPath(pts)).stroke('#ffffff', 1.6, 0.52 * a),
-            circle(28, {
-                fill: radialGradient([0, 0], 28, [
-                    [0, '#ffd166aa'],
-                    [0.5, '#5ce1e633'],
+            circle(16, { fill: null, stroke: '#ffd166', width: 2.6 }).at(CX, CY).opacity(0.94 * a).set('blend', 'screen'),
+            dot(7, '#ffffff').at(CX, CY).glow(16, '#ffd166').set('blend', 'screen').opacity(a),
+            new Node(polyPath(pts)).stroke(spiralGrad, 6.8, 0.98 * a).glow(16, '#a78bfa').set('blend', 'screen'),
+            new Node(polyPath(pts)).stroke('#ffffff', 1.8, 0.56 * a),
+            circle(32, {
+                fill: radialGradient([0, 0], 32, [
+                    [0, '#ffd166bb'],
+                    [0.5, '#5ce1e638'],
                     [1, '#ffd16600'],
                 ]),
                 stroke: null,
             }).at(tip[0], tip[1]).set('blend', 'screen').opacity(a),
-            dot(8.5, '#ffffff').at(tip[0], tip[1]).glow(18, '#ffd166').set('blend', 'screen').opacity(a),
+            dot(9.5, '#ffffff').at(tip[0], tip[1]).glow(18, '#ffd166').set('blend', 'screen').opacity(a),
         )
     })
 
-    // Shot 2: One razor-thin golden line conducting glowing musical prime waves across space!
     const shot2Caption = group(
         txt('One razor-thin line', 0, -345, 72, '#ffd166', 'serif').glow(8, '#ffd166'),
         txt('conducting the hidden music of every prime number', 0, 365, 36, '#cbd5e8', 'sans'),

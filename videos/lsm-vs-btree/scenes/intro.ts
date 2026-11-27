@@ -4,7 +4,8 @@ import {
 } from 'vizmatic/stage'
 import { txt } from '../../../factory/style'
 
-const CX = 390
+// Mirrored composition: Blazing Flash Die on LEFT, crisp Right-Aligned Editorial on RIGHT
+const CX = -385
 const CY = 0
 
 const RIVER_XS = Array.from({ length: 64 }, (_, i) => CX - 260 + (520 * i) / 63)
@@ -14,26 +15,24 @@ export const intro: IntroFunction = (stage, clock) => {
     const goldGrad = linearGradient([CX - 260, CY + 120], [CX + 260, CY + 120], ['#ffd16620', '#ffd166', '#ffffff', '#ffd166'])
 
     stage.add(
-        circle(530, {
-            fill: radialGradient([0, 0], 530, [
-                [0, '#ffd16628'],
-                [0.45, '#ff6b8b1e'],
+        circle(540, {
+            fill: radialGradient([0, 0], 540, [
+                [0, '#ffd1662c'],
+                [0.45, '#ff6b8b22'],
                 [1, '#07091000'],
             ]),
             stroke: null,
         }).at(CX, CY),
-        txt('NVME SILICON & STORAGE ENGINES', -840, -195, 26, '#5ce1e6', 'mono', 'left'),
-        txt('Inside an SSD', -848, -72, 114, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('B-Trees vs LSM', -848, 56, 106, '#ffd166', 'serif', 'left').glow(9, '#ffd166'),
-        txt('Breaking the flash write-amplification wall', -840, 178, 34, '#c8d4ec', 'sans', 'left'),
+        txt('NVME SILICON & STORAGE ENGINES', 852, -195, 26, '#5ce1e6', 'mono', 'right'),
+        txt('Inside an SSD', 858, -72, 114, '#f8f4ec', 'serif', 'right').glow(6, '#90b4ff'),
+        txt('B-Trees vs LSM', 858, 56, 106, '#ffd166', 'serif', 'right').glow(9, '#ffd166'),
+        txt('Breaking the flash write-amplification wall', 852, 178, 34, '#c8d4ec', 'sans', 'right'),
         dynamic(() => {
             const p = prog.value
             const nodes: Node[] = [
-                // Silicon NVMe Die outer frame + glowing micro-pins
                 rect(480, 450, { fill: '#0d1324', stroke: '#4d6596', width: 3.4, radius: 18 }).at(CX, CY).glow(10, '#5ce1e6'),
                 rect(440, 410, { fill: null, stroke: '#28395e', width: 1.6, radius: 12 }).at(CX, CY),
             ]
-            // Flash page cells inside upper half (brightened unlit grid + hot random rose strikes with incoming 4 KB rays!)
             const hotTargets: Vec[] = []
             for (let r = 0; r < 4; r++) {
                 for (let colIdx = 0; colIdx < 6; colIdx++) {
@@ -49,7 +48,6 @@ export const intro: IntroFunction = (stage, clock) => {
                     )
                 }
             }
-            // Incoming glowing 4 KB write rays smashing into hot pages with additive screen flashes
             for (let k = 0; k < Math.min(3, hotTargets.length); k++) {
                 const [tx, ty] = hotTargets[k]!
                 const sx = tx - 90 + k * 45
@@ -70,7 +68,6 @@ export const intro: IntroFunction = (stage, clock) => {
                         .set('blend', 'screen'),
                 )
             }
-            // Sequential golden river gliding cleanly through lower silicon channel
             const riverPts: Vec[] = RIVER_XS.map((x) => [
                 x,
                 CY + 125 + Math.sin(x * 0.025 - p * 5.0) * 14,

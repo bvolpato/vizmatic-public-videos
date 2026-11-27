@@ -163,8 +163,8 @@ export const tiling: SceneFunction = (s, c) => {
 
     const kSlabLabel = label3d('K/V HBM', () => {
         const [cx, cy] = kSlabCenter()
-        return [cx, cy - 0.75, 0.06] as Vec3
-    }, { size: 26, color: COSMOS.cyan, math: false, font: 'mono', offset: [-10, 44] })
+        return [cx - 0.95, cy - 0.35, 0.45] as Vec3
+    }, { size: 26, color: COSMOS.cyan, math: false, font: 'mono', offset: [-74, 8] })
 
     view3d.add(
         terrain,
@@ -234,7 +234,7 @@ export const tiling: SceneFunction = (s, c) => {
     const complexityEq = tex(String.raw`O(N^2) \;\longrightarrow\; O\!\left(\frac{N^2 d}{M}\right)`, {
         size: 46,
         color: COSMOS.gold,
-    }).at(-585, 38).glow(6, COSMOS.gold)
+    }).at(-625, 38).glow(6, COSMOS.gold)
 
     // Compact HBM-vs-SRAM tile legend filling the middle-left gap cleanly BEFORE complexityEq arrives!
     const liveLegend = dynamic(() => {
@@ -270,9 +270,10 @@ export const tiling: SceneFunction = (s, c) => {
     s.add(aura, view3d, leftCopy, liveLegend, liveMetrics)
     c.at(0.1, () => s.play(view3d.orbit({ theta: -0.14, phi: 0.88 }), { duration: 32.0 }))
     c.at(0.1, () => s.play(tileCursor.to(15.95, { duration: 32.0, ease: linear })))
+    const plungeRel = Math.max(0.5, c.cue('traffic plunges by an order').start - c.start - 0.26)
+    c.at(plungeRel, () => s.play(showLegend.to(0, { duration: 0.2 })))
     c.show('traffic plunges by an order', complexityEq)
     c.on('traffic plunges by an order', () => {
-        s.play(showLegend.to(0, { duration: 0.35 }))
         s.play(hbmDrop.to(1, { duration: 2.2 }))
     })
 }

@@ -101,7 +101,7 @@ export const helix3d: SceneFunction = (s, c) => {
             blend: 'screen',
         }),
         label3d('m = 0', [-4.5, 0, 3.05], { size: 26, color: COSMOS.gold, math: false }),
-        label3d('m = N', [5.55, 0, 0], { size: 26, color: COSMOS.cyan, math: false }),
+        label3d('m = N', [5.25, 0, 0.15], { size: 26, color: COSMOS.cyan, math: false, offset: [28, -22] }),
     )
 
     // Token position tick beacons along the central spine
@@ -227,7 +227,7 @@ export const helix3d: SceneFunction = (s, c) => {
         line3d([-WX_HALF, -WY_HALF, baseZ], [-WX_HALF, WY_HALF + 0.4, baseZ], { color: '#7084b4', width: 2.2, opacity: 0.85 }),
         line3d([-WX_HALF, -WY_HALF, baseZ], [-WX_HALF, -WY_HALF, 2.45], { color: COSMOS.gold, width: 2.4, opacity: 0.88, glow: 6, blend: 'screen' }),
         label3d('Δ', [WX_HALF + 0.85, -WY_HALF - 0.55, baseZ], { size: 28, color: COSMOS.cyan, math: false }),
-        label3d('Band i', [-WX_HALF - 0.15, WY_HALF + 1.15, 0.45], { size: 26, color: COSMOS.violet, math: false }),
+        label3d('Band i', [-WX_HALF - 1.65, WY_HALF + 2.05, 0.75], { size: 26, color: COSMOS.violet, math: false, offset: [-32, -24] }),
         label3d('K(Δ)', [-WX_HALF, -WY_HALF, 2.85], { size: 28, color: COSMOS.gold, math: false }),
     ]
 

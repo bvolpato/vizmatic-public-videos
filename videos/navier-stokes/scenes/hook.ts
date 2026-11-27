@@ -12,18 +12,18 @@ import {
 } from '../math'
 import { txt } from '../../../factory/style'
 
-// Precompute full-width edge-to-edge laminar & Kelvin-Helmholtz streamlines (ZERO mid-air cutoffs!)
-const CX = 395
-const CY = 10
-const SX = 138
-const SY = 148
-const X_MIN = -3.4
-const X_MAX = 4.25 // extends cleanly past the right edge of 1920x1080!
-const Y_MIN = -2.65
-const Y_MAX = 2.65
-const SAMPLES = 136
+// Full-bleed edge-to-edge Kelvin-Helmholtz fluid river across all 1920 pixels + monumental centered Millennium title above
+const CX = 0
+const CY = 128
+const SX = 186
+const SY = 120
+const X_MIN = -5.4
+const X_MAX = 5.4
+const Y_MIN = -2.2
+const Y_MAX = 2.2
+const SAMPLES = 160
 
-const Y_SEEDS = [-2.15, -1.72, -1.28, -0.86, -0.46, -0.14, 0.14, 0.46, 0.86, 1.28, 1.72, 2.15] as const
+const Y_SEEDS = [-1.8, -1.42, -1.04, -0.66, -0.32, -0.04, 0.24, 0.56, 0.94, 1.34, 1.76] as const
 
 interface MorphStream {
     readonly laminar: Vec[]
@@ -38,7 +38,7 @@ const MORPH_STREAMS: readonly MorphStream[] = Y_SEEDS.map((y0) => {
         const px = X_MIN + ((X_MAX - X_MIN) * i) / (SAMPLES - 1)
         return [CX + px * SX, CY - y0 * SY] as Vec
     })
-    return { laminar, curled, isInner: Math.abs(y0) < 0.95 }
+    return { laminar, curled, isInner: Math.abs(y0) < 0.9 }
 })
 
 const VORTEX_EYES: Vec[][] = SHEAR_VORTICES.flatMap((vt) =>
@@ -59,10 +59,9 @@ const VORTEX_EYES: Vec[][] = SHEAR_VORTICES.flatMap((vt) =>
     }),
 )
 
-// Precompute luminous tracer streaklets advected cleanly through the Kelvin-Helmholtz velocity field
-const STREAK_SEEDS: { pts: Vec[]; col: string; phase0: number }[] = Array.from({ length: 32 }, (_, i) => {
-    const sx = X_MIN + 0.3 + ((i * 1.91) % (X_MAX - X_MIN - 0.85))
-    const sy = -2.05 + ((i * 1.13) % 4.1)
+const STREAK_SEEDS: { pts: Vec[]; col: string; phase0: number }[] = Array.from({ length: 40 }, (_, i) => {
+    const sx = X_MIN + 0.35 + ((i * 2.13) % (X_MAX - X_MIN - 0.85))
+    const sy = -1.85 + ((i * 1.13) % 3.7)
     const raw = traceStreamline(sx, sy, 16, 0.022, SHEAR_VORTICES, 0.35, 0.9, 2.45)
     const w = vortexVorticity(sx, sy, SHEAR_VORTICES, 0.35, 0.9)
     const col = w > 0.35 ? '#ffd166' : w < -0.35 ? '#5ce1e6' : '#ff6b8b'
@@ -73,25 +72,23 @@ const STREAK_SEEDS: { pts: Vec[]; col: string; phase0: number }[] = Array.from({
     }
 })
 
-// Exact streamfunction contourPaths isolines for Shot 1
 const SHOT1_CONTOURS = contourPaths(
     (x, y) => vortexStreamfunction(x, y, SHEAR_VORTICES, 0.35, 0.9, 2.45),
     {
         x: [X_MIN, X_MAX],
         y: [Y_MIN, Y_MAX],
         levels: [-4.8, -3.5, -2.2, -1.05, -0.25, 0.25, 1.05, 2.2, 3.5, 4.8],
-        resolution: [70, 50],
+        resolution: [84, 50],
     },
 )
 
 function featheredVort1(x: number, y: number): number {
-    const nx = (x - (X_MIN + X_MAX) * 0.5) / ((X_MAX - X_MIN) * 0.5)
-    const ny = (y - (Y_MIN + Y_MAX) * 0.5) / ((Y_MAX - Y_MIN) * 0.5)
-    const edge = Math.max(0, 1 - Math.pow(nx * nx * 0.7 + ny * ny * 0.82, 1.4))
+    const nx = x / X_MAX
+    const ny = y / Y_MAX
+    const edge = Math.max(0, 1 - Math.pow(nx * nx * 0.65 + ny * ny * 0.88, 1.45))
     return vortexVorticity(x, y, SHEAR_VORTICES, 0.35, 0.9) * edge
 }
 
-// Shot 2: Full-bleed continuous edge-to-edge luminous vortex streamlines across entire 1920x1080 canvas
 const WIDE_STREAMS: Vec[][] = [-2.25, -1.6, -1.0, -0.45, 0.0, 0.45, 1.0, 1.6, 2.25].map((y0) => {
     const raw = traceFullStreamline(-5.3, y0, 5.3, 155, SHEAR_VORTICES, 0.35, 0.95, 2.5)
     return raw.map(([px, py]) => [px * 185, -py * 114] as Vec)
@@ -111,15 +108,12 @@ export const hook: SceneFunction = (s, c) => {
     const showShot2 = s.value(0)
     const shot2Phase = s.value(0)
 
-    const khGrad = linearGradient([CX + X_MIN * SX, CY], [CX + X_MAX * SX, CY], ['#5ce1e6', '#60a5fa', '#ff6b8b', '#ffd166'])
+    const khGrad = linearGradient([-960, CY], [960, CY], ['#5ce1e6', '#60a5fa', '#ff6b8b', '#ffd166'])
     const wideGrad = linearGradient([-920, 0], [920, 0], ['#5ce1e6', '#7c8cff', '#ff6b8b', '#ffd166'])
 
     const fw1 = (X_MAX - X_MIN) * SX
     const fh1 = (Y_MAX - Y_MIN) * SY
-    const fcx1 = CX + ((X_MIN + X_MAX) * 0.5) * SX
-    const fcy1 = CY - ((Y_MIN + Y_MAX) * 0.5) * SY
 
-    // Lush signed-vorticity scalarField (omega = curl u) + streamfunction contourPaths underneath Shot 1!
     const shot1Field = scalarField((x, y) => featheredVort1(x, y), {
         x: [X_MIN, X_MAX],
         y: [Y_MIN, Y_MAX],
@@ -127,8 +121,8 @@ export const hook: SceneFunction = (s, c) => {
         colors: ['#5ce1e6dd', '#2563ebbb', '#1e1b5255', '#07091000', '#581c5e58', '#ff4d8dcc', '#ffd166ee'],
         width: fw1,
         height: fh1,
-        resolution: [112, 76],
-    }).at(fcx1, fcy1).set('blend', 'screen').opacity(0.92)
+        resolution: [124, 72],
+    }).at(CX, CY).set('blend', 'screen').opacity(0.92)
 
     const shot1Contours = group(
         ...SHOT1_CONTOURS.flatMap((lvl, li) => {
@@ -137,7 +131,7 @@ export const hook: SceneFunction = (s, c) => {
                 .filter((poly) => poly.length >= 2)
                 .map((poly) => {
                     const pts: Vec[] = poly.map(([x, y]) => [CX + x * SX, CY - y * SY] as Vec)
-                    return new Node(polyPath(pts)).stroke(col, 1.35, 0.25).set('blend', 'screen')
+                    return new Node(polyPath(pts)).stroke(col, 1.35, 0.24).set('blend', 'screen')
                 })
         }),
     )
@@ -152,11 +146,19 @@ export const hook: SceneFunction = (s, c) => {
         resolution: [112, 64],
     }).at(0, 0).set('blend', 'screen').opacity(0.58)
 
+    // Monumental Centered IMAX Millennium Title over soft atmospheric dark cradle
     const shot1Title = group(
-        txt('$1,000,000', -840, -175, 92, '#ffd166', 'mono', 'left').glow(10, '#ffd166'),
-        txt('Navier-Stokes', -848, -32, 102, '#f8f4ec', 'serif', 'left').glow(6, '#90b4ff'),
-        txt('Turbulence', -848, 84, 102, '#6be8f2', 'serif', 'left').glow(8, '#38bdf8'),
-        txt('Millennium Prize #2', -840, 206, 34, '#cbd5e8', 'sans', 'left'),
+        circle(720, {
+            fill: radialGradient([0, 0], 720, [
+                [0, '#070910e6'],
+                [0.52, '#07091096'],
+                [1, '#07091000'],
+            ]),
+            stroke: null,
+        }).at(0, -325),
+        txt('$1,000,000', 0, -396, 84, '#ffd166', 'mono', 'center').glow(12, '#ffd166'),
+        txt('Navier-Stokes Turbulence', 0, -282, 102, '#f8f4ec', 'serif', 'center').glow(9, '#5ce1e6'),
+        txt('MILLENNIUM PRIZE #2   ·   WHY SMOOTH FLUID BREAKS MATH', 0, 424, 26, '#cbd5e8', 'mono', 'center'),
     )
 
     const liveShot1 = dynamic(() => {
@@ -165,9 +167,9 @@ export const hook: SceneFunction = (s, c) => {
         const u = curlAmt.value
         const ph = flowPhase.value
         const nodes: Node[] = [
-            circle(540, {
-                fill: radialGradient([0, 0], 540, [
-                    [0, '#ff6b8b2c'],
+            circle(640, {
+                fill: radialGradient([0, 0], 640, [
+                    [0, '#ff6b8b2e'],
                     [0.45, '#4c2f8a1e'],
                     [1, '#07091000'],
                 ]),
@@ -175,7 +177,6 @@ export const hook: SceneFunction = (s, c) => {
             }).at(CX, CY).set('blend', 'screen').opacity(a),
         ]
 
-        // Luminous fluid tracer streaks shimmering across the vortex street
         for (const st of STREAK_SEEDS) {
             const shimmer = 0.35 + 0.55 * (0.5 + 0.5 * Math.sin(ph * 2.4 + st.phase0 * Math.PI * 2))
             nodes.push(
@@ -194,7 +195,7 @@ export const hook: SceneFunction = (s, c) => {
                 return [p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u + wave] as Vec
             })
             const col = st.isInner ? khGrad : '#5ce1e6'
-            const w = st.isInner ? 4.0 : 2.4
+            const w = st.isInner ? 4.2 : 2.4
             nodes.push(
                 new Node(polyPath(pts))
                     .stroke(col, w, (st.isInner ? 0.96 : 0.68) * a)
@@ -202,13 +203,12 @@ export const hook: SceneFunction = (s, c) => {
                     .set('blend', 'screen'),
             )
             if (st.isInner) {
-                nodes.push(new Node(polyPath(pts)).stroke('#ffffff', 1.0, 0.34 * a))
+                nodes.push(new Node(polyPath(pts)).stroke('#ffffff', 1.1, 0.36 * a))
             }
-            // Bright glowing tracer bead riding each continuous streamline
             const beadIdx = Math.floor((ph * 28 + si * 13) % (pts.length - 1))
             const bp = pts[beadIdx]!
             nodes.push(
-                dot(st.isInner ? 5.6 : 3.8, '#ffffff')
+                dot(st.isInner ? 5.8 : 3.8, '#ffffff')
                     .at(bp[0], bp[1])
                     .glow(12, st.isInner ? '#ffd166' : '#5ce1e6')
                     .set('blend', 'screen')
@@ -219,20 +219,20 @@ export const hook: SceneFunction = (s, c) => {
         if (u > 0.2) {
             const eyeOp = Math.min(1, (u - 0.2) / 0.5) * a
             for (const sp of VORTEX_EYES) {
-                nodes.push(new Node(polyPath(sp)).stroke('#ffd166', 3.0, 0.84 * eyeOp).glow(9, '#ff6b8b').set('blend', 'screen'))
+                nodes.push(new Node(polyPath(sp)).stroke('#ffd166', 3.2, 0.88 * eyeOp).glow(10, '#ff6b8b').set('blend', 'screen'))
             }
             for (const vt of SHEAR_VORTICES) {
                 const vx = CX + vt.x * SX
                 const vy = CY - vt.y * SY
                 const col = vt.gamma > 0 ? '#ffd166' : '#5ce1e6'
-                const rPulse = 18 + ((ph * 0.7) % 1) * 60
+                const rPulse = 20 + ((ph * 0.7) % 1) * 66
                 nodes.push(
                     circle(rPulse, { fill: null, stroke: col, width: 2.2 })
                         .at(vx, vy)
-                        .opacity((1 - ((ph * 0.7) % 1)) * 0.68 * eyeOp)
+                        .opacity((1 - ((ph * 0.7) % 1)) * 0.7 * eyeOp)
                         .glow(8, col)
                         .set('blend', 'screen'),
-                    dot(7, '#ffffff').at(vx, vy).glow(16, col).set('blend', 'screen').opacity(eyeOp),
+                    dot(7.5, '#ffffff').at(vx, vy).glow(16, col).set('blend', 'screen').opacity(eyeOp),
                 )
             }
         }

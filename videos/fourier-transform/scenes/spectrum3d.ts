@@ -180,8 +180,9 @@ export const spectrum3d: SceneFunction = (s, c) => {
                 .set('blend', 'screen'),
             dot(5.5, '#ffffff').at(cp[0], cp[1]).glow(10, '#ffd166').set('blend', 'screen'),
 
-            // Synchronized vertical playhead linking both waveforms
-            line([sx, W_ORIG_Y - 52], [sx, W_COMP_Y + 52], { stroke: '#ffd166', width: 1.6, dash: [4, 5] }).opacity(0.45).set('blend', 'screen'),
+            // Synchronized vertical playhead split across both waveforms (zero crossing of "10% Kept reconstruction"!)
+            line([sx, W_ORIG_Y - 46], [sx, W_ORIG_Y + 46], { stroke: '#ffd166', width: 1.8, dash: [4, 5] }).opacity(0.55).set('blend', 'screen'),
+            line([sx, W_COMP_Y - 46], [sx, W_COMP_Y + 46], { stroke: '#ffd166', width: 1.8, dash: [4, 5] }).opacity(0.55).set('blend', 'screen'),
 
             // Fidelity readout & glowing meter bar
             txt(fidelityStr, W_X0, 192, 26, fidCol, 'mono', 'left').glow(6, fidCol),

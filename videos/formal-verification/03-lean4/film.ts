@@ -1,4 +1,4 @@
-import { narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../../factory/style'
 import { tiles } from './scenes/tiles'
@@ -6,6 +6,13 @@ import { induction } from './scenes/induction'
 import { kernel } from './scenes/kernel'
 import script from './script.json'
 import timing from './timing.json'
+
+// Verify generalized tail-recursive reversal theorem: revAux(xs, acc) = reverse(xs) ++ acc
+function revAux<T>(xs: readonly T[], acc: readonly T[]): T[] {
+    return xs.length === 0 ? [...acc] : revAux(xs.slice(1), [xs[0]!, ...acc])
+}
+assertEqual(revAux([1, 2, 3, 4, 5], []).join(','), '5,4,3,2,1', 'revAux [1..5] [] = [5..1]')
+assertEqual(revAux([3, 4, 5], [2, 1]).join(','), '5,4,3,2,1', 'Generalized accumulator invariant holds at every step')
 
 const chapters: Record<string, SceneFunction> = { tiles, induction, kernel }
 

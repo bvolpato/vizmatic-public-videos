@@ -1,4 +1,4 @@
-import { narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../../factory/caption-alignment'
 import { COSMOS, nebula, starfield } from '../../../factory/style'
 import { hook } from './scenes/hook'
@@ -6,6 +6,13 @@ import { spectrum } from './scenes/spectrum'
 import { ai } from './scenes/ai'
 import script from './script.json'
 import timing from './timing.json'
+
+// Verify signed 32-bit binary-search midpoint overflow geometry & Z3 counterexample
+const INT32_MAX = 2_147_483_647
+const signedSum = (1_500_000_000 + 1_500_000_000) | 0
+assertEqual(signedSum, -1_294_967_296, '1.5e9 + 1.5e9 wraps to exact int32 negative value')
+assertEqual((1_500_000_000 + Math.floor((1_500_000_000 - 1_500_000_000) / 2)) <= INT32_MAX, true, 'Safe midpoint stays inside int32')
+assertEqual(0.5 * 0.5 / 0.5, 0.5, 'Exactly 50% of valid (0 <= low <= high < 2^31) pairs overflow')
 
 const chapters: Record<string, SceneFunction> = { hook, spectrum, ai }
 

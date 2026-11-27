@@ -1,0 +1,78 @@
+# Vizmatic Public Videos
+
+> Open-source, code-first cinematic technical explainers built with Vizmatic (TypeScript + 3D math + synchronized narration + reproducible 1080p MP4 rendering). Every video asserts real mathematical or systems invariants at build time and deploys automatically to GitHub Pages.
+
+- Live Gallery: https://bvolpato.github.io/vizmatic-public-videos/
+- Source Repository: https://github.com/bvolpato/vizmatic-public-videos
+- Vizmatic Engine: https://bvolpato.github.io/vizmatic/
+- Agent Authoring Guide: https://github.com/bvolpato/vizmatic-public-videos/blob/main/AGENTS.md
+
+## How AI Agents Should Create a Video Here
+
+Follow this exact workflow when asked to create or improve a cinematic explainer in this repository:
+
+1. **Scaffold & configure:**
+   - Run `npm run new -- <slug> "<Title>"`.
+   - Set `"featured": true` and `"published": "YYYY-MM-DD"` in `videos/<slug>/meta.json` to feature new releases on the homepage spotlight.
+2. **Design for cinema, not PowerPoint:**
+   - Full-bleed `1920 x 1080` dark canvas (`bleed: true`, `bloom: 0.22-0.24`, `#070910`), zero slide headers, zero `01 / 05` counters, zero boxy bullet cards, and zero unnecessary caveats/credits.
+   - Hook in the first 8-15 seconds (`intro: 0.7s`) with live motion and clear stakes. Target **2:30-3:30** total duration.
+   - Teach **mechanisms** visually (crossing wires with traveling photons, sweeping laser cuts, 3D surface morphs) rather than static history charts.
+   - Use plain-English analogies for hard concepts and visceral scale analogies for large numbers (for example, comparing `2^300` to atoms in the observable universe).
+   - Keep all visible text `>= 26 px` and diversify poster layouts relative to neighboring videos.
+3. **Compute real models & assert invariants:**
+   - Put exact numerical/algorithmic logic in `videos/<slug>/math.ts` and assert key invariants at build time in `videos/<slug>/film.ts` with `assertEqual`.
+   - For 3D spheres (`parametricSurface`), span `v` over `[0, 1]` (`phi = v * Math.PI`) to avoid polar holes, and compute exact latitude/great-circle radii. For sequential 3D walls, use a 3/4 side-angle camera (`theta ~ -1.3`) and dynamic `line3d` segments for growing arcs.
+4. **Finalize `script.json` and synthesize voice once:**
+   - Write `beat.say` so ElevenLabs can read it directly (`"omega"`, `"Lean four"`, `"cat zero"`) while keeping `pronounce` entries for Kokoro.
+   - Default free local Kokoro: `uv run factory/build.py <slug> --voice-only`
+   - Optional ElevenLabs studio voice: `VIZMATIC_VOICE_PROVIDER=elevenlabs ELEVENLABS_VOICE=bella ELEVENLABS_SPEED=1.12 uv run factory/build.py <slug> --voice-only`
+   - Commit `timing.json`; GitHub Actions always renders with Kokoro so CI spends zero API credits.
+5. **Verify at 30 fps and inspect rendered stills before full 1080p render:**
+   - `uv run factory/build.py <slug> --check-only` (must pass with 0 errors, 0 warnings)
+   - `(cd videos/<slug> && node ../../node_modules/vizmatic/dist/cli.js check film.ts --motion --text-size 26)` (target 0 non-intro findings across every frame; sequence crossfades with `delay(..., 0.2)` and guard hidden `dynamic` nodes with `< 0.02`)
+   - Render preview stills (`node node_modules/vizmatic/dist/cli.js film videos/<slug>/film.ts --frame 0.45,20,60,120 --width 1280 --out videos/<slug>/stills/preview`) and inspect every scene visually before running `uv run factory/build.py <slug>` and `npm run site`.
+
+## Key Repository Files
+
+- [AGENTS.md](https://github.com/bvolpato/vizmatic-public-videos/blob/main/AGENTS.md): Complete authoring, 3D geometry, timing, and verification rules.
+- [README.md](https://github.com/bvolpato/vizmatic-public-videos/blob/main/README.md): Full catalog, quickstart, caching, and ElevenLabs setup.
+- [factory/style.ts](https://github.com/bvolpato/vizmatic-public-videos/blob/main/factory/style.ts): Shared `COSMOS` palette, `txt`, `nebula`, and deterministic `starfield` helpers.
+- [factory/build.py](https://github.com/bvolpato/vizmatic-public-videos/blob/main/factory/build.py): Cached voice, audio mix, check, and 1080p render orchestrator.
+- [factory/build-site.mjs](https://github.com/bvolpato/vizmatic-public-videos/blob/main/factory/build-site.mjs): Static GitHub Pages gallery generator (copies `llms.txt` to `site/llms.txt`).
+- [factory/voice_elevenlabs.py](https://github.com/bvolpato/vizmatic-public-videos/blob/main/factory/voice_elevenlabs.py): Optional ElevenLabs `/with-timestamps` synthesizer.
+
+## Latest Featured Films
+
+- [P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet](https://bvolpato.github.io/vizmatic-public-videos/p-vs-np/): Exponential search (`2^300` vs universe atoms), linear 3-SAT verification, what breaks if `P = NP` vs `P != NP`, three proof walls explained simply, and the live `pequalnp.com` Lean 4 AI proof fleet (`videos/p-vs-np/`).
+- [Matrix Multiplication: Why ω = 9/4 Changes Computing](https://bvolpato.github.io/vizmatic-public-videos/matrix-exponent/): Visual evolution from Strassen crossing wires to Border Rank, Laser blocks, and polynomial degenerations, CAT(0) tripod geometry, the exact `α = 1/2` rectangular law, and real AI/GPU implications (`videos/matrix-exponent/`).
+
+## Full Catalog (20 Films)
+
+### AI & ML Internals
+- [FlashAttention: Why GPUs Spend 90% of Their Time Waiting](https://bvolpato.github.io/vizmatic-public-videos/flash-attention/): `videos/flash-attention/`
+- [Diffusion & Flow Matching: How AI Sculpts Noise Into Reality](https://bvolpato.github.io/vizmatic-public-videos/flow-matching/): `videos/flow-matching/`
+- [RoPE: Why LLMs Spin Clocks to Remember Long Context](https://bvolpato.github.io/vizmatic-public-videos/rope-long-context/): `videos/rope-long-context/`
+- [KV Cache & Speculative Decoding: How LLMs Hit 1,000 Tokens/sec](https://bvolpato.github.io/vizmatic-public-videos/speculative-decoding/): `videos/speculative-decoding/`
+
+### Mathematics & Quantum Physics
+- [P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet](https://bvolpato.github.io/vizmatic-public-videos/p-vs-np/): `videos/p-vs-np/`
+- [Matrix Multiplication: Why ω = 9/4 Changes Computing](https://bvolpato.github.io/vizmatic-public-videos/matrix-exponent/): `videos/matrix-exponent/`
+- [The Riemann Hypothesis: Music of the Primes](https://bvolpato.github.io/vizmatic-public-videos/riemann-hypothesis/): `videos/riemann-hypothesis/`
+- [The Navier-Stokes $1,000,000 Problem: Why Turbulence Breaks Math](https://bvolpato.github.io/vizmatic-public-videos/navier-stokes/): `videos/navier-stokes/`
+- [The Fourier Transform: Turning Chaos Into Epicycles & Music](https://bvolpato.github.io/vizmatic-public-videos/fourier-transform/): `videos/fourier-transform/`
+- [Gödel & the Halting Problem: Why No AI Can Prove Every Truth](https://bvolpato.github.io/vizmatic-public-videos/godel-halting/): `videos/godel-halting/`
+- [Quantum Computing Without the Hype: Shor's Algorithm & Interference](https://bvolpato.github.io/vizmatic-public-videos/shors-algorithm/): `videos/shors-algorithm/`
+
+### Cryptography, Distributed Systems & Linux
+- [Zero-Knowledge Proofs: Proving a Secret Without Showing a Bit](https://bvolpato.github.io/vizmatic-public-videos/zk-snarks/): `videos/zk-snarks/`
+- [Raft Consensus & Split-Brain: Why Distributed Systems Survive Partitions](https://bvolpato.github.io/vizmatic-public-videos/raft-consensus/): `videos/raft-consensus/`
+- [Inside an SSD: B-Trees vs LSM-Trees and the Write-Amplification Wall](https://bvolpato.github.io/vizmatic-public-videos/lsm-vs-btree/): `videos/lsm-vs-btree/`
+- [Rust Concurrency: Ownership Across Time](https://bvolpato.github.io/vizmatic-public-videos/rust-concurrency/): `videos/rust-concurrency/`
+- [MicroVMs & KVM: From One CPU Instruction to Sub-Second Sandboxes](https://bvolpato.github.io/vizmatic-public-videos/linux-microvms/): `videos/linux-microvms/`
+- [io_uring: Inside Linux's Zero-Syscall I/O Engine](https://bvolpato.github.io/vizmatic-public-videos/io-uring/): `videos/io-uring/`
+
+### Formal Verification Series
+- [Proofs for Real Systems (1/3): Why Tests Miss the Bug](https://bvolpato.github.io/vizmatic-public-videos/formal-verification/01-why-prove/): `videos/formal-verification/01-why-prove/`
+- [Proofs for Real Systems (2/3): TLA+ & the Five-Step Bug](https://bvolpato.github.io/vizmatic-public-videos/formal-verification/02-tla-plus/): `videos/formal-verification/02-tla-plus/`
+- [Proofs for Real Systems (3/3): Lean 4 & the Shape of a Proof](https://bvolpato.github.io/vizmatic-public-videos/formal-verification/03-lean4/): `videos/formal-verification/03-lean4/`

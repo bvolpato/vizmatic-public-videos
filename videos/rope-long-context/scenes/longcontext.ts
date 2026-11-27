@@ -184,9 +184,13 @@ export const longcontext: SceneFunction = (s, c) => {
                         stroke: null,
                         radius: 8,
                     }).at(oodCenterX, oodCenterY).opacity(washCrimsonOp),
-                    txt('OOD ZONE  (> 4k)', rightX - 18, oodTopY + 18, 26, COSMOS.rose, 'mono', 'right')
-                        .glow(5, COSMOS.rose).opacity(Math.min(1, overflow * 1.4) * (1 - blend)),
                 )
+                if (blend < 0.42) {
+                    nodes.push(
+                        txt('OOD ZONE  (> 4k)', rightX - 18, oodTopY + 18, 26, COSMOS.rose, 'mono', 'right')
+                            .glow(5, COSMOS.rose).opacity(Math.min(1, overflow * 1.4) * (1 - blend / 0.42)),
+                    )
+                }
             }
             if (washEmeraldOp > 0.005) {
                 nodes.push(
@@ -195,9 +199,13 @@ export const longcontext: SceneFunction = (s, c) => {
                         stroke: null,
                         radius: 8,
                     }).at(oodCenterX, oodCenterY).opacity(washEmeraldOp),
-                    txt('YaRN EXTENDED  (32k)', rightX - 18, oodTopY + 18, 26, COSMOS.emerald, 'mono', 'right')
-                        .glow(5, COSMOS.emerald).opacity(blend),
                 )
+                if (blend > 0.58) {
+                    nodes.push(
+                        txt('YaRN EXTENDED  (32k)', rightX - 18, oodTopY + 18, 26, COSMOS.emerald, 'mono', 'right')
+                            .glow(5, COSMOS.emerald).opacity(Math.min(1, (blend - 0.58) / 0.42)),
+                    )
+                }
             }
         }
 

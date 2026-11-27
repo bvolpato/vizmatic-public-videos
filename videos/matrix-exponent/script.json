@@ -1,0 +1,114 @@
+{
+  "timeline": {
+    "intro": 0.7,
+    "pause": 0.2,
+    "gap": 0.36,
+    "tail": 1.3
+  },
+  "pronounce": {
+    "ω": "omega",
+    "α": "alpha",
+    "Strassen": "STRAH-sen",
+    "Coppersmith": "COP-per-smith",
+    "Winograd": "WIN-oh-grad",
+    "HBM": "H B M",
+    "LoRA": "LOW-rah",
+    "MoE": "M O E"
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "title": "The 57-Year Dream Just Hit a Wall",
+      "beats": [
+        {
+          "say": "For fifty-seven years, computer science chased one dream: multiplying matrices in n squared time. Today, OpenAI dropped a Lean four proof claiming the dream is dead.",
+          "hold": 0.32
+        },
+        {
+          "say": "Over every number system, the matrix multiplication exponent omega equals nine fourths, exactly two point two five. Not two. Here is how the algorithms evolved, why the geometry stops at nine fourths, and what it means for AI.",
+          "hold": 0.45
+        }
+      ]
+    },
+    {
+      "id": "race",
+      "title": "How the Algorithms Evolved to 9/4",
+      "beats": [
+        {
+          "say": "Multiply two n by n matrices the textbook way and you pay n cubed. In 1969, Volker Strassen shattered that by cross-wiring two by two blocks into just seven shared products instead of eight, dropping omega to two point eight one.",
+          "hold": 0.32
+        },
+        {
+          "say": "Next came border rank, letting tiny epsilon error terms cancel out, and the Coppersmith-Winograd laser method: slicing away colliding blocks in a huge tensor power to pack disjoint matrix products. That plunged to two point three seven five, then crawled for decades to two point three seven one.",
+          "hold": 0.35
+        },
+        {
+          "say": "In late 2026, polynomial degenerations broke the laser barrier, splitting independent variable blocks straight out of polynomial multiplication to hit nine fourths.",
+          "hold": 0.32
+        },
+        {
+          "say": "Yet for half a century, lower bounds stayed trapped at exponent two. Then the November 24 proof changed everything: the lower bound rockets straight up to two point two five, locking omega shut and refuting Strassen's tight-tensor conjecture.",
+          "hold": 0.4
+        },
+        {
+          "say": "Even at finite sizes, every circuit needs at least n to the nine fourths over two nonlinear gates. At size two hundred fifty-six, border rank must exceed two to the eighteen.",
+          "hold": 0.42
+        }
+      ]
+    },
+    {
+      "id": "geometry",
+      "title": "Why 9/4? The Curved Tensor Tripod",
+      "beats": [
+        {
+          "say": "Why nine fourths instead of two? Picture matrix multiplication as a triangle of three matrices linked by three index wires: i, j, and k. Any fast algorithm replaces those three wires with one shared hub label.",
+          "hold": 0.32
+        },
+        {
+          "say": "In Strassen's asymptotic spectrum, every bit carries a geometric price. Flat Euclidean space only gives a ratio of two, never enough to beat n squared.",
+          "hold": 0.32
+        },
+        {
+          "say": "Curve the space into a cat zero tripod with three unit arms. Pairwise distances sum to six, while the shared-label rate is eight thirds. Six divided by eight thirds equals nine fourths.",
+          "hold": 0.4
+        },
+        {
+          "say": "Beating nine fourths would ban that tripod, letting sphere tensors compress independent list-distinctness tests faster than information routing allows. Contradiction.",
+          "hold": 0.42
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "Rectangular Law & What Changes for AI",
+      "beats": [
+        {
+          "say": "The Lean formalization locks down rectangular matrices too, with one exact surface for every shape. Multiply n by n to the t times n to the t by n, and the curve stays completely flat at exponent two all the way to t equals one half. Up to square-root rank, multiplication is literally free.",
+          "hold": 0.4
+        },
+        {
+          "say": "So will GPUs train AI in n to the two point two five tomorrow? No. Asymptotic algorithms have huge constant factors, and real accelerators are bottlenecked by HBM bandwidth, Tensor Core tiling, and low-precision stability.",
+          "hold": 0.35
+        },
+        {
+          "say": "What changes permanently is the ceiling. Dense matmuls will never reach n squared, validating AI's shift toward sparsity, MoE, low-rank projections inside the alpha equals one half sweet spot, and hardware-aware kernels.",
+          "hold": 0.42
+        }
+      ]
+    },
+    {
+      "id": "finale",
+      "title": "A 57-Year Limit, Formalized",
+      "beats": [
+        {
+          "say": "Fifty-seven years after Strassen, the geometry of matrices locks at omega equals nine fourths and dual exponent one half, formalized in Lean four.",
+          "hold": 0.35
+        },
+        {
+          "say": "Now the community's job is clear: audit the formal definitions, and build AI for a world where dense matrices stop at two point two five.",
+          "hold": 0.65
+        }
+      ]
+    }
+  ]
+}

@@ -122,8 +122,13 @@ export const clocks: SceneFunction = (s, c) => {
                 }).opacity(0.65 * fade0),
                 arc(112, bAng, bAng + sweep, { fill: null, stroke: COSMOS.cyan, width: 4.8 })
                     .at(CX, CY).opacity(0.92 * fade0).glow(10, COSMOS.cyan).set('blend', 'screen'),
-                txt(`R(mθ) q   ·   m = ${m.toFixed(1)}`, CX, CY + RADIUS + 76, 30, COSMOS.cyan, 'mono').opacity(fade0),
             )
+            if (pairA < 0.42) {
+                nodes.push(
+                    txt(`R(mθ) q   ·   m = ${m.toFixed(1)}`, CX, CY + RADIUS + 76, 30, COSMOS.cyan, 'mono')
+                        .opacity(Math.max(0, 1 - pairA / 0.42)),
+                )
+            }
         }
 
         // In Beat 1, show key vector R(n*theta) k, additive wake arc, projection drop-line, and color-matched legend!
@@ -162,14 +167,6 @@ export const clocks: SceneFunction = (s, c) => {
                     'mono',
                     'left',
                 ).glow(7, COSMOS.gold).opacity(pairA),
-                txt(
-                    `qₘ (m=${Math.round(m)})   kₙ (n=${Math.round(n)})   Δ = m − n = 6`,
-                    CX,
-                    CY + RADIUS + 76,
-                    27,
-                    COSMOS.ink,
-                    'mono',
-                ).opacity(pairA),
                 // Color-matched legend bullets (cyan = q_m, gold = k_n, emerald = (m-n)theta)
                 dot(8, COSMOS.cyan).at(-852, 342).glow(8, COSMOS.cyan).opacity(pairA),
                 txt('qₘ', -834, 342, 26, COSMOS.cyan, 'mono', 'left').opacity(pairA),
@@ -178,6 +175,18 @@ export const clocks: SceneFunction = (s, c) => {
                 dot(8, COSMOS.emerald).at(-644, 342).glow(8, COSMOS.emerald).opacity(pairA),
                 txt('(m−n)θ', -626, 342, 26, COSMOS.emerald, 'mono', 'left').opacity(pairA),
             )
+            if (pairA > 0.58) {
+                nodes.push(
+                    txt(
+                        `qₘ (m=${Math.round(m)})   kₙ (n=${Math.round(n)})   Δ = m − n = 6`,
+                        CX,
+                        CY + RADIUS + 76,
+                        27,
+                        COSMOS.ink,
+                        'mono',
+                    ).opacity(Math.min(1, (pairA - 0.58) / 0.42)),
+                )
+            }
         }
 
         // Always render query vector R(m*theta) q on top

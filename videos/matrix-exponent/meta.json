@@ -1,0 +1,11 @@
+{
+  "title": "Matrix Multiplication: Why ω = 9/4 Changes Computing",
+  "description": "A cinematic breakdown of the Lean 4 proof pinning matrix multiplication at ω = 9/4: live crossing-wire Strassen, Border Rank & Laser blocks, polynomial degenerations, CAT(0) tripod geometry, the α = 1/2 rectangular law, and what it changes for AI.",
+  "category": "Mathematics",
+  "featured": true,
+  "published": "2026-11-25",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "posterAt": 0.45
+}
