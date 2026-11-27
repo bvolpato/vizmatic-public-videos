@@ -71,16 +71,19 @@ export const finale: SceneFunction = (s, c) => {
                 stroke: null,
                 radius: 20,
             }).at(scanX, -195).opacity(0.75).set('blend', 'screen'),
-            // Expanding luminous golden volumetric shockwave halo (radialGradient fill, no stroke over glyphs)
+            // Expanding luminous golden volumetric shockwave halo (smooth multi-stop bell, no concentric banding)
             circle(54 + shockPulse * 155, {
                 fill: radialGradient([0, 0], 54 + shockPulse * 155, [
                     [0, '#ffd16600'],
-                    [0.72, '#ffd16640'],
-                    [0.90, '#ffffff55'],
+                    [0.35, '#ffd16608'],
+                    [0.62, '#ffd16622'],
+                    [0.78, '#ffd16638'],
+                    [0.88, '#fff4cc36'],
+                    [0.95, '#ffd16614'],
                     [1, '#ffd16600'],
                 ]),
                 stroke: null,
-            }).at(scanX, -195).opacity((1 - shockPulse) * 0.85).set('blend', 'screen'),
+            }).at(scanX, -195).opacity((1 - shockPulse) * 0.78).set('blend', 'screen'),
         )
 
         // Glowing golden vertical laser segments bridging the gaps cleanly between token lanes

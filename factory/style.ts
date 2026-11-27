@@ -33,13 +33,47 @@ export function rule(x1: number, y1: number, x2: number, y2: number, color: stri
     return line([x1, y1], [x2, y2], { stroke: color, width })
 }
 
+function parseRgbaHex(hex: string): [number, number, number, number] {
+    const clean = hex.replace('#', '')
+    const r = Number.parseInt(clean.slice(0, 2), 16) || 0
+    const g = Number.parseInt(clean.slice(2, 4), 16) || 0
+    const b = Number.parseInt(clean.slice(4, 6), 16) || 0
+    const a = clean.length >= 8 ? Number.parseInt(clean.slice(6, 8), 16) : 255
+    return [r, g, b, Number.isNaN(a) ? 255 : a]
+}
+
+function toRgbaHex(r: number, g: number, b: number, a: number): string {
+    const hex = (v: number) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')
+    return `#${hex(r)}${hex(g)}${hex(b)}${hex(a)}`
+}
+
 export function nebula(x: number, y: number, radius: number, innerHex: string, midHex = '#07091000') {
-    return circle(radius, {
-        fill: radialGradient([0, 0], radius, [
-            [0, innerHex],
-            [0.5, midHex],
-            [1, '#07091000'],
-        ]),
+    // Expand stage-wide background nebulas past the 1920x1080 corners so their outer edge never forms a visible ring.
+    const r = radius >= 700 ? Math.max(radius, 1220) : radius
+    const c0 = parseRgbaHex(innerHex)
+    const cMid = parseRgbaHex(midHex)
+    const hasMid = cMid[3] > 0
+    const cEnd: [number, number, number, number] = [7, 9, 16, 0]
+    const rawGamma = hasMid && c0[3] > 0 && cMid[3] < c0[3] ? Math.log(cMid[3] / c0[3]) / Math.log(0.5) : 1.15
+    const gamma = Math.max(0.75, Math.min(2.6, rawGamma))
+    const stops: [number, string][] = []
+    const steps = 8
+    for (let i = 0; i <= steps; i++) {
+        const u = i / steps
+        // Strictly monotonic C1 cosine-power falloff avoids Mach-band derivative kinks at midpoint and outer edge.
+        const alphaWeight = Math.pow(0.5 * (1 + Math.cos(Math.PI * u)), gamma)
+        const tint = Math.min(1, u * 1.4)
+        const baseR = hasMid ? c0[0] + (cMid[0] - c0[0]) * tint : c0[0]
+        const baseG = hasMid ? c0[1] + (cMid[1] - c0[1]) * tint : c0[1]
+        const baseB = hasMid ? c0[2] + (cMid[2] - c0[2]) * tint : c0[2]
+        const outR = baseR * alphaWeight + cEnd[0] * (1 - alphaWeight)
+        const outG = baseG * alphaWeight + cEnd[1] * (1 - alphaWeight)
+        const outB = baseB * alphaWeight + cEnd[2] * (1 - alphaWeight)
+        const outA = c0[3] * alphaWeight
+        stops.push([Number(u.toFixed(3)), toRgbaHex(outR, outG, outB, outA)])
+    }
+    return circle(r, {
+        fill: radialGradient([0, 0], r, stops),
         stroke: null,
     }).at(x, y)
 }

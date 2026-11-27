@@ -90,11 +90,11 @@ export const finale: SceneFunction = (s, c) => {
 
     // Radiant central fused SRAM core jewel
     const coreSphere = sphere(0.86, {
-        resolution: [28, 20],
+        resolution: [56, 32],
         colors: ['#183473', '#1f7ec2', '#5ce1e6', '#ffd166', '#fff8dc'],
         mesh: '#a3f4ff',
-        meshOpacity: 0.22,
-        meshWidth: 0.6,
+        meshOpacity: 0.14,
+        meshWidth: 0.45,
         opacity: 0.88,
     })
 

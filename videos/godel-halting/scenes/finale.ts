@@ -47,12 +47,12 @@ export const finale: SceneFunction = (s, c) => {
     }).at(0, cy)
 
     const coreShell = sphere(0.68, {
-        resolution: [20, 14],
+        resolution: [56, 32],
         color: '#1c3568',
         opacity: 0.24,
         mesh: '#5ce1e6',
-        meshOpacity: 0.26,
-        meshWidth: 0.7,
+        meshOpacity: 0.14,
+        meshWidth: 0.5,
     })
 
     const ringInner = curve3d(

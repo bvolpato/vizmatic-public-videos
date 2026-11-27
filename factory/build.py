@@ -280,7 +280,10 @@ def build_video(slug: str, video_dir: Path, args: argparse.Namespace) -> None:
 
     workers = os.environ.get("VIZMATIC_WORKERS") or str(min(6, os.cpu_count() or 4))
     backend = os.environ.get("VIZMATIC_BACKEND", "auto")
-    encoder = os.environ.get("VIZMATIC_ENCODER", "auto")
+    # Use libx264 for final high-quality renders so Vizmatic's anti-banding x264 tuning and dither grain are preserved
+    # (hardware NVENC/VideoToolbox quantize subtle dark radial gradients into visible concentric rings).
+    default_encoder = "auto" if args.draft else "libx264"
+    encoder = os.environ.get("VIZMATIC_ENCODER", default_encoder)
     width = "1280" if args.draft else str(meta_cfg.get("width", 1920))
     fps = str(meta_cfg.get("fps", 30))
     quality = "draft" if args.draft else "high"
