@@ -38,7 +38,7 @@ An explainer fails when it looks like a narrated slide deck. Follow these rules 
    - Verify every `film.json` `mix.effects` entry uses `{ scene, beat, word, sound, gain }` with valid sound names (`bell`, `latch`, `resolve`) matching an exact word in that beat.
 3. **Synthesize voice and timing once:**
    - Default free local Kokoro: `uv run factory/build.py <slug> --voice-only`
-   - Optional ElevenLabs studio voice: configure `.env` from `.env.example` (`VIZMATIC_VOICE_PROVIDER=elevenlabs`, `ELEVENLABS_VOICE=david`, `ELEVENLABS_SPEED=1.08`) and run the same command.
+   - Optional ElevenLabs studio voice: configure `.env` from `.env.example` (`VIZMATIC_VOICE_PROVIDER=elevenlabs`, `ELEVENLABS_VOICE=liam`, `ELEVENLABS_SPEED=1.08`) and run the same command.
    - Commit `timing.json` so typechecks, `vizmatic check`, and CI work without re-synthesizing voice.
 4. **Prevent timing and motion traps:**
    - Inside scenes, always use `c.at(...)` (scene-relative time), never `s.at(...)` (absolute film time).

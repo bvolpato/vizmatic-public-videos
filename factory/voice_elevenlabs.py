@@ -35,8 +35,8 @@ DEFAULT_KEY_FILE = Path.home() / ".config/fido/elevenlabs_api_key"
 
 # Friendly presets for ElevenLabs studio voices (any raw voice_id also works).
 VOICE_PRESETS: dict[str, str] = {
-    # Male educator / 3b1b-style explainer voices
-    "david": "x8EpqJ1pKzP4vo35tTCm",    # Clear, Friendly Explainer (calm, curious teacher cadence)
+    # Male studio explainer voices (official premade studio mics, zero room reverb)
+    "liam": "TX3LPaxmHKxFdv7VOQHJ",     # Bright, Warm, Upbeat Creator (clean studio mic)
     "will": "bIHbv24MWmeRgasZH58o",     # Relaxed Optimist (young American male, conversational)
     "chris": "iP95p4xoKVk53GoZ742B",    # Charming, Down-to-Earth (natural American male)
     "eric": "cjVigY5qzO86Huf0OWal",     # Smooth, Trustworthy (tenor narrator)
@@ -156,7 +156,7 @@ def main() -> None:
         os.environ.get("ELEVENLABS_VOICE_ID")
         or os.environ.get("ELEVENLABS_VOICE")
         or el_cfg.get("voice")
-        or "david"
+        or "liam"
     )
     voice_id = resolve_voice_id(voice_spec)
     model_id = os.environ.get("ELEVENLABS_MODEL_ID") or el_cfg.get("model_id") or DEFAULT_MODEL_ID
