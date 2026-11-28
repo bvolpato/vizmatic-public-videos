@@ -1,47 +1,12 @@
 import {
-    Node, delay, dot, dynamic, group, line, linear, linearGradient, par, polyPath, rect,
+    Node, delay, dot, dynamic, group, line, linear, par, polyPath, rect,
     type SceneFunction, type Vec,
 } from 'vizmatic/stage'
-import { COSMOS, nebula, txt } from '../../../factory/style'
+import { COSMOS, txt } from '../../../factory/style'
 import { DEMO_3SAT, DEMO_WITNESS, UNIVERSE_EXPONENT } from '../math'
+import { buildVennNodes, vennTitleGroup } from './venn'
 
-// ── Shot 1: Narrated P vs NP Opening Hero Visual (held smoothly through Beat 0, zero flash!) ──
-const POLY_STREAMS: Vec[][] = [-210, -125, -40, 45, 130, 215].map((y0, idx) => {
-    const pts: Vec[] = []
-    for (let i = 0; i <= 32; i++) {
-        const u = i / 32
-        const x = -940 + u * 645
-        const converge = y0 * (1 - u * 0.58)
-        const wave = Math.sin(u * Math.PI * 2 + idx * 0.7) * 14 * (1 - u * 0.4)
-        pts.push([x, converge + wave])
-    }
-    return pts
-})
-
-interface HeroEdge {
-    readonly from: Vec
-    readonly to: Vec
-    readonly depth: number
-    readonly isKey: boolean
-}
-const HERO_EDGES: HeroEdge[] = []
-const HERO_NODES: { readonly pos: Vec; readonly isKey: boolean; readonly depth: number }[] = []
-function buildHeroTree(x: number, y: number, depth: number, spreadY: number, isKeyPath: boolean) {
-    HERO_NODES.push({ pos: [x, y], isKey: isKeyPath, depth })
-    if (depth >= 4) return
-    const nextX = x + 148
-    const upY = y - spreadY
-    const dnY = y + spreadY
-    const goUpKey = isKeyPath && depth % 2 === 0
-    const goDnKey = isKeyPath && depth % 2 === 1
-    HERO_EDGES.push({ from: [x, y], to: [nextX, upY], depth, isKey: goUpKey })
-    HERO_EDGES.push({ from: [x, y], to: [nextX, dnY], depth, isKey: goDnKey })
-    buildHeroTree(nextX, upY, depth + 1, spreadY * 0.52, goUpKey)
-    buildHeroTree(nextX, dnY, depth + 1, spreadY * 0.52, goDnKey)
-}
-buildHeroTree(325, 0, 0, 178, true)
-
-// ── Shot 2: Clean 4-level binary search tree on the left half ──
+// Clean 4-level binary search tree on the left half of Shot 2
 interface SearchNode {
     readonly pos: Vec
     readonly parent: Vec | null
@@ -53,13 +18,13 @@ function buildSearch(x: number, y: number, depth: number, dx: number, parent: Ve
     const pos: Vec = [x, y]
     SEARCH_NODES.push({ pos, parent, isKey, depth })
     if (depth >= 4) return
-    const ny = y + 78
+    const ny = y + 66
     const leftKey = isKey && (depth === 0 || depth === 1)
     const rightKey = isKey && (depth === 2 || depth === 3)
     buildSearch(x - dx, ny, depth + 1, dx * 0.5, pos, leftKey)
     buildSearch(x + dx, ny, depth + 1, dx * 0.5, pos, rightKey)
 }
-buildSearch(-475, -182, 0, 178, null, true)
+buildSearch(-475, -138, 0, 178, null, true)
 
 export const hook: SceneFunction = (s, c) => {
     const showIntro = s.value(1)
@@ -68,65 +33,18 @@ export const hook: SceneFunction = (s, c) => {
     const searchProg = s.value(0)
     const verifyProg = s.value(0)
 
-    const polyGrad = linearGradient([-940, 0], [-295, 0], ['#1d4ed844', COSMOS.cyan, COSMOS.emerald])
-
-    const introCopy = group(
-        nebula(-580, 0, 540, '#5ce1e626', '#1d4ed814').set('blend', 'screen'),
-        nebula(610, 0, 580, '#ff6b8b26', '#a78bfa1a').set('blend', 'screen'),
-        txt('P  ·  FAST TO CHECK  O(n²)', -615, -396, 26, COSMOS.cyan, 'mono'),
-        txt('NP  ·  EXPONENTIAL  2ⁿ', 620, -396, 26, COSMOS.rose, 'mono'),
-        txt('$1,000,000  MILLENNIUM PROBLEM', 0, -238, 26, COSMOS.gold, 'mono'),
-        txt('P vs NP', 0, -78, 148, COSMOS.ink, 'serif').glow(10, '#60a5fa'),
-        txt('Finding vs. Checking', 0, 74, 46, COSMOS.gold, 'serif').glow(8, COSMOS.gold),
-    )
-
+    // ── Shot 1: Full Narrated P vs NP Opening with Complexity Classes Venn Diagram (~7.8s) ──
+    const introCopy = vennTitleGroup('Easy to check. Hard to find?')
     const liveIntro = dynamic(() => {
         const a = showIntro.value
         if (a < 0.02) return []
-        const p = introProg.value
-        const nodes: Node[] = []
-
-        for (let sIdx = 0; sIdx < POLY_STREAMS.length; sIdx++) {
-            const pts = POLY_STREAMS[sIdx]!
-            nodes.push(
-                new Node(polyPath(pts)).stroke(polyGrad, 2.8, 0.72 * a).glow(8, COSMOS.cyan).set('blend', 'screen'),
-            )
-            const idx = Math.min(pts.length - 1, Math.floor(((p * 1.6 + sIdx * 0.17) % 1) * (pts.length - 1)))
-            const pt = pts[idx]!
-            nodes.push(dot(5.8, '#ffffff').at(pt[0], pt[1]).glow(14, COSMOS.cyan).opacity(a).set('blend', 'screen'))
-        }
-
-        for (const e of HERO_EDGES) {
-            nodes.push(
-                line(e.from, e.to, {
-                    stroke: e.isKey ? COSMOS.gold : e.depth < 2 ? COSMOS.violet : COSMOS.rose,
-                    width: e.isKey ? 4.4 : 1.8,
-                    opacity: (e.isKey ? 0.98 : 0.42) * a,
-                }).glow(e.isKey ? 14 : 4, e.isKey ? COSMOS.gold : COSMOS.rose).set('blend', 'screen'),
-            )
-            if (e.isKey) {
-                const t = (p * 2.2) % 1
-                const px = e.from[0] + (e.to[0] - e.from[0]) * t
-                const py = e.from[1] + (e.to[1] - e.from[1]) * t
-                nodes.push(dot(6.2, '#ffffff').at(px, py).glow(14, COSMOS.gold).opacity(a).set('blend', 'screen'))
-            }
-        }
-        for (const n of HERO_NODES) {
-            nodes.push(
-                dot(n.isKey ? 7.0 : 3.6, n.isKey ? COSMOS.gold : COSMOS.rose)
-                    .at(n.pos[0], n.pos[1])
-                    .glow(n.isKey ? 14 : 4, n.isKey ? COSMOS.gold : COSMOS.rose)
-                    .opacity((n.isKey ? 1 : 0.65) * a)
-                    .set('blend', 'screen'),
-            )
-        }
-
-        return group(...nodes)
+        return group(...buildVennNodes(introProg.value, a))
     })
 
+    // ── Shot 2: Live CPU Brute-Force Register + Search Tree vs. Hardware 3-SAT Logic Verifier ──
     const engineHeader = group(
-        txt('Effortless to check — impossible to find', 0, -372, 60, COSMOS.ink, 'serif').glow(6, '#38bdf8'),
-        line([0, -275], [0, 345], { stroke: '#29385d', width: 2.2 }),
+        txt('Effortless to check, impossible to find', 0, -378, 58, COSMOS.ink, 'serif'),
+        line([0, -284], [0, 358], { stroke: '#29385d', width: 2.2 }),
     )
 
     const liveEngine = dynamic(() => {
@@ -136,11 +54,31 @@ export const hook: SceneFunction = (s, c) => {
         const vp = verifyProg.value
         const nodes: Node[] = []
 
-        // ── LEFT: FINDING (Exponential 2^n Search Tree -> 2^266 ≈ 10^80 atoms in the universe) ──
+        // ── LEFT: FINDING (Live Racing Binary Bit-Register + Exponential 2^n Search Tree) ──
         nodes.push(
-            txt('FINDING  (NP · BRUTE SEARCH)', -475, -248, 27, COSMOS.rose, 'mono').glow(6, COSMOS.rose).opacity(a),
+            txt('FINDING  (NP · BRUTE-FORCE CPU)', -475, -264, 26, COSMOS.rose, 'mono').opacity(a),
         )
-        const probeIdx = Math.floor((sp * 24) % SEARCH_NODES.length)
+
+        // Live 8-bit racing hardware register flipping 0/1 states rapidly as the CPU tries keys
+        const bitStep = Math.floor(sp * 190)
+        const bitY = -202
+        for (let b = 0; b < 8; b++) {
+            const bx = -700 + b * 64
+            const bitVal = ((bitStep >> (7 - b)) ^ (b * 3)) & 1
+            const isHi = bitVal === 1
+            nodes.push(
+                rect(50, 44, {
+                    fill: isHi ? '#2a1222' : '#101524',
+                    stroke: isHi ? COSMOS.rose : '#3a4668',
+                    width: isHi ? 2.2 : 1.4,
+                    radius: 8,
+                }).at(bx, bitY).glow(isHi ? 6 : 0, COSMOS.rose).opacity(a),
+                txt(String(bitVal), bx, bitY, 26, isHi ? COSMOS.rose : COSMOS.dim, 'mono').opacity(a),
+            )
+        }
+
+        // Exponential 2^n search tree with traveling probe & golden key highlight
+        const probeIdx = Math.floor((sp * 28) % SEARCH_NODES.length)
         for (let i = 0; i < SEARCH_NODES.length; i++) {
             const sn = SEARCH_NODES[i]!
             const active = i === probeIdx
@@ -151,19 +89,19 @@ export const hook: SceneFunction = (s, c) => {
                         stroke: keyLit ? COSMOS.gold : active ? COSMOS.rose : '#4d2b45',
                         width: keyLit ? 3.8 : active ? 2.6 : 1.5,
                         opacity: (keyLit ? 0.98 : active ? 0.9 : 0.65) * a,
-                    }).glow(keyLit ? 12 : 3, keyLit ? COSMOS.gold : COSMOS.rose).set('blend', 'screen'),
+                    }).glow(keyLit ? 10 : 3, keyLit ? COSMOS.gold : COSMOS.rose).set('blend', 'screen'),
                 )
             }
             nodes.push(
                 dot(keyLit ? 7.5 : active ? 6.2 : 4.0, keyLit ? COSMOS.gold : active ? '#ffffff' : COSMOS.rose)
                     .at(sn.pos[0], sn.pos[1])
-                    .glow(keyLit ? 16 : active ? 12 : 4, keyLit ? COSMOS.gold : COSMOS.rose)
+                    .glow(keyLit ? 14 : active ? 10 : 4, keyLit ? COSMOS.gold : COSMOS.rose)
                     .opacity(a)
                     .set('blend', 'screen'),
             )
         }
 
-        // Racing exponential counter scaling cleanly to n = 266 (2^266 ≈ 10^80 ≈ atoms in the observable universe!)
+        // Racing exponential counter scaling cleanly to n = 266 (2^266 ≈ 10^80 ≈ atoms in the observable universe)
         const curN = Math.min(
             UNIVERSE_EXPONENT,
             Math.max(10, Math.round(10 + Math.min(1, sp * 1.95) * (UNIVERSE_EXPONENT - 10))),
@@ -176,43 +114,82 @@ export const hook: SceneFunction = (s, c) => {
                     ? `10^${expPow} paths  (past galactic scale)`
                     : `2^${curN} combinations`
         nodes.push(
-            txt(`n = ${curN} variables   →   2^${curN} ≈ 10^${expPow}`, -475, 224, 28, COSMOS.rose, 'mono').opacity(a),
-            txt(scaleLabel, -475, 282, curN >= 264 ? 26 : 28, COSMOS.amber, 'mono').glow(6, COSMOS.amber).opacity(a),
+            txt(`n = ${curN} bits   →   2^${curN} ≈ 10^${expPow}`, -475, 224, 28, COSMOS.rose, 'mono').opacity(a),
+            txt(scaleLabel, -475, 282, curN >= 264 ? 26 : 28, COSMOS.amber, 'mono').opacity(a),
             txt('Observable universe ≈ 10⁸⁰ atoms', -475, 336, 26, COSMOS.muted, 'sans').opacity(a),
         )
 
-        // ── RIGHT: CHECKING (Linear 3-SAT Circuit Verifier) ──
+        // ── RIGHT: CHECKING (Hardware Signal Bus + Live 3-SAT Logic Gate Verifier) ──
         nodes.push(
-            txt('CHECKING  (P · VERIFIER)', 475, -248, 27, COSMOS.emerald, 'mono').glow(6, COSMOS.emerald).opacity(a),
-            rect(560, 56, { fill: '#1a1826', stroke: COSMOS.gold, width: 2.4, radius: 12 }).at(475, -172)
-                .glow(vp > 0.05 ? 10 : 3, COSMOS.gold).opacity(a),
-            txt(`KEY:  x = (${DEMO_WITNESS.map((b) => (b ? 'T' : 'F')).join(', ')})`, 475, -172, 27, COSMOS.gold, 'mono').opacity(a),
+            txt('CHECKING  (P · LOGIC VERIFIER)', 475, -264, 26, COSMOS.emerald, 'mono').opacity(a),
         )
 
+        // Input Witness Key register with 4 bit pins
+        const keyY = -196
+        nodes.push(
+            rect(560, 56, { fill: '#1a1826', stroke: COSMOS.gold, width: 2.4, radius: 12 }).at(475, keyY)
+                .glow(vp > 0.05 ? 8 : 3, COSMOS.gold).opacity(a),
+            txt(`KEY:  x = (${DEMO_WITNESS.map((b) => (b ? 'T' : 'F')).join(', ')})`, 475, keyY, 27, COSMOS.gold, 'mono').opacity(a),
+        )
+
+        // Vertical input signal bus on the left side of the gate stack (x = 148, strictly clear of text!)
+        const busX = 148
+        const outBusX = 804
+        const busProgressY = keyY + 28 + Math.min(1, vp * 1.15) * 412
+        nodes.push(
+            line([busX, keyY + 28], [busX, 255], { stroke: '#2c3a5e', width: 2.6 }).opacity(a),
+            line([outBusX, -98], [outBusX, 255], { stroke: '#2c3a5e', width: 2.6 }).opacity(a),
+        )
+        if (vp > 0.02) {
+            nodes.push(
+                line([busX, keyY + 28], [busX, Math.min(144, busProgressY)], { stroke: COSMOS.gold, width: 3.4 })
+                    .glow(10, COSMOS.gold).opacity(a).set('blend', 'screen'),
+                dot(6.0, '#ffffff').at(busX, Math.min(144, busProgressY)).glow(12, COSMOS.gold).opacity(a).set('blend', 'screen'),
+            )
+        }
+
+        // 4 hardware OR-clause gate units fed from input bus -> feeding right output AND-bus
         for (let i = 0; i < DEMO_3SAT.length; i++) {
             const cl = DEMO_3SAT[i]!
-            const cy = -82 + i * 74
+            const cy = -98 + i * 78
             const checked = vp > (i + 0.35) / 5
             const col = checked ? COSMOS.emerald : '#3f5075'
             nodes.push(
+                // Left wire tap from input bus into clause gate
+                line([busX, cy], [195, cy], { stroke: checked ? COSMOS.gold : '#324163', width: checked ? 2.8 : 1.8 })
+                    .glow(checked ? 6 : 0, COSMOS.gold).opacity(a),
+                // Right wire tap from clause gate into output AND-bus
+                line([755, cy], [outBusX, cy], { stroke: checked ? COSMOS.emerald : '#324163', width: checked ? 2.8 : 1.8 })
+                    .glow(checked ? 8 : 0, COSMOS.emerald).opacity(a),
+                dot(4.5, checked ? COSMOS.emerald : '#4a5a80').at(outBusX, cy).opacity(a),
+                // Gate chip housing
                 rect(560, 56, { fill: checked ? '#0e2424' : '#101626', stroke: col, width: checked ? 2.8 : 1.6, radius: 10 })
-                    .at(475, cy).glow(checked ? 10 : 2, col).opacity(a),
+                    .at(475, cy).glow(checked ? 8 : 2, col).opacity(a),
                 txt(cl.label, 232, cy, 27, checked ? COSMOS.ink : COSMOS.muted, 'mono', 'left').opacity(a),
-                txt(checked ? '✓  TRUE' : '···', 718, cy, 26, checked ? COSMOS.emerald : COSMOS.dim, 'mono', 'right').opacity(a),
+                txt(checked ? '✓  1' : '···', 718, cy, 26, checked ? COSMOS.emerald : COSMOS.dim, 'mono', 'right').opacity(a),
+            )
+        }
+
+        // Lit emerald output bus down to final AND verification banner
+        if (vp > 0.25) {
+            const outY = -98 + Math.min(1, (vp - 0.15) / 0.75) * 353
+            nodes.push(
+                line([outBusX, -98], [outBusX, outY], { stroke: COSMOS.emerald, width: 3.4 })
+                    .glow(10, COSMOS.emerald).opacity(a).set('blend', 'screen'),
+                new Node(polyPath([[outBusX, 255], [755, 255]])).stroke(COSMOS.emerald, 3.0, vp > 0.85 ? a : 0.2 * a),
             )
         }
 
         if (vp > 0.85) {
             const okOp = Math.min(1, (vp - 0.85) / 0.15) * a
             nodes.push(
-                nebula(475, 255, 260, '#6ee7b72a').opacity(okOp).set('blend', 'screen'),
                 rect(560, 68, { fill: '#0e2624', stroke: COSMOS.emerald, width: 3.2, radius: 14 })
-                    .at(475, 255).glow(14, COSMOS.emerald).opacity(okOp),
-                txt('VERIFIED IN MICROSECONDS', 475, 255, 29, COSMOS.emerald, 'mono').glow(6, COSMOS.emerald).opacity(okOp),
+                    .at(475, 255).glow(12, COSMOS.emerald).opacity(okOp),
+                txt('AND = 1  ·  VERIFIED IN µs', 475, 255, 28, COSMOS.emerald, 'mono').opacity(okOp),
             )
         } else {
             nodes.push(
-                txt('One straight pass checks every rule', 475, 255, 27, COSMOS.muted, 'sans').opacity(a),
+                txt('One linear hardware pass checks every gate', 475, 255, 26, COSMOS.muted, 'sans').opacity(a),
             )
         }
 
@@ -229,9 +206,9 @@ export const hook: SceneFunction = (s, c) => {
     c.swap('Some problems look', introCopy, engineHeader)
     c.at(engineRel, () => {
         s.play(par(
-            showIntro.to(0, { duration: 0.18 }),
-            delay(showEngine.to(1, { duration: 0.28 }), 0.22),
-            delay(searchProg.to(1, { duration: Math.max(2.0, engineDur - 0.25), ease: linear }), 0.22),
+            showIntro.to(0, { duration: 0.22 }),
+            delay(showEngine.to(1, { duration: 0.3 }), 0.26),
+            delay(searchProg.to(1, { duration: Math.max(2.0, engineDur - 0.28), ease: linear }), 0.26),
         ))
     })
     c.at(checkRel, () => {

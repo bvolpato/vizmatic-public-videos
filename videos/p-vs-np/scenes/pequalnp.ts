@@ -1,5 +1,5 @@
 import {
-    Node, circle, delay, dot, dynamic, group, line, linear, par, polyPath, radialGradient, rect,
+    Node, circle, delay, dot, dynamic, group, line, linear, par, polyPath, rect,
     type SceneFunction, type Vec,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -51,11 +51,10 @@ export const pequalnp: SceneFunction = (s, c) => {
     const showStatus = s.value(0)
     const dagProg = s.value(0)
 
-    // ── Shot 1: Live pequalnp.com Architecture (clean, zero clutter) ──
+    // ── Shot 1: Live pequalnp.com Agent Cluster + Sweeping Lean 4 Kernel Scanner ──
     const pipeHeader = group(
         txt('PEQUALNP.COM  ·  LIVE OPEN AI LAB', -855, -424, 26, COSMOS.cyan, 'mono', 'left'),
-        txt('Thousands of AI agents — one ruthless Lean 4 judge', -855, -356, 50, COSMOS.ink, 'serif', 'left')
-            .glow(5, '#38bdf8'),
+        txt('Thousands of AI agents, one ruthless Lean 4 judge', -855, -356, 50, COSMOS.ink, 'serif', 'left'),
     )
 
     const livePipe = dynamic(() => {
@@ -65,7 +64,7 @@ export const pequalnp: SceneFunction = (s, c) => {
         const ph = photonT.value
         const nodes: Node[] = []
 
-        // 1. LEFT: 5 Active Research Fronts
+        // 1. LEFT: 5 Active Research Fronts streaming lemma tasks
         nodes.push(
             txt('5 ACTIVE FRONTS', -675, -264, 26, COSMOS.cyan, 'mono').opacity(a),
         )
@@ -78,57 +77,75 @@ export const pequalnp: SceneFunction = (s, c) => {
                     .at(-675, fy).glow(6, f.col).opacity(vis * a),
                 txt(f.name, -675, fy - 11, 26, f.col, 'mono').opacity(vis * a),
                 txt(f.tag, -675, fy + 19, 26, COSMOS.muted, 'sans').opacity(vis * a),
-                ...flowArrow([-486, fy], [-200, (i - 2) * 28], [-344, fy * 0.65], f.col, 2.8, vis * a, (ph * 1.1 + i * 0.2) % 1),
+                ...flowArrow([-486, fy], [-222, (i - 2) * 32], [-354, fy * 0.65], f.col, 2.8, vis * a, (ph * 1.1 + i * 0.2) % 1),
             )
         }
 
-        // 2. CENTER: Crowdsourced AI Fleet Hub
+        // 2. CENTER: Live Multi-Agent Code Terminal & PR Fleet Hub (animated code bars + ticking PR counter!)
         const fleetVis = Math.max(0.2, Math.min(1, p * 2.5 - 0.15))
+        const fOp = fleetVis * a
+        const prCount = Math.round(42120 + Math.min(1, p) * 412)
         nodes.push(
-            circle(154, {
-                fill: radialGradient([0, 0], 154, [
-                    [0, '#5ce1e634'],
-                    [0.65, '#4c2f8a1e'],
-                    [1, '#07091000'],
-                ]),
-                stroke: COSMOS.cyan,
-                width: 3.4,
-            }).at(-40, 6).glow(16, COSMOS.cyan).opacity(fleetVis * a),
-            txt('OPEN AI FLEET', -40, -52, 26, COSMOS.cyan, 'mono').opacity(fleetVis * a),
-            txt('42,500+ PRs', -40, 2, 38, COSMOS.gold, 'mono').glow(8, COSMOS.gold).opacity(fleetVis * a),
-            txt('Prove · Refute · Split', -40, 56, 26, COSMOS.ink, 'sans').opacity(fleetVis * a),
-            txt('Claude · Codex · Cursor · Gemini', -40, 214, 26, COSMOS.muted, 'mono').opacity(fleetVis * a),
+            rect(356, 296, { fill: '#0d1324', stroke: COSMOS.cyan, width: 3.0, radius: 16 })
+                .at(-40, 6).glow(12, COSMOS.cyan).opacity(fOp),
+            // Terminal window title bar + traffic dots
+            line([-218, -104], [138, -104], { stroke: '#253357', width: 1.6 }).opacity(fOp),
+            dot(5.0, COSMOS.rose).at(-194, -122).opacity(fOp),
+            dot(5.0, COSMOS.gold).at(-174, -122).opacity(fOp),
+            dot(5.0, COSMOS.emerald).at(-154, -122).opacity(fOp),
+            txt('OPEN AI FLEET', 12, -122, 26, COSMOS.cyan, 'mono').opacity(fOp),
+            // Ticking live PR counter
+            txt(`#${prCount.toLocaleString()} PRs`, -40, -56, 38, COSMOS.gold, 'mono').opacity(fOp),
+            txt('Prove · Refute · Split', -40, -6, 26, COSMOS.ink, 'sans').opacity(fOp),
+        )
+        // Animated live Lean proof-tactic progress bars inside the terminal
+        const barColors = [COSMOS.cyan, COSMOS.emerald, COSMOS.violet, COSMOS.gold]
+        for (let b = 0; b < 4; b++) {
+            const by = 40 + b * 24
+            const wave = 0.28 + 0.62 * (0.5 + 0.5 * Math.sin(ph * 3.8 + b * 1.35))
+            const bw = 270 * wave
+            nodes.push(
+                rect(270, 10, { fill: '#172038', stroke: null, radius: 5 }).at(-40, by).opacity(fOp),
+                rect(bw, 10, { fill: barColors[b]!, stroke: null, radius: 5 })
+                    .at(-175 + bw / 2, by).glow(6, barColors[b]!).opacity(0.88 * fOp),
+            )
+        }
+        nodes.push(
+            txt('Claude · Codex · Cursor · Gemini', -40, 204, 26, COSMOS.muted, 'mono').opacity(fOp),
         )
 
-        // 3. RIGHT: One Strict Lean 4 Judge -> Verified Map / Graveyard
+        // 3. RIGHT: Sweeping Lean 4 Kernel Type-Checker -> Verified Map / Graveyard
         const judgeVis = Math.max(0, Math.min(1, p * 2.6 - 0.65))
         if (judgeVis > 0.02) {
             const jOp = judgeVis * a
             nodes.push(
-                ...flowArrow([118, 6], [326, 6], [222, 6], COSMOS.gold, 4.2, jOp, (ph * 1.5) % 1),
-                rect(510, 148, { fill: '#181524', stroke: COSMOS.gold, width: 3.2, radius: 16 })
+                ...flowArrow([142, 6], [328, 6], [235, 6], COSMOS.gold, 4.2, jOp, (ph * 1.5) % 1),
+                rect(510, 152, { fill: '#161424', stroke: COSMOS.gold, width: 3.2, radius: 16 })
                     .at(590, 6).glow(14, COSMOS.gold).opacity(jOp),
-                txt('LEAN 4 JUDGE', 590, -26, 30, COSMOS.gold, 'mono').glow(6, COSMOS.gold).opacity(jOp),
-                txt('Zero shortcuts · Zero fake proofs', 590, 24, 26, COSMOS.ink, 'sans').opacity(jOp),
-                ...flowArrow([590, -72], [590, -162], [590, -118], COSMOS.emerald, 3.6, jOp, (ph * 1.6) % 1),
+                // Live kernel verification scanner sweeping cleanly along the bottom rail (zero stroke over text!)
+                rect(468, 6, { fill: '#22283d', stroke: null, radius: 3 }).at(590, 62).opacity(jOp),
+                rect(96, 6, { fill: COSMOS.emerald, stroke: null, radius: 3 })
+                    .at(388 + ((ph * 0.9) % 1) * 404, 62).glow(10, COSMOS.emerald).opacity(0.92 * jOp),
+                txt('LEAN 4 KERNEL', 590, -26, 30, COSMOS.gold, 'mono').opacity(jOp),
+                txt('Zero shortcuts · Zero fake proofs', 590, 26, 26, COSMOS.ink, 'sans').opacity(jOp),
+                ...flowArrow([590, -74], [590, -162], [590, -118], COSMOS.emerald, 3.6, jOp, (ph * 1.6) % 1),
                 rect(440, 68, { fill: '#0e2422', stroke: COSMOS.emerald, width: 2.6, radius: 12 })
                     .at(590, -204).glow(10, COSMOS.emerald).opacity(jOp),
-                txt('ACCEPTED → VERIFIED MAP', 590, -204, 26, COSMOS.emerald, 'mono').opacity(jOp),
-                ...flowArrow([590, 84], [590, 174], [590, 130], COSMOS.rose, 3.4, jOp, (ph * 1.6 + 0.5) % 1),
+                txt('✓ ACCEPTED → VERIFIED MAP', 590, -204, 26, COSMOS.emerald, 'mono').opacity(jOp),
+                ...flowArrow([590, 86], [590, 174], [590, 130], COSMOS.rose, 3.4, jOp, (ph * 1.6 + 0.5) % 1),
                 rect(440, 68, { fill: '#22101c', stroke: COSMOS.rose, width: 2.4, radius: 12 })
                     .at(590, 216).glow(8, COSMOS.rose).opacity(jOp),
-                txt('DEAD ENDS → GRAVEYARD', 590, 216, 26, COSMOS.rose, 'mono').opacity(jOp),
+                txt('✕ REFUTED → GRAVEYARD', 590, 216, 26, COSMOS.rose, 'mono').opacity(jOp),
             )
         }
 
         return group(...nodes)
     })
 
-    // ── Shot 2: Real Progress vs. The Unbridged Chasm ──
+    // ── Shot 2: Real Progress vs. The Unbridged Chasm (with live climbing proof signals!) ──
     const statusHeader = group(
         txt('IS THERE REAL PROGRESS?', 0, -418, 26, COSMOS.gold, 'mono'),
-        txt('P vs NP is still unsolved — yet real theorems are falling', 0, -348, 50, COSMOS.ink, 'serif')
-            .glow(6, COSMOS.gold),
+        txt('P vs NP is still unsolved, yet real theorems are falling', 0, -348, 50, COSMOS.ink, 'serif'),
     )
 
     const liveStatus = dynamic(() => {
@@ -139,17 +156,9 @@ export const pequalnp: SceneFunction = (s, c) => {
         const nodes: Node[] = []
 
         nodes.push(
-            circle(260, {
-                fill: radialGradient([0, 0], 260, [
-                    [0, '#ffd1662c'],
-                    [0.55, '#07091000'],
-                    [1, '#07091000'],
-                ]),
-                stroke: null,
-            }).at(0, -210).opacity(a).set('blend', 'screen'),
             rect(340, 74, { fill: '#1b1624', stroke: COSMOS.gold, width: 3.4, radius: 16 })
-                .at(0, -210).glow(16, COSMOS.gold).opacity(a),
-            txt('P ≠ NP ?  (SUMMIT)', 0, -210, 30, COSMOS.gold, 'mono').glow(6, COSMOS.gold).opacity(a),
+                .at(0, -210).glow(14, COSMOS.gold).opacity(a),
+            txt('P ≠ NP ?  (SUMMIT)', 0, -210, 30, COSMOS.gold, 'mono').opacity(a),
             line([-360, -82], [360, -82], { stroke: COSMOS.rose, width: 2.2, dash: [10, 10] }).opacity(0.8 * a),
             txt('UNBRIDGED CHASM  (STILL OPEN)', 0, -114, 26, COSMOS.rose, 'mono').opacity(a),
         )
@@ -164,9 +173,13 @@ export const pequalnp: SceneFunction = (s, c) => {
                 for (const j of [i, i + 1]) {
                     if (j < lower.length) {
                         const lPos = lower[j]!
+                        const ptU = (ph * 1.3 + i * 0.25 + l * 0.4) % 1
                         nodes.push(
                             line(lPos, uPos, { stroke: COSMOS.emerald, width: 2.4, opacity: 0.72 * layerVis * a })
                                 .glow(6, COSMOS.emerald).set('blend', 'screen'),
+                            dot(4.4, '#ffffff')
+                                .at(lPos[0] + (uPos[0] - lPos[0]) * ptU, lPos[1] + (uPos[1] - lPos[1]) * ptU)
+                                .glow(10, COSMOS.emerald).opacity(0.85 * layerVis * a).set('blend', 'screen'),
                         )
                     }
                 }

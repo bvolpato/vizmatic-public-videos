@@ -1,6 +1,6 @@
-import { assertEqual, narrated, type SceneFunction } from 'vizmatic/stage'
+import { assertEqual, group, narrated, type SceneFunction } from 'vizmatic/stage'
 import { retimeBeatCaptions } from '../../factory/caption-alignment'
-import { COSMOS, nebula, starfield } from '../../factory/style'
+import { COSMOS, starfield } from '../../factory/style'
 import {
     DEMO_3SAT,
     DEMO_WITNESS,
@@ -45,7 +45,8 @@ function chapter(index: number): SceneFunction {
                 }
             }
         }
-        stage.add(nebula(0, -40, 1180, '#18244d28', '#10153010'), ...starfield(135, index + 31, COSMOS.cyan))
+        // Pure deep-space background + crisp stars (no wide low-alpha SVG radialGradient -> zero 8-bit concentric banding)
+        stage.add(group(...starfield(135, index + 31, COSMOS.cyan)))
         chapters[scene.id]!(stage, cue, clock)
     }
 }
@@ -56,7 +57,7 @@ export default narrated({
         'A cinematic breakdown of P vs NP, what breaks if P = NP vs P ≠ NP, the three proof walls explained intuitively, and the live AI fleet attacking it in Lean 4 at pequalnp.com.',
     width: 1920,
     height: 1080,
-    fps: 30,
+    fps: 60,
     background: COSMOS.bg,
     bloom: 0.24,
     bleed: true,

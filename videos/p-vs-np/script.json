@@ -36,11 +36,11 @@
       "title": "Two Universes: P = NP vs. P ≠ NP",
       "beats": [
         {
-          "say": "If P equals N P, the digital world shatters overnight. Encryption, digital signatures, and online security collapse, because cracking a secret key becomes as easy as checking one.",
+          "say": "If P equals N P with a practical algorithm, modern encryption shatters. Digital signatures and online security collapse, because cracking a secret key becomes as easy as checking one.",
           "hold": 0.32
         },
         {
-          "say": "At the same time, discovery explodes. Proving math theorems, folding proteins, designing chips, and routing global supply chains all collapse into one fast solver.",
+          "say": "Proving math theorems, folding proteins, designing chips, and routing networks all become polynomial-time. Of course, an algorithm running in n to the one hundred is still impractical, so nothing breaks overnight, yet hard problems move within reach.",
           "hold": 0.35
         },
         {

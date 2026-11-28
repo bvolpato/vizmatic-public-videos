@@ -1,5 +1,5 @@
 import {
-    Node, circle, dot, dynamic, group, line3d, linear, par, parametricSurface, point3d, radialGradient, scene3d,
+    Node, dot, dynamic, group, line3d, linear, par, parametricSurface, point3d, scene3d,
     type Scene3D, type SceneFunction, type Vec3,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -62,20 +62,47 @@ export const barriers: SceneFunction = (s, c) => {
 
     // Three clean, parallel horizontal proof beams on separate height lanes, each bouncing cleanly off its wall!
     wallView.add(
-        // Beam 1 (cyan -> hits Wall 1 at x = -1.75, z = 0.72 and deflects back-up-left)
+        // Beam 1 (cyan -> hits Wall 1 at x = -1.75, z = 0.72 and deflects back-up-left) + live ricochet probe
         line3d([-3.6, -0.55, 0.72], [-1.78, -0.55, 0.72], { color: COSMOS.cyan, width: 3.4, glow: 10, blend: 'screen', opacity: 0.9 }),
         line3d([-1.78, -0.55, 0.72], [-2.85, -1.35, -0.15], { color: COSMOS.rose, width: 2.6, glow: 8, blend: 'screen', opacity: 0.85 }),
         point3d([-1.78, -0.55, 0.72], { color: COSMOS.rose, radius: 7.0, glow: 14, blend: 'screen' }),
+        point3d((): Vec3 => {
+            const u = (sparkT.value * 0.9) % 1
+            if (u < 0.62) {
+                const t = u / 0.62
+                return [-3.6 + t * 1.82, -0.55, 0.72]
+            }
+            const t = (u - 0.62) / 0.38
+            return [-1.78 - t * 1.07, -0.55 - t * 0.8, 0.72 - t * 0.87]
+        }, { color: '#ffffff', radius: 6.5, glow: 16, blend: 'screen' }),
 
-        // Beam 2 (blue -> stops cleanly at Wall 2 x = 0.0, z = 0.0 and deflects back-down-left)
+        // Beam 2 (blue -> stops cleanly at Wall 2 x = 0.0, z = 0.0 and deflects back-down-left) + live ricochet probe
         line3d([-1.72, 0.0, 0.0], [-0.03, 0.0, 0.0], { color: COSMOS.blue, width: 3.2, glow: 10, blend: 'screen', opacity: 0.8 }),
         line3d([-0.03, 0.0, 0.0], [-1.05, -1.15, -0.78], { color: COSMOS.amber, width: 2.6, glow: 8, blend: 'screen', opacity: 0.85 }),
         point3d([-0.03, 0.0, 0.0], { color: COSMOS.amber, radius: 7.0, glow: 14, blend: 'screen' }),
+        point3d((): Vec3 => {
+            const u = (sparkT.value * 0.9 + 0.33) % 1
+            if (u < 0.62) {
+                const t = u / 0.62
+                return [-1.72 + t * 1.69, 0.0, 0.0]
+            }
+            const t = (u - 0.62) / 0.38
+            return [-0.03 - t * 1.02, -t * 1.15, -t * 0.78]
+        }, { color: '#ffffff', radius: 6.5, glow: 16, blend: 'screen' }),
 
-        // Beam 3 (emerald -> stops cleanly at Wall 3 x = +1.75, z = -0.68 and deflects back-left)
+        // Beam 3 (emerald -> stops cleanly at Wall 3 x = +1.75, z = -0.68 and deflects back-left) + live ricochet probe
         line3d([0.03, 0.55, -0.68], [1.72, 0.55, -0.68], { color: COSMOS.emerald, width: 3.2, glow: 10, blend: 'screen', opacity: 0.8 }),
         line3d([1.72, 0.55, -0.68], [0.75, -0.75, -1.22], { color: COSMOS.violet, width: 2.6, glow: 8, blend: 'screen', opacity: 0.85 }),
         point3d([1.72, 0.55, -0.68], { color: COSMOS.violet, radius: 7.0, glow: 14, blend: 'screen' }),
+        point3d((): Vec3 => {
+            const u = (sparkT.value * 0.9 + 0.66) % 1
+            if (u < 0.62) {
+                const t = u / 0.62
+                return [0.03 + t * 1.69, 0.55, -0.68]
+            }
+            const t = (u - 0.62) / 0.38
+            return [1.72 - t * 0.97, 0.55 - t * 1.3, -0.68 - t * 0.54]
+        }, { color: '#ffffff', radius: 6.5, glow: 16, blend: 'screen' }),
 
         // Origin beacon (Known Math, left) & Target beacon (P != NP, right)
         point3d([-3.6, 0, 0], { color: COSMOS.cyan, radius: 9.5, glow: 18, blend: 'screen' }),
@@ -99,19 +126,10 @@ export const barriers: SceneFunction = (s, c) => {
         }),
     )
 
-    const aura = circle(580, {
-        fill: radialGradient([0, 0], 580, [
-            [0, '#ff6b8b1e'],
-            [0.5, '#a78bfa18'],
-            [1, '#07091000'],
-        ]),
-        stroke: null,
-    }).at(320, 6).set('blend', 'screen')
-
     const leftCopy = group(
         txt('WHY 55 YEARS OF PROOFS FAILED', -855, -408, 26, COSMOS.rose, 'mono', 'left'),
         txt('Three Hidden', -860, -324, 64, COSMOS.ink, 'serif', 'left'),
-        txt('Proof Walls', -860, -248, 64, COSMOS.amber, 'serif', 'left').glow(7, COSMOS.amber),
+        txt('Proof Walls', -860, -248, 64, COSMOS.amber, 'serif', 'left'),
         // Clean flanking 2D captions above/below the 3D fortress
         txt('BYPASS ARCH:  LOOK DEEP INSIDE COMPUTATION', 320, -408, 26, COSMOS.gold, 'mono'),
         txt('WALL 1: BLACK-BOX   ·   WALL 2: PARADOX TRAP   ·   WALL 3: ALGEBRA', 320, 428, 26, COSMOS.muted, 'mono'),
@@ -143,7 +161,7 @@ export const barriers: SceneFunction = (s, c) => {
         return group(...nodes)
     })
 
-    s.add(aura, wallView, leftCopy, liveWalls)
+    s.add(wallView, leftCopy, liveWalls)
     const sceneDur = Math.max(8, c.end - c.start - 0.5)
     c.at(0.1, () => {
         s.play(par(

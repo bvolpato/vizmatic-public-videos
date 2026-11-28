@@ -1,5 +1,5 @@
 import {
-    circle, curve3d, dynamic, group, line3d, linear, par, parametricSurface, point3d, radialGradient, scene3d, tex,
+    circle, curve3d, dynamic, group, line3d, linear, par, parametricSurface, point3d, scene3d, tex,
     type SceneFunction, type Vec3,
 } from 'vizmatic/stage'
 import { COSMOS, txt } from '../../../factory/style'
@@ -106,31 +106,20 @@ export const finale: SceneFunction = (s, c) => {
 
     const summary = group(
         // Left flanking stat
-        tex(String.raw`\mathsf{P} \stackrel{?}{=} \mathsf{NP}`, { size: 68, color: COSMOS.gold }).at(-615, -120).glow(10, COSMOS.gold),
+        tex(String.raw`\mathsf{P} \stackrel{?}{=} \mathsf{NP}`, { size: 68, color: COSMOS.gold }).at(-615, -120),
         txt('$1,000,000  PRIZE', -615, 14, 27, COSMOS.gold, 'mono'),
         txt('Unsolved for 55 years', -615, 62, 28, COSMOS.muted, 'sans'),
 
         // Right flanking stat
-        txt('42,500+ PRs', 615, -120, 58, COSMOS.emerald, 'mono').glow(10, COSMOS.emerald),
+        txt('42,500+ PRs', 615, -120, 58, COSMOS.emerald, 'mono'),
         txt('PEQUALNP.COM', 615, 14, 27, COSMOS.emerald, 'mono'),
         txt('Checked by Lean 4', 615, 62, 28, COSMOS.muted, 'sans'),
 
         // One crisp closing sentence
-        txt('Whether P = NP or P ≠ NP, how we attack our hardest problems just changed forever.', 0, 344, 36, COSMOS.ink, 'serif')
-            .glow(6, COSMOS.gold),
+        txt('Whether P = NP or P ≠ NP, how we attack our hardest problems just changed forever.', 0, 344, 36, COSMOS.ink, 'serif'),
     )
 
     s.add(
-        // Tight multi-stop soft glow tucked inside the orbit rings (zero concentric banding)
-        circle(360, {
-            fill: radialGradient([0, 0], 360, [
-                [0, '#5ce1e626'],
-                [0.32, '#6d4aff1a'],
-                [0.66, '#3b24700a'],
-                [1, '#07091000'],
-            ]),
-            stroke: null,
-        }).at(0, -68).set('blend', 'screen'),
         liveHalo,
         emblem,
         summary,
