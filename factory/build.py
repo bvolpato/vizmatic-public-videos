@@ -159,7 +159,7 @@ def picture_key(video_dir: Path, film_cfg: dict, meta_cfg: dict, draft: bool) ->
             continue
         if any(part in ("dist", "stills", "audio", "target", "node_modules", "lab") for part in p.parts):
             continue
-        if p.name in ("narration.wav", "poster.png", "film.json", "meta.json", ".DS_Store"):
+        if p.name in ("narration.wav", "poster.png", "film.json", "meta.json", "README.md", ".DS_Store"):
             continue
         files.append(p)
     film_visual = {k: v for k, v in film_cfg.items() if k not in ("voice", "mix")}

@@ -60,7 +60,7 @@ An explainer fails when it looks like a narrated slide deck. Follow these rules 
    uv run factory/build.py <slug>
    npm run site
    ```
-   Keep `llms.txt` and `README.md` updated whenever you add a new video; `npm run site` copies `llms.txt` to `site/llms.txt` for GitHub Pages automatically.
+   Keep each video's `videos/<slug>/README.md` (with the video goal, embedded `![<Title>](poster.png)` intro/poster screenshot, and scene outline), plus root `llms.txt` and `README.md`, updated whenever you add a new video; `npm run site` copies `llms.txt` to `site/llms.txt` for GitHub Pages automatically.
 
 ## CI & GitHub Pages Behavior
 

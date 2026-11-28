@@ -31,7 +31,7 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
 5. **Verify at 30 fps and inspect rendered stills before full 1080p render:**
    - `uv run factory/build.py <slug> --check-only` (must pass with 0 errors, 0 warnings)
    - `(cd videos/<slug> && node ../../node_modules/vizmatic/dist/cli.js check film.ts --motion --text-size 26)` (target 0 findings across every frame; sequence crossfades with `delay(..., 0.2)` and guard hidden `dynamic` nodes with `< 0.02`)
-   - Render preview stills (`node node_modules/vizmatic/dist/cli.js film videos/<slug>/film.ts --frame 0,20,60,120 --width 1280 --out videos/<slug>/stills/preview`) and standalone poster (`uv run factory/build.py <slug> --poster-only`), inspect every scene visually, then run `uv run factory/build.py <slug>` and `npm run site`.
+   - Render preview stills (`node node_modules/vizmatic/dist/cli.js film videos/<slug>/film.ts --frame 0,20,60,120 --width 1280 --out videos/<slug>/stills/preview`) and standalone poster (`uv run factory/build.py <slug> --poster-only`), inspect every scene visually, update `videos/<slug>/README.md` (goal + `![<Title>](poster.png)` screenshot + scenes), then run `uv run factory/build.py <slug>` and `npm run site`.
 
 ## Key Repository Files
 
