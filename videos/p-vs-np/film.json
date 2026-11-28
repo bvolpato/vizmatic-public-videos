@@ -20,7 +20,7 @@
     "effects": [
       {
         "scene": "hook",
-        "beat": 1,
+        "beat": 2,
         "word": "microseconds",
         "sound": "latch",
         "gain": 0.055

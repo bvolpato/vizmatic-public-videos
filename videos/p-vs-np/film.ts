@@ -4,8 +4,8 @@ import { COSMOS, nebula, starfield } from '../../factory/style'
 import {
     DEMO_3SAT,
     DEMO_WITNESS,
-    EXP_300,
-    EXP_300_UNIVERSE_RATIO,
+    EXP_266,
+    EXP_266_UNIVERSE_RATIO,
     PEQUALNP_FRONTS,
     THREE_BARRIERS,
     UNIVERSE_ATOMS,
@@ -24,8 +24,9 @@ import timing from './timing.json'
 assertEqual(verify3SAT(DEMO_3SAT, DEMO_WITNESS), true, 'DEMO_WITNESS must satisfy all 4 DEMO_3SAT clauses')
 assertEqual(verify3SAT(DEMO_3SAT, [false, false, false, true]), false, 'Counter-assignment must fail DEMO_3SAT')
 assertEqual(countSolutions3SAT(DEMO_3SAT, 4) > 0, true, 'DEMO_3SAT must be satisfiable')
-assertEqual(EXP_300 > UNIVERSE_ATOMS * 1e10, true, '2^300 must exceed 10 billion times atoms in the observable universe')
-assertEqual(EXP_300_UNIVERSE_RATIO > 2e10 && EXP_300_UNIVERSE_RATIO < 2.1e10, true, '2^300 / 10^80 ~ 2.04e10')
+assertEqual(EXP_266 > UNIVERSE_ATOMS && EXP_266 < UNIVERSE_ATOMS * 1.25, true, '2^266 must sit right at ~10^80 atoms in the observable universe')
+assertEqual(EXP_266_UNIVERSE_RATIO > 1.1 && EXP_266_UNIVERSE_RATIO < 1.25, true, '2^266 / 10^80 ~ 1.19')
+assertEqual(Math.abs(Math.log10(EXP_266) - 80) < 0.08, true, '266 is the closest integer exponent of 2 to 10^80')
 assertEqual(THREE_BARRIERS.length, 3, 'Must cover all three proof walls')
 assertEqual(PEQUALNP_FRONTS.length, 5, 'Must list all 5 active Lean research fronts')
 

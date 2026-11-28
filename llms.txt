@@ -18,7 +18,7 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
    - Full-bleed `1920 x 1080` dark canvas (`bleed: true`, `bloom: 0.22-0.24`, `#070910`), zero slide headers, zero `01 / 05` counters, zero boxy bullet cards, and zero unnecessary caveats/credits.
    - Open directly on Scene 1 (`hook`) from frame 0 (`intro: false`, `firstSceneTransition: 'cut'` in `film.ts`) with zero split-second intro title flash in the MP4. Put dedicated 1920x1080 thumbnail artwork in `scenes/poster.ts` (`export const poster: IntroFunction`); `factory/build.py` renders `poster.png` directly from `scenes/poster.ts` (and supports `--poster-only`). Target **2:30-3:30** total duration.
    - Teach **mechanisms** visually (crossing wires with traveling photons, sweeping laser cuts, 3D surface morphs) rather than static history charts.
-   - Use plain-English analogies for hard concepts and visceral scale analogies for large numbers (for example, comparing `2^300` to atoms in the observable universe).
+   - Use plain-English analogies for hard concepts and visceral scale analogies for large numbers (for example, comparing `2^266 ≈ 10^80` directly to atoms in the observable universe).
    - Keep all visible text `>= 26 px`, diversify poster layouts relative to neighboring videos, and rely on `factory/style.ts`'s 9-stop smooth `nebula()` plus `libx264` final encoding (default in `factory/build.py`) to avoid dark-gradient banding.
 3. **Compute real models & assert invariants:**
    - Put exact numerical/algorithmic logic in `videos/<slug>/math.ts` and assert key invariants at build time in `videos/<slug>/film.ts` with `assertEqual`.
@@ -44,7 +44,7 @@ Follow this exact workflow when asked to create or improve a cinematic explainer
 
 ## Latest Featured Films
 
-- [P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet](https://bvolpato.github.io/vizmatic-public-videos/p-vs-np/): Exponential search (`2^300` vs universe atoms), linear 3-SAT verification, what breaks if `P = NP` vs `P != NP`, three proof walls explained simply, and the live `pequalnp.com` Lean 4 AI proof fleet (`videos/p-vs-np/`).
+- [P vs NP: The $1,000,000 Problem & the Live AI Proof Fleet](https://bvolpato.github.io/vizmatic-public-videos/p-vs-np/): Exponential search (`2^266 ≈ 10^80` universe atoms), linear 3-SAT verification, what breaks if `P = NP` vs `P != NP`, three proof walls explained simply, and the live `pequalnp.com` Lean 4 AI proof fleet (`videos/p-vs-np/`).
 - [Matrix Multiplication: Why ω = 9/4 Changes Computing](https://bvolpato.github.io/vizmatic-public-videos/matrix-exponent/): Visual evolution from Strassen crossing wires to Border Rank, Laser blocks, and polynomial degenerations, CAT(0) tripod geometry, the exact `α = 1/2` rectangular law, and real AI/GPU implications (`videos/matrix-exponent/`).
 
 ## Full Catalog (20 Films)

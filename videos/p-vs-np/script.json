@@ -15,14 +15,18 @@
   "scenes": [
     {
       "id": "hook",
-      "title": "Finding vs. Checking: More Than Atoms in the Universe",
+      "title": "P vs NP: Finding vs. Checking at Universe Scale",
       "beats": [
         {
-          "say": "Some problems look impossible to solve, yet effortless to check. Test just three hundred yes-or-no variables by brute force, and you face two to the three hundred combinations: ten billion times more than every atom in the observable universe.",
+          "say": "P versus N P is the million-dollar question at the heart of computer science: if a solution is easy to check, is it also easy to find?",
+          "hold": 0.35
+        },
+        {
+          "say": "Some problems look effortless to verify, yet impossible to solve. Test just two hundred sixty-six yes-or-no variables by brute force, and you already hit two to the two hundred sixty-six combinations: roughly as many possibilities as there are atoms in the observable universe.",
           "hold": 0.32
         },
         {
-          "say": "Hand me one candidate key, and a computer checks every rule in microseconds. P versus N P asks one staggering question: if an answer is fast to check, is it always fast to find?",
+          "say": "Yet hand me one candidate key, and a computer checks every single rule in microseconds. That gap between finding and checking is P versus N P.",
           "hold": 0.4
         }
       ]

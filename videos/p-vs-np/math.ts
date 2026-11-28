@@ -45,10 +45,11 @@ export function countSolutions3SAT(clauses: readonly Clause3SAT[], numVars: numb
 /** Valid witness key for DEMO_3SAT: x1=T, x2=T, x3=F, x4=F -> satisfies all 4 clauses. */
 export const DEMO_WITNESS: readonly boolean[] = [true, true, false, false]
 
-/** Observable universe atom scale (~10^80) vs 2^300 (~2.04 * 10^90 > 10 billion x universe atoms!). */
+/** Observable universe atom scale (~10^80) vs 2^266 (~1.186 * 10^80, the closest power of 2 to 10^80). */
 export const UNIVERSE_ATOMS = 1e80
-export const EXP_300 = Math.pow(2, 300)
-export const EXP_300_UNIVERSE_RATIO = EXP_300 / UNIVERSE_ATOMS // ~2.037e10 (> 10 billion!)
+export const UNIVERSE_EXPONENT = 266
+export const EXP_266 = Math.pow(2, UNIVERSE_EXPONENT)
+export const EXP_266_UNIVERSE_RATIO = EXP_266 / UNIVERSE_ATOMS // ~1.186 (~1x atoms in the observable universe)
 
 /** Real active research fronts inside github.com/open-goat/pequalnp-proofs (lean/PEqualNP/). */
 export const PEQUALNP_FRONTS = [

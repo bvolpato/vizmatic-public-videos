@@ -1,8 +1,8 @@
 import {
-    Node, circle, dot, dynamic, group, line, linear, linearGradient, polyPath, radialGradient,
+    Node, dot, dynamic, group, line, linear, linearGradient, polyPath,
     type IntroFunction, type Vec,
 } from 'vizmatic/stage'
-import { COSMOS, txt } from '../../../factory/style'
+import { COSMOS, nebula, txt } from '../../../factory/style'
 
 // Dramatic Dual-World Split Poster:
 // Left: calm cyan polynomial highway (P, n^2). Right: exploding rose/violet exponential tree (NP, 2^n) with ONE golden key path.
@@ -50,23 +50,9 @@ export const poster: IntroFunction = (stage, clock) => {
     const polyGrad = linearGradient([-940, 0], [-295, 0], ['#1d4ed844', COSMOS.cyan, COSMOS.emerald])
 
     stage.add(
-        // Left cool cyan aura + Right warm rose/gold aura
-        circle(540, {
-            fill: radialGradient([0, 0], 540, [
-                [0, '#5ce1e626'],
-                [0.55, '#1d4ed814'],
-                [1, '#07091000'],
-            ]),
-            stroke: null,
-        }).at(-580, 0).set('blend', 'screen'),
-        circle(580, {
-            fill: radialGradient([0, 0], 580, [
-                [0, '#ff6b8b26'],
-                [0.48, '#a78bfa1a'],
-                [1, '#07091000'],
-            ]),
-            stroke: null,
-        }).at(610, 0).set('blend', 'screen'),
+        // Left cool cyan aura + Right warm rose/gold aura (smooth 9-stop nebula, zero banding)
+        nebula(-580, 0, 540, '#5ce1e626', '#1d4ed814').set('blend', 'screen'),
+        nebula(610, 0, 580, '#ff6b8b26', '#a78bfa1a').set('blend', 'screen'),
         // Dynamic left polynomial streams + right exponential tree + golden solution bolt
         dynamic(() => {
             const p = prog.value
